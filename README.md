@@ -2,7 +2,9 @@
 
 The question was: what misses the Apple?
 
-The real answer is: spirali.ty
+The real answer is:
+[**Spirali.ty**](https://github.com/mnzaki/circulari.ty/#spirality)
+
 But we are limited in dimensionality as a species. So let's just say a
 `(semi-)`circular bite.
 
@@ -94,7 +96,8 @@ J`J` for juice (because blending. get it?)
 
 # Spirali.ty
 
-5-50 years later a foundation emerges around the foundation of Circulari.ty. We
+_5-50 years later_ a foundation emerges around the foundation of
+[Circulari.ty](https://github.com/mnzaki/circulari.ty/#circularity). We
 have distributed debt management, a regenerative economy, ceaseless petulance
 towards control-freakiness, solarpunk villages with decentralized power, water,
 networks and propensity for more of what was before.
