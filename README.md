@@ -3,7 +3,8 @@
 The question was: what misses the Apple?
 
 The real answer is: spirali.ty
-But we are limited in dimensionality as a species.
+But we are limited in dimensionality as a species. So let's just say a
+`(semi-)`circular bite.
 
 Before we begin, this is what I was listening to: [Lyss ening Session #1](https://youtu.be/u1-AK25EBFs?si=8XxfzVD1gJpD3W_w)
 and I think it helps to share atmosphere :)
@@ -81,7 +82,7 @@ They kiss. All three. Across layers of interoperability.
 
 Final app Form is unknown. Will it be locally-bound by evolutionary necessity?
 Will it divergently emerge a convergent divergion when it meets meshfloos? Will
-it tend to depend on its predecessors and ancestral debts?
+it tend to depend on its predecessors and ancestral debts and dues?
 
 ```sh
 mnzaki@loopback ~ $ echo `$(echo echo) $(echo Will it blend™)`?
@@ -89,6 +90,7 @@ Will it blend™?
 ```
 
 F`F` for respect
+J`J` for juice (because blending. get it?)
 
 # Spirali.ty
 
