@@ -101,3 +101,13 @@ _5-50 years later_ a foundation emerges around the foundation of
 have distributed debt management, a regenerative economy, ceaseless petulance
 towards control-freakiness, solarpunk villages with decentralized power, water,
 networks and propensity for more of what was before.
+
+
+-------------------------------------------------------------------------------
+
+`HAZARD WARNING`: tapping
+[spirali.ty](https://github.com/mnzaki/circulari.ty/#spirality) and
+[circulari.ty](https://github.com/mnzaki/circulari.ty/#circularity) back and
+forth multipply may load your github for evermore.
+
+-------------------------------------------------------------------------------
