@@ -43,6 +43,8 @@ network but is actually a DoubleDanger because it pre-seeds a social network
 particularly the backend of the frontend will be written in a way that naturally
 maps to the communal p2p cybersocietal network in sight: `Vision.`
 
+Started [here](./code/apps/DearDiary/).
+
 ### [Y2] Hal-loW
 
 Chatroullette of "AITA" and "askmen" and "askwomen" and "/r/lonely" and
