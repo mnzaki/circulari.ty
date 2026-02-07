@@ -1,0 +1,3 @@
+[submodule "o19"]
+	path = o19
+	url = git@github.com:mnzaki/o19
