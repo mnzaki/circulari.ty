@@ -1,7 +1,12 @@
-# Tauri + SvelteKit + TypeScript
+# DearDiary
 
-This template should help get you started developing with Tauri, SvelteKit and TypeScript in Vite.
+A feed of oneself, for oneself, by oneself elaborating on the past to better see
+the future.
 
-## Recommended IDE Setup
+## Tech
+
+Tauri + SvelteKit + TypeScript
+
+### Recommended IDE Setup
 
 [VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer).
