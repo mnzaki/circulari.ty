@@ -12,10 +12,7 @@
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
-    "db:drop": "rm ~/.config/ty.circulari.DearDiary/deardiary.db*",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:drop": "rm ~/.config/ty.circulari.DearDiary/deardiary.db*"
   },
   "license": "MIT",
   "dependencies": {
@@ -30,9 +27,7 @@
     "@sveltejs/kit": "^2.9.0",
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
     "@tauri-apps/cli": "^2",
-    "concurrently": "^9.2.1",
     "drizzle-kit": "^0.31.8",
-    "drizzle-orm": "^0.45.1",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
     "typescript": "~5.6.2",

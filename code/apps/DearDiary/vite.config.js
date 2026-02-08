@@ -23,6 +23,10 @@ export default defineConfig(async () => ({
     port: 1420,
     strictPort: true,
     host: host || false,
+    fs: {
+      // Allow serving files from workspace packages
+      allow: ['..', '../../packages'],
+    },
     hmr: host
       ? {
           protocol: "ws",

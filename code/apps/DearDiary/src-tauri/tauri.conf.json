@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "deardiary",
+  "productName": "DearDiary",
   "version": "0.1.0",
   "identifier": "ty.circulari.DearDiary",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "deardiary",
+        "title": "DearDiary",
         "width": 800,
         "height": 600
       }
@@ -32,7 +32,7 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "../migrations"
+      "./migrations"
     ]
   },
   "plugins": {
