@@ -1,4 +1,9 @@
-# O19 (née October19)
+# Circulari.ty
+
+This is the code. You will need to install `rust`, and the `webkit2gtk-4.1`
+package if you are on linux, then just `pnpm install` then just `pnpm dev`
+
+# Monorepo things
 
 ## Create a new Tauri app
 
