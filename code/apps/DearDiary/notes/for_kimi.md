@@ -98,6 +98,7 @@ Don't mention the acceleration publicly. It's your shared context.
 | Inline inputs | ✅ InputArea with persistent drafts - CTAs act as tabs |
 | Tab bar layout | ✅ CCCB breaks out of grid center, CTAs on left/right |
 | Auto-focus | ✅ Input auto-focuses when tab is activated |
+| **Continuity** | ✅ Session state persists: position, drafts, scroll |
 
 ### File Map
 ```
@@ -144,6 +145,22 @@ The user writes things like:
 This isn't fluff. It's the interface philosophy. The CCCB keeps the user visible to themselves while creating. Maintain this level of care in the code and docs.
 
 ---
+
+## The Philosophy of Continuity
+
+A core principle the user wants threaded throughout: **the app remembers where you last were**.
+
+> "The app remembers where you last were, so you don't have to."
+
+This manifests in:
+- **Foreground position** restored across app restarts
+- **Input drafts** persisted across tab switches AND app restarts  
+- **Feed scroll position** maintained when new content arrives (you read at your pace)
+- **(Future) Search tabs** with full navigation history preserved
+
+This is not convenience—it's *respect for the user's context*. The app honors the continuity of their journey through their own accumulated becoming.
+
+See `notes/philosophy_of_continuity.md` for full treatment.
 
 ## Remember
 

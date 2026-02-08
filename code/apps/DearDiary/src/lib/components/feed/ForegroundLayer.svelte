@@ -2,6 +2,15 @@
   import CreationTools from './CreationTools.svelte';
   import PostList from './PostList.svelte';
   import { getPostsNewestFirst, loadMockPosts } from '$lib/stores/posts.svelte';
+  import { 
+    getForegroundPosition, 
+    setForegroundPosition,
+    getFeedScrollPosition,
+    setFeedScrollPosition,
+    setLastReadPostId,
+    getActiveInput,
+    setActiveInput
+  } from '$lib/stores/sessionState.svelte';
   import type { InputType } from '$lib/components/inputs/InputArea.svelte';
 
   // Initialize mock data for demo
@@ -15,17 +24,46 @@
   const DRAG_RESISTANCE = 0.85;
   const MIN_FEED_VISIBLE_VH = 15;
   
-  // State
-  let translateY = $state(PEEK_POSITION_VH);
+  // State - restored from session
+  let translateY = $state(getForegroundPosition());
   let isDragging = $state(false);
   let startClientY = $state(0);
-  let startTranslateY = $state(PEEK_POSITION_VH);
+  let startTranslateY = $state(getForegroundPosition());
   let feedScrollContainer: HTMLElement;
   let windowHeight = $state(0);
-  let activeInput = $state<InputType>(null);
+  let activeInput = $state<InputType>(getActiveInput());
 
   let maxTranslateVh = $derived(100 - MIN_FEED_VISIBLE_VH);
   let posts = $derived(getPostsNewestFirst());
+
+  // Persist position when it changes (debounced slightly)
+  let positionTimeout: ReturnType<typeof setTimeout>;
+  $effect(() => {
+    clearTimeout(positionTimeout);
+    if (!isDragging) {
+      positionTimeout = setTimeout(() => {
+        setForegroundPosition(translateY);
+      }, 100);
+    }
+  });
+
+  // Persist active input
+  $effect(() => {
+    setActiveInput(activeInput);
+  });
+
+  // Restore scroll position after posts load
+  $effect(() => {
+    if (feedScrollContainer && posts.length > 0) {
+      const savedPosition = getFeedScrollPosition();
+      if (savedPosition > 0) {
+        // Use requestAnimationFrame to ensure DOM is ready
+        requestAnimationFrame(() => {
+          feedScrollContainer.scrollTop = savedPosition;
+        });
+      }
+    }
+  });
 
   function handleDragHandlePointerDown(e: PointerEvent) {
     // Don't drag if clicking interactive elements
@@ -62,10 +100,31 @@
     } else if (translateY > BOTTOM_SNAP_VH) {
       translateY = PEEK_POSITION_VH;
     }
+    
+    // Save final position
+    setForegroundPosition(translateY);
   }
 
   function handleActivateInput(type: InputType) {
     activeInput = type;
+  }
+
+  // Track scroll position for persistence
+  function handleFeedScroll() {
+    if (!feedScrollContainer) return;
+    setFeedScrollPosition(feedScrollContainer.scrollTop);
+    
+    // Try to identify the topmost visible post
+    // This is a simple heuristic - could be improved
+    const postCards = feedScrollContainer.querySelectorAll('.post-card');
+    for (const card of postCards) {
+      const rect = card.getBoundingClientRect();
+      if (rect.top >= 0) {
+        const postId = card.getAttribute('data-post-id');
+        if (postId) setLastReadPostId(postId);
+        break;
+      }
+    }
   }
 </script>
 
@@ -97,10 +156,11 @@
     <div class="tools-feed-divider"></div>
   </div>
 
-  <!-- Feed Area - Independently Scrollable -->
+  <!-- Feed Area - Independently Scrollable with position tracking -->
   <div 
     class="feed-container"
     bind:this={feedScrollContainer}
+    onscroll={handleFeedScroll}
   >
     <PostList {posts} />
   </div>
@@ -120,7 +180,6 @@
     display: flex;
     flex-direction: column;
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateY(15vh);
     will-change: transform;
   }
 

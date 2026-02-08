@@ -4,60 +4,64 @@
  * Persists input values for each input type (text, link, person)
  * even when not visible. This allows switching between CTAs
  * without losing work.
+ * 
+ * This store now syncs with sessionState for persistence across
+ * app restarts.
  */
 
-// Draft storage for each input type
-let textDraft = $state('');
-let linkDraft = $state('');
-let personDraft = $state<{ did: string; displayName: string; avatarUri?: string } | null>(null);
+import { 
+  getInputDrafts as getPersistedDrafts,
+  setInputDraft as setPersistedDraft,
+  clearInputDraft as clearPersistedDraft,
+  clearAllInputDrafts as clearAllPersistedDrafts
+} from './sessionState.svelte';
 
-// Getters
+// Getters - read from session state
 export function getTextDraft(): string {
-  return textDraft;
+  return getPersistedDrafts().text;
 }
 
 export function getLinkDraft(): string {
-  return linkDraft;
+  return getPersistedDrafts().link;
 }
 
 export function getPersonDraft(): { did: string; displayName: string; avatarUri?: string } | null {
-  return personDraft;
+  return getPersistedDrafts().person;
 }
 
-// Setters
+// Setters - write to session state (auto-persisted)
 export function setTextDraft(value: string): void {
-  textDraft = value;
+  setPersistedDraft('text', value);
 }
 
 export function setLinkDraft(value: string): void {
-  linkDraft = value;
+  setPersistedDraft('link', value);
 }
 
 export function setPersonDraft(value: { did: string; displayName: string; avatarUri?: string } | null): void {
-  personDraft = value;
+  setPersistedDraft('person', value);
 }
 
 // Clear specific draft
 export function clearTextDraft(): void {
-  textDraft = '';
+  clearPersistedDraft('text');
 }
 
 export function clearLinkDraft(): void {
-  linkDraft = '';
+  clearPersistedDraft('link');
 }
 
 export function clearPersonDraft(): void {
-  personDraft = null;
+  clearPersistedDraft('person');
 }
 
 // Check if any draft has content
 export function hasAnyDraft(): boolean {
-  return textDraft.length > 0 || linkDraft.length > 0 || personDraft !== null;
+  const drafts = getPersistedDrafts();
+  return drafts.text.length > 0 || drafts.link.length > 0 || drafts.person !== null;
 }
 
 // Clear all drafts (after commit)
 export function clearAllDrafts(): void {
-  textDraft = '';
-  linkDraft = '';
-  personDraft = null;
+  clearAllPersistedDrafts();
 }

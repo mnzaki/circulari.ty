@@ -35,7 +35,7 @@
   }
 </script>
 
-<article class="post-card">
+<article class="post-card" data-post-id={post.id}>
   <div class="post-header">
     <span class="post-date">{formatDate(post.createdAt)}</span>
     {#if post.links.length > 0}
