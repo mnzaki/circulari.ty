@@ -9,9 +9,11 @@ import {
   PostService,
   ViewService,
   SessionService,
+  PersonService,
   type IPostService,
   type IViewService,
-  type ISessionService
+  type ISessionService,
+  type IPersonService
 } from '@repo/persistence';
 import { TauriAdapter } from './adapter.js';
 
@@ -22,6 +24,7 @@ let adapter: TauriAdapter | null = null;
 let postService: IPostService | null = null;
 let viewService: IViewService | null = null;
 let sessionService: ISessionService | null = null;
+let personService: IPersonService | null = null;
 
 /**
  * Initialize the Tauri persistence layer.
@@ -37,6 +40,7 @@ export async function initPersistence(): Promise<void> {
   postService = new PostService(adapter);
   viewService = new ViewService(adapter);
   sessionService = new SessionService(adapter);
+  personService = new PersonService(adapter);
 }
 
 /**
@@ -72,6 +76,17 @@ export function getSessionService(): ISessionService {
   return sessionService;
 }
 
+/**
+ * Get the PersonService instance.
+ * Throws if initPersistence() hasn't been called.
+ */
+export function getPersonService(): IPersonService {
+  if (!personService) {
+    throw new Error('Persistence not initialized. Call initPersistence() first.');
+  }
+  return personService;
+}
+
 // Re-export the adapter for advanced use cases
 export { TauriAdapter } from './adapter.js';
 
@@ -84,5 +99,6 @@ export type {
   InputType,
   AccumulableBit,
   XanaduLink,
-  UAddress
+  UAddress,
+  Person
 } from '@repo/persistence';
