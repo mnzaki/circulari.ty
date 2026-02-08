@@ -98,7 +98,8 @@ Don't mention the acceleration publicly. It's your shared context.
 | Inline inputs | ✅ InputArea with persistent drafts - CTAs act as tabs |
 | Tab bar layout | ✅ CCCB breaks out of grid center, CTAs on left/right |
 | Auto-focus | ✅ Input auto-focuses when tab is activated |
-| **Continuity** | ✅ Session state persists: position, drafts, scroll |
+| **Continuity** | ✅ Session state persists: position, drafts, scroll, active tab |
+| **Views** | ✅ ViewReel with The Feed™ + Child Views, horizontal navigation |
 
 ### File Map
 ```
@@ -109,6 +110,8 @@ src/lib/
     accumulatingPost.svelte.ts  # addBit(), removeBit(), commit()
     posts.svelte.ts             # addPost(), postsNewestFirst
     inputDrafts.svelte.ts       # Persistent draft storage per input type
+    sessionState.svelte.ts      # UI state: position, scroll, active input
+    views.svelte.ts             # ViewReel state: views[], activeViewIndex
   components/
     capture/CaptureLayer.svelte      # Background camera (placeholder)
     feed/
@@ -116,17 +119,21 @@ src/lib/
       CreationTools.svelte           # CCCB + Tab bar + InputArea
       CaptureButton.svelte           # CCCB - staging area
       PostCard.svelte                # Renders bits
-      PostList.svelte                # Feed list
+      PostList.svelte                # Feed list (used by views)
     inputs/
       InputArea.svelte               # Tab content area with persistent drafts
+    views/
+      ViewReel.svelte                # Horizontal reel of Views
 ```
 
-### Next When Asked
-1. **Commit animation** - CCCB releases, new post slides into Feed
-2. **Tauri camera integration** - actual media capture (not placeholder)
-3. **Commit animation** - CCCB releases, new post slides into Feed
-4. **Tauri camera integration** - actual media capture (not placeholder)
-5. **SQLite persistence** - local-first storage
+### Next When Asked (Views Priority)
+1. **ViewReel component** - Horizontal scrollable container for Views
+2. **View system** - The Feed™ (View 0) + Child Views with filters
+3. **ViewConfiguration panel** - Time picker, search input for new Views
+4. **Reel navigation** - Swipe between views, visual indicator
+5. **Commit animation** - CCCB releases, new post slides into current View
+6. **Tauri camera integration** - actual media capture (not placeholder)
+7. **SQLite persistence** - local-first storage
 
 ---
 
@@ -146,21 +153,24 @@ This isn't fluff. It's the interface philosophy. The CCCB keeps the user visible
 
 ---
 
-## The Philosophy of Continuity
+## Core Philosophies
 
-A core principle the user wants threaded throughout: **the app remembers where you last were**.
+### Continuity
+> "The app remembers where you last were, as you would."
 
-> "The app remembers where you last were, so you don't have to."
+- **Foreground position**, **input drafts**, **feed scroll**, **active input** all persist
+- Not convenience—respect for the user's context
+- See `notes/philosophy_of_continuity.md`
 
-This manifests in:
-- **Foreground position** restored across app restarts
-- **Input drafts** persisted across tab switches AND app restarts  
-- **Feed scroll position** maintained when new content arrives (you read at your pace)
-- **(Future) Search tabs** with full navigation history preserved
+### Self-Browsing
+> "To browse oneself is to encounter who one was, and thus glimpse who one might become."
 
-This is not convenience—it's *respect for the user's context*. The app honors the continuity of their journey through their own accumulated becoming.
-
-See `notes/philosophy_of_continuity.md` for full treatment.
+- **The Feed™** is View 0—the chronological unfolding of the Self
+- **Child Views** are *lenses*: filtered perspectives on the same accumulated becoming
+- Time lens, keyword lens, connection lens, pattern lens
+- Views don't create content, they *reveal* it
+- Multiple Views coexist on a horizontal **Reel**—different questions, same Self
+- See `notes/philosophy_of_self_browsing.md` and `notes/views_architecture.md`
 
 ## Remember
 

@@ -1,13 +1,10 @@
 <script lang="ts">
   import CreationTools from './CreationTools.svelte';
-  import PostList from './PostList.svelte';
-  import { getPostsNewestFirst, loadMockPosts } from '$lib/stores/posts.svelte';
+  import ViewReel from '$lib/components/views/ViewReel.svelte';
+  import { loadMockPosts } from '$lib/stores/posts.svelte';
   import { 
     getForegroundPosition, 
     setForegroundPosition,
-    getFeedScrollPosition,
-    setFeedScrollPosition,
-    setLastReadPostId,
     getActiveInput,
     setActiveInput
   } from '$lib/stores/sessionState.svelte';
@@ -29,12 +26,10 @@
   let isDragging = $state(false);
   let startClientY = $state(0);
   let startTranslateY = $state(getForegroundPosition());
-  let feedScrollContainer: HTMLElement;
   let windowHeight = $state(0);
   let activeInput = $state<InputType>(getActiveInput());
 
   let maxTranslateVh = $derived(100 - MIN_FEED_VISIBLE_VH);
-  let posts = $derived(getPostsNewestFirst());
 
   // Persist position when it changes (debounced slightly)
   let positionTimeout: ReturnType<typeof setTimeout>;
@@ -52,27 +47,10 @@
     setActiveInput(activeInput);
   });
 
-  // Restore scroll position after posts load
-  $effect(() => {
-    if (feedScrollContainer && posts.length > 0) {
-      const savedPosition = getFeedScrollPosition();
-      if (savedPosition > 0) {
-        // Use requestAnimationFrame to ensure DOM is ready
-        requestAnimationFrame(() => {
-          feedScrollContainer.scrollTop = savedPosition;
-        });
-      }
-    }
-  });
-
   function handleDragHandlePointerDown(e: PointerEvent) {
     // Don't drag if clicking interactive elements
     const target = e.target as HTMLElement;
     if (target.closest('button') || target.closest('input') || target.closest('textarea')) return;
-    
-    // Don't drag if feed is scrolled and we're not at the top
-    const scrollTop = feedScrollContainer?.scrollTop ?? 0;
-    if (translateY < 5 && scrollTop > 0) return;
     
     isDragging = true;
     startClientY = e.clientY;
@@ -108,24 +86,6 @@
   function handleActivateInput(type: InputType) {
     activeInput = type;
   }
-
-  // Track scroll position for persistence
-  function handleFeedScroll() {
-    if (!feedScrollContainer) return;
-    setFeedScrollPosition(feedScrollContainer.scrollTop);
-    
-    // Try to identify the topmost visible post
-    // This is a simple heuristic - could be improved
-    const postCards = feedScrollContainer.querySelectorAll('.post-card');
-    for (const card of postCards) {
-      const rect = card.getBoundingClientRect();
-      if (rect.top >= 0) {
-        const postId = card.getAttribute('data-post-id');
-        if (postId) setLastReadPostId(postId);
-        break;
-      }
-    }
-  }
 </script>
 
 <svelte:window bind:innerHeight={windowHeight} />
@@ -156,13 +116,9 @@
     <div class="tools-feed-divider"></div>
   </div>
 
-  <!-- Feed Area - Independently Scrollable with position tracking -->
-  <div 
-    class="feed-container"
-    bind:this={feedScrollContainer}
-    onscroll={handleFeedScroll}
-  >
-    <PostList {posts} />
+  <!-- View Reel - Contains The Feed™ and Child Views -->
+  <div class="view-reel-container">
+    <ViewReel />
   </div>
 </div>
 
@@ -217,18 +173,10 @@
     margin-top: 8px;
   }
 
-  /* Feed Container - Independently scrollable */
-  .feed-container {
+  /* View Reel Container */
+  .view-reel-container {
     flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    touch-action: pan-y;
-  }
-
-  .feed-container::-webkit-scrollbar {
-    display: none;
+    overflow: hidden;
+    position: relative;
   }
 </style>
