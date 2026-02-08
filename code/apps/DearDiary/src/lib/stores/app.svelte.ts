@@ -11,6 +11,7 @@ import { setViewService } from './views.svelte';
 import { setSessionService as setSessionForAccumulation } from './accumulatingPost.svelte';
 import { setSessionService } from './session.svelte';
 import { setPersonService } from './people.svelte';
+import { setLinkPreviewService } from './linkPreview.svelte';
 import { loadMockPosts } from './posts.svelte';
 
 let initialized = $state(false);
@@ -52,6 +53,7 @@ export async function initializeApp(): Promise<void> {
     setSessionService(services.session);
     setSessionForAccumulation(services.session);
     setPersonService(services.person);
+    setLinkPreviewService(services.linkPreview);
 
     // Check if we have any posts
     const postCount = await services.post.count();

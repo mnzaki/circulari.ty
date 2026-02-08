@@ -1,6 +1,7 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import { addBit, commit, clearAccumulation, getAccumulation } from '$lib/stores/accumulatingPost.svelte';
+  import { getPreview, isLoading, getError, getCachedPreview } from '$lib/stores/linkPreview.svelte';
   import type { LinkPreview, AccumulableBit } from '@repo/persistence';
 
   export type InputType = 'text' | 'link' | 'person' | null;
@@ -19,6 +20,41 @@
 
   // Local draft state - independent from accumulation until explicitly added
   // No automatic sync from store - we don't want added bits to reappear as drafts
+  
+  // Link preview state
+  let currentPreview = $state<LinkPreview | null>(null);
+  let previewLoading = $state(false);
+  let previewError = $state<string | null>(null);
+  
+  // Fetch preview when link input changes (with debounce)
+  let debounceTimer: ReturnType<typeof setTimeout>;
+  $effect(() => {
+    if (activeInput === 'link' && linkValue && isValidUrl(linkValue)) {
+      clearTimeout(debounceTimer);
+      previewLoading = true;
+      previewError = null;
+      
+      debounceTimer = setTimeout(async () => {
+        const preview = await getPreview(linkValue);
+        if (preview && !preview.error) {
+          // Use the first image from images array, fallback to imageUrl
+          const mainImage = preview.images?.[0] || preview.imageUrl;
+          currentPreview = {
+            title: preview.title || linkValue,
+            description: preview.description,
+            imageUri: mainImage,
+            siteName: preview.siteName
+          };
+        } else if (preview?.error) {
+          previewError = preview.error;
+        }
+        previewLoading = false;
+      }, 500);
+    } else {
+      currentPreview = null;
+      previewError = null;
+    }
+  });
 
   // Auto-focus when activeInput changes
   $effect(() => {
@@ -96,8 +132,11 @@
         break;
       case 'link':
         if (linkValue.trim() && isValidUrl(linkValue)) {
-          await addBit({ type: 'link', url: linkValue, preview: { title: 'Link Preview' } });
+          // Use fetched preview or fallback
+          const preview = currentPreview || { title: linkValue };
+          await addBit({ type: 'link', url: linkValue, preview });
           linkValue = '';
+          currentPreview = null;
           onClose();
         }
         break;
@@ -150,6 +189,31 @@
         placeholder="https://..."
         class="link-input"
       />
+      
+      {#if previewLoading}
+        <div class="link-preview loading">
+          <span>Fetching preview...</span>
+        </div>
+      {:else if previewError}
+        <div class="link-preview error">
+          <span>⚠️ {previewError}</span>
+        </div>
+      {:else if currentPreview}
+        <div class="link-preview">
+          {#if currentPreview.imageUri}
+            <img src={currentPreview.imageUri} alt="" class="preview-image" />
+          {/if}
+          <div class="preview-meta">
+            <strong>{currentPreview.title || 'Untitled'}</strong>
+            {#if currentPreview.description}
+              <span class="preview-desc">{currentPreview.description}</span>
+            {/if}
+            {#if currentPreview.siteName}
+              <span class="preview-site">{currentPreview.siteName}</span>
+            {/if}
+          </div>
+        </div>
+      {/if}
     </div>
   {:else if activeInput === 'person'}
     <div class="input-content">
@@ -244,6 +308,54 @@
 
   .link-input::placeholder {
     color: #999;
+  }
+  
+  .link-preview {
+    margin-top: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  
+  .link-preview.loading {
+    color: #888;
+    font-size: 0.9rem;
+  }
+  
+  .link-preview.error {
+    color: #c33;
+    font-size: 0.9rem;
+  }
+  
+  .preview-image {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+  
+  .preview-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .preview-meta strong {
+    font-size: 0.95rem;
+    color: #333;
+  }
+  
+  .preview-desc {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+  }
+  
+  .preview-site {
+    font-size: 0.8rem;
+    color: #667eea;
   }
 
   .selected-person {
