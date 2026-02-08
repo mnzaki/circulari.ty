@@ -51,3 +51,13 @@ export const schemaMeta = sqliteTable('schema_meta', {
   version: integer('version').notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp_ms' }).notNull()
 });
+
+// People table - for mentions and tagging
+export const people = sqliteTable('people', {
+  did: text('did').primaryKey(),
+  displayName: text('display_name').notNull(),
+  avatarUri: text('avatar_uri'),
+  bio: text('bio'),
+  createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp_ms' })
+});
