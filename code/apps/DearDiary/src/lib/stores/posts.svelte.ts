@@ -1,130 +1,212 @@
-import type { Post } from '$lib/types/post';
-import type { AccumulableBit } from '$lib/types/xanadu';
-
 /**
- * The Posts Store
+ * Posts Store (Database-Backed)
  * 
- * Manages the committed feed of posts.
- * Future: backed by local-first storage, CRDT sync, content-addressed retrieval.
- * Present: in-memory array with reactive updates.
+ * Reactive store for posts, backed by the database.
+ * Uses $effect for reactive updates and service layer for persistence.
  */
+
+import type { Post, AccumulatingPost } from '@repo/persistence';
+import { commitAccumulation } from '@repo/persistence';
+import type { IPostService } from '@repo/persistence';
 
 // Reactive state
-let posts = $state<Post[]>([]);
+let postsState = $state<Post[]>([]);
+let loadingState = $state(false);
+let service: IPostService | null = null;
 
-// Derived values (exported as getters since $derived can't be exported from modules)
-export function getPostCount(): number {
-  return posts.length;
-}
-
-export function getLatestPost(): Post | null {
-  return posts[posts.length - 1] ?? null;
-}
-
-export function getPostsNewestFirst(): Post[] {
-  return [...posts].reverse();
-}
-
-// Read-only access
-export function getPosts(): Post[] {
-  return posts;
-}
-
-export function getPostById(id: string): Post | undefined {
-  return posts.find(p => p.id === id);
-}
-
-// Actions
+// Derived (getter functions - cannot export $derived from modules)
+export const postCount = () => postsState.length;
+export const latestPost = () => postsState[postsState.length - 1] ?? null;
+export const postsNewestFirst = () => [...postsState].reverse();
+export const posts = () => postsState;
+export const loading = () => loadingState;
 
 /**
- * Add a post to the feed
- * Newest posts appear at the end of the array (chronological)
- * UI displays reversed (newest first)
+ * Set the post service (called during app initialization)
  */
-export function addPost(post: Post): void {
-  posts = [...posts, post];
+export function setPostService(svc: IPostService): void {
+  service = svc;
+}
+
+/**
+ * Load posts from database
+ */
+export async function loadPosts(): Promise<void> {
+  if (!service) {
+    console.log('[posts] Service not available yet');
+    return;
+  }
+  
+  loadingState = true;
+  try {
+    postsState = await service.getAll();
+  } finally {
+    loadingState = false;
+  }
+}
+
+/**
+ * Add a new post from an accumulation
+ */
+export async function addPost(accumulation: AccumulatingPost): Promise<Post> {
+  if (!service) {
+    throw new Error('[posts] Service not initialized');
+  }
+  
+  const post = await service.create(accumulation);
+  postsState = [...postsState, post];
+  return post;
 }
 
 /**
  * Remove a post by ID
  */
-export function removePost(id: string): void {
-  posts = posts.filter(p => p.id !== id);
+export async function removePost(id: string): Promise<void> {
+  if (!service) return;
+  
+  await service.delete(id);
+  postsState = postsState.filter(p => p.id !== id);
 }
 
 /**
- * Update a post (for future edit functionality)
+ * Update a post
  */
-export function updatePost(id: string, updates: Partial<Post>): void {
-  posts = posts.map(p => 
+export async function updatePost(id: string, updates: Partial<Post>): Promise<void> {
+  if (!service) return;
+  
+  await service.update(id, updates);
+  postsState = postsState.map(p => 
     p.id === id ? { ...p, ...updates, modifiedAt: new Date() } : p
   );
 }
 
 /**
- * Load posts (future: from local storage / sync)
+ * Search posts by keyword
  */
-export function loadPosts(loadedPosts: Post[]): void {
-  posts = loadedPosts;
+export async function searchPosts(keyword: string): Promise<Post[]> {
+  if (!service) return [];
+  return service.searchByKeyword(keyword);
 }
 
 /**
- * Clear all posts (nuclear option)
+ * Get posts by date range
  */
-export function clearPosts(): void {
-  posts = [];
+export async function getPostsByDateRange(from: Date, to: Date): Promise<Post[]> {
+  if (!service) return [];
+  return service.getByDateRange(from, to);
+}
+
+/**
+ * Load mock posts for demo (only if database is empty)
+ */
+export async function loadMockPosts(): Promise<void> {
+  if (!service) return;
+  
+  const count = await service.count();
+  if (count > 0) {
+    console.log('Database already has posts, skipping mock data');
+    await loadPosts();
+    return;
+  }
+  
+  // Mock data
+  const mockBits = [
+    [
+      { type: 'text' as const, content: 'Had an amazing day exploring the city! Found this hidden coffee shop with the best latte art.' },
+      { type: 'media' as const, uri: 'mock://coffee.jpg', mimeType: 'image/jpeg' }
+    ],
+    [
+      { type: 'text' as const, content: 'Working on this new project and it\'s coming together nicely.' },
+      { type: 'link' as const, url: 'https://svelte.dev', preview: { title: 'Svelte • Cybernetically enhanced web apps', description: 'Svelte is a radical new approach to building user interfaces', siteName: 'svelte.dev' } }
+    ],
+    [
+      { type: 'text' as const, content: 'Just finished reading an incredible book. The ending was completely unexpected!' },
+      { type: 'person' as const, did: 'did:mock:alice', displayName: 'Alice' }
+    ],
+    [
+      { type: 'text' as const, content: 'Morning thoughts: The best time to start was yesterday. The second best time is now.' }
+    ],
+    [
+      { type: 'media' as const, uri: 'mock://sunset.jpg', mimeType: 'image/jpeg' },
+      { type: 'text' as const, content: 'Golden hour hits different when you\'re not looking at it through a screen.' }
+    ],
+    [
+      { type: 'text' as const, content: 'Dinner with friends tonight. Grateful for these moments.' },
+      { type: 'person' as const, did: 'did:mock:bob', displayName: 'Bob' },
+      { type: 'person' as const, did: 'did:mock:carol', displayName: 'Carol' }
+    ],
+    [
+      { type: 'link' as const, url: 'https://xanadu.com', preview: { title: 'Project Xanadu', description: 'The original hypertext project', siteName: 'xanadu.com' } },
+      { type: 'text' as const, content: 'Thinking a lot about transclusion and fine-grained addressing lately...' }
+    ],
+    [
+      { type: 'text' as const, content: 'Late night coding session. There\'s something meditative about watching tests pass.' }
+    ]
+  ];
+  
+  for (let i = 0; i < mockBits.length; i++) {
+    const accumulation: AccumulatingPost = {
+      bits: mockBits[i],
+      draftLinks: []
+    };
+    await service.create(accumulation);
+  }
+  
+  await loadPosts();
+}
+
+/**
+ * Clear all posts
+ */
+export async function clearPosts(): Promise<void> {
+  for (const post of postsState) {
+    await removePost(post.id);
+  }
+}
+
+/**
+ * Get posts for a view (with filters)
+ */
+export async function getPostsForView(
+  view: { filters: { dateFrom?: Date; dateTo?: Date; keywords?: string[] } }
+): Promise<Post[]> {
+  if (!service) return [];
+  
+  if (!view.filters || Object.keys(view.filters).length === 0) {
+    return service.getAll();
+  }
+  
+  let results = await service.getAll({
+    dateFrom: view.filters.dateFrom,
+    dateTo: view.filters.dateTo
+  });
+  
+  if (view.filters.keywords?.length) {
+    const keywords = view.filters.keywords.map(k => k.toLowerCase());
+    results = results.filter(post =>
+      post.bits.some(bit => {
+        if (bit.type === 'text') {
+          return keywords.some(kw => bit.content.toLowerCase().includes(kw));
+        }
+        if (bit.type === 'link') {
+          return keywords.some(kw => 
+            bit.url.toLowerCase().includes(kw) ||
+            bit.preview?.title?.toLowerCase().includes(kw)
+          );
+        }
+        return false;
+      })
+    );
+  }
+  
+  return results;
 }
 
 // Debug
 export function debugPosts(): void {
   console.log('Posts:', {
-    count: posts.length,
-    ids: posts.map(p => p.id)
+    count: postsState.length,
+    ids: postsState.map(p => p.id),
+    loading: loadingState
   });
-}
-
-// Mock data for development/demo
-export function loadMockPosts(): void {
-  const mockBits: AccumulableBit[][] = [
-    [
-      { type: 'text', content: 'Had an amazing day exploring the city! Found this hidden coffee shop with the best latte art.' },
-      { type: 'media', uri: 'mock://coffee.jpg', mimeType: 'image/jpeg' }
-    ],
-    [
-      { type: 'text', content: 'Working on this new project and it\'s coming together nicely.' },
-      { type: 'link', url: 'https://svelte.dev', preview: { title: 'Svelte • Cybernetically enhanced web apps', description: 'Svelte is a radical new approach to building user interfaces', siteName: 'svelte.dev' } }
-    ],
-    [
-      { type: 'text', content: 'Just finished reading an incredible book. The ending was completely unexpected!' },
-      { type: 'person', did: 'did:mock:alice', displayName: 'Alice' }
-    ],
-    [
-      { type: 'text', content: 'Morning thoughts: The best time to start was yesterday. The second best time is now.' }
-    ],
-    [
-      { type: 'media', uri: 'mock://sunset.jpg', mimeType: 'image/jpeg' },
-      { type: 'text', content: 'Golden hour hits different when you\'re not looking at it through a screen.' }
-    ],
-    [
-      { type: 'text', content: 'Dinner with friends tonight. Grateful for these moments.' },
-      { type: 'person', did: 'did:mock:bob', displayName: 'Bob' },
-      { type: 'person', did: 'did:mock:carol', displayName: 'Carol' }
-    ],
-    [
-      { type: 'link', url: 'https://xanadu.com', preview: { title: 'Project Xanadu', description: 'The original hypertext project', siteName: 'xanadu.com' } },
-      { type: 'text', content: 'Thinking a lot about transclusion and fine-grained addressing lately...' }
-    ],
-    [
-      { type: 'text', content: 'Late night coding session. There\'s something meditative about watching tests pass.' }
-    ]
-  ];
-
-  const mockPosts: Post[] = mockBits.map((bits, i) => ({
-    id: `mock-${i}`,
-    bits,
-    links: [],
-    createdAt: new Date(Date.now() - (i * 1000 * 60 * 60 * 6)) // Each 6 hours apart
-  }));
-
-  posts = mockPosts;
 }

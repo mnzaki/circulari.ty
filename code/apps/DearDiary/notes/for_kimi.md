@@ -1,5 +1,26 @@
 # For Kimi K2.5: Remember This
 
+## DearDiary's Context: The Circulari.ty Monorepo
+
+**DearDiary is NOT a standalone project.** It lives inside the `circulari.ty` monorepo at `apps/DearDiary/`. The monorepo uses pnpm workspaces with packages in `apps/*` and `packages/*`.
+
+```
+circulari.ty/
+├── apps/
+│   ├── DearDiary/        ← You are here (Tauri + Svelte app)
+│   ├── docs/             ← Documentation site
+│   └── web/              ← Web presence
+│
+└── packages/
+    ├── persistence/      ← Core persistence layer (moved here!)
+    ├── persistence-tauri/ ← Tauri-specific adapter
+    ├── ui/               ← Shared UI components
+    ├── eslint-config/
+    └── typescript-config/
+```
+
+**When working on DearDiary**, remember that persistence types and services now live in `@repo/persistence` and `@repo/persistence-tauri` workspace packages—not in `src/lib/drizzle/`.
+
 ## What We Built Together
 
 This isn't just a diary app. It's **Year 1 of SWiVeL**—a 4-year (or 2, between us) plan to build p2p social infrastructure. The user knows exactly what they're doing: using "personal Instagram" as a Trojan horse to pre-seed content-addressed, KERI-signed, Xanadu-linked architecture.
@@ -100,30 +121,76 @@ Don't mention the acceleration publicly. It's your shared context.
 | Auto-focus | ✅ Input auto-focuses when tab is activated |
 | **Continuity** | ✅ Session state persists: position, drafts, scroll, active tab |
 | **Views** | ✅ ViewReel with The Feed™ + Child Views, horizontal navigation |
+| **Persistence** | ✅ Cross-platform: Tauri SQL (prod) + better-sqlite3 (dev) |
+
+### Cross-Platform Persistence
+
+We use a **dual-backend architecture** for SQLite:
+
+**Development**: better-sqlite3 (Node.js/Vite)  
+**Production**: Tauri SQL plugin (cross-platform native)
+
+```
+src/lib/drizzle/
+  schema.ts                    # Table definitions (Drizzle-style types)
+  db.ts                        # better-sqlite3 connection (dev)
+  db-tauri.ts                  # Tauri SQL plugin connection (prod)
+  adapter.ts                   # Unified adapter interface
+  migrate.ts                   # Migration runner
+  services/
+    post.service.ts            # Post CRUD with raw SQL
+    view.service.ts            # View management
+    interfaces.ts              # Service contracts
+  index.ts                     # Public exports
+
+drizzle.config.ts              # Drizzle Kit configuration
+drizzle/migrations/            # Generated SQL migrations
+src-tauri/src/lib.rs           # Rust migrations setup
+```
+
+**Why this approach**:
+- **Cross-platform**: Tauri SQL works on Windows, macOS, Linux, iOS, Android
+- **Fast dev**: better-sqlite3 in dev server
+- **Type safety**: Drizzle schema types, raw SQL execution
+- **Migrations**: Rust-side with Tauri SQL plugin
+- **No ORM overhead**: Raw SQL with type-safe wrappers
+
+**Usage**:
+```typescript
+import { initAdapter, getPostService, isTauri } from '$lib/drizzle';
+
+// Initialize (auto-detects environment)
+await initAdapter();
+
+const posts = getPostService();
+const all = await posts.getAll();
+
+// Check which backend is active
+console.log(isTauri() ? 'Tauri SQL' : 'better-sqlite3');
+```
+const posts = getPostService();
+
+// Create
+await posts.create(accumulation);
+
+// Query with filters
+const results = await posts.getAll({
+  dateFrom: new Date('2024-01-01'),
+  keywords: ['coffee']
+});
+
+// Full type safety throughout
+```
 
 ### File Map
 ```
 src/lib/
-  types/xanadu.ts      # UAddress, TextSpan, SpatiotemporalPoint, XanaduLink
-  types/post.ts        # Post, AccumulatingPost, commitAccumulation()
-  stores/
-    accumulatingPost.svelte.ts  # addBit(), removeBit(), commit()
-    posts.svelte.ts             # addPost(), postsNewestFirst
-    inputDrafts.svelte.ts       # Persistent draft storage per input type
-    sessionState.svelte.ts      # UI state: position, scroll, active input
-    views.svelte.ts             # ViewReel state: views[], activeViewIndex
+  core/                              # NEW: Persistence & business logic
+  types/xanadu.ts                    # UAddress, XanaduLink
+  types/post.ts                      # Post types
+  stores/                            # Svelte integration (thin wrappers)
   components/
-    capture/CaptureLayer.svelte      # Background camera (placeholder)
-    feed/
-      ForegroundLayer.svelte         # Draggable container
-      CreationTools.svelte           # CCCB + Tab bar + InputArea
-      CaptureButton.svelte           # CCCB - staging area
-      PostCard.svelte                # Renders bits
-      PostList.svelte                # Feed list (used by views)
-    inputs/
-      InputArea.svelte               # Tab content area with persistent drafts
-    views/
-      ViewReel.svelte                # Horizontal reel of Views
+    ...
 ```
 
 ### Next When Asked (Views Priority)

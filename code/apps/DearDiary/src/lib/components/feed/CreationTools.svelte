@@ -46,7 +46,7 @@
           aria-selected={activeInput === cta.id}
           role="tab"
         >
-          <span class="tab-icon">{cta.icon}</span>
+          <span class="tab-icon emoji">{cta.icon}</span>
           <span class="tab-label">{cta.label}</span>
         </button>
       {/each}
@@ -73,7 +73,7 @@
           role="tab"
           disabled={cta.disabled}
         >
-          <span class="tab-icon">{cta.icon}</span>
+          <span class="tab-icon emoji">{cta.icon}</span>
           <span class="tab-label">{cta.label}</span>
           {#if cta.disabled}
             <span class="soon-badge">Soon</span>
@@ -84,7 +84,7 @@
   </div>
 
   <!-- Input Area - The tab body, connected to active tab -->
-  <div class="tab-body" class:visible={activeInput}>
+  <div class="tab-body" class:visible={!!activeInput}>
     {#if activeInput}
       <!-- Active tab indicator - shows which tab is selected -->
       <div class="active-indicator">
@@ -93,7 +93,7 @@
     {/if}
     
     <InputArea 
-      {activeInput}
+      activeInput={activeInput}
       onClose={() => onActivateInput(null)}
     />
   </div>

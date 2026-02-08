@@ -1,17 +1,10 @@
 <script lang="ts">
   import CreationTools from './CreationTools.svelte';
   import ViewReel from '$lib/components/views/ViewReel.svelte';
-  import { loadMockPosts } from '$lib/stores/posts.svelte';
-  import { 
-    getForegroundPosition, 
-    setForegroundPosition,
-    getActiveInput,
-    setActiveInput
-  } from '$lib/stores/sessionState.svelte';
-  import type { InputType } from '$lib/components/inputs/InputArea.svelte';
-
-  // Initialize mock data for demo
-  loadMockPosts();
+  import ErrorBoundary from '../ErrorBoundary.svelte';
+  import { loadSessionState, foregroundPosition, saveForegroundPosition, saveActiveInput } from '$lib/stores/session.svelte';
+  import { loadViews } from '$lib/stores/views.svelte';
+  import type { InputType } from '@repo/persistence';
 
   // Configuration
   const PEEK_POSITION_VH = 15;
@@ -22,14 +15,26 @@
   const MIN_FEED_VISIBLE_VH = 15;
   
   // State - restored from session
-  let translateY = $state(getForegroundPosition());
+  let translateY = $state(foregroundPosition());
   let isDragging = $state(false);
   let startClientY = $state(0);
-  let startTranslateY = $state(getForegroundPosition());
+  let startTranslateY = $state(foregroundPosition());
   let windowHeight = $state(0);
-  let activeInput = $state<InputType>(getActiveInput());
+  let activeInput = $state<InputType>(null);
 
   let maxTranslateVh = $derived(100 - MIN_FEED_VISIBLE_VH);
+
+  // Load session state on mount (only once)
+  let mounted = $state(false);
+  $effect(() => {
+    if (!mounted) {
+      mounted = true;
+      loadSessionState().then(() => {
+        translateY = foregroundPosition();
+      }).catch(err => console.error('Failed to load session:', err));
+      loadViews().catch(err => console.error('Failed to load views:', err));
+    }
+  });
 
   // Persist position when it changes (debounced slightly)
   let positionTimeout: ReturnType<typeof setTimeout>;
@@ -37,14 +42,9 @@
     clearTimeout(positionTimeout);
     if (!isDragging) {
       positionTimeout = setTimeout(() => {
-        setForegroundPosition(translateY);
+        saveForegroundPosition(translateY);
       }, 100);
     }
-  });
-
-  // Persist active input
-  $effect(() => {
-    setActiveInput(activeInput);
   });
 
   function handleDragHandlePointerDown(e: PointerEvent) {
@@ -80,11 +80,12 @@
     }
     
     // Save final position
-    setForegroundPosition(translateY);
+    saveForegroundPosition(translateY);
   }
 
   function handleActivateInput(type: InputType) {
     activeInput = type;
+    saveActiveInput(type);
   }
 </script>
 
@@ -118,7 +119,9 @@
 
   <!-- View Reel - Contains The Feed™ and Child Views -->
   <div class="view-reel-container">
-    <ViewReel />
+    <ErrorBoundary>
+      <ViewReel />
+    </ErrorBoundary>
   </div>
 </div>
 

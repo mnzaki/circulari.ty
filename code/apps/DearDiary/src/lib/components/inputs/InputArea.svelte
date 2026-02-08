@@ -1,12 +1,7 @@
 <script lang="ts">
   import { tick } from 'svelte';
-  import { addBit } from '$lib/stores/accumulatingPost.svelte';
-  import { 
-    getTextDraft, setTextDraft, clearTextDraft,
-    getLinkDraft, setLinkDraft, clearLinkDraft,
-    getPersonDraft, setPersonDraft, clearPersonDraft
-  } from '$lib/stores/inputDrafts.svelte';
-  import type { LinkPreview } from '$lib/types/xanadu';
+  import { addBit, commit, clearAccumulation, getAccumulation, loadDrafts } from '$lib/stores/accumulatingPost.svelte';
+  import type { LinkPreview, AccumulableBit } from '@repo/persistence';
 
   export type InputType = 'text' | 'link' | 'person' | null;
 
@@ -17,27 +12,40 @@
 
   let { activeInput, onClose }: Props = $props();
 
-  // Local state bound to drafts
-  let textValue = $state(getTextDraft());
-  let linkValue = $state(getLinkDraft());
-  let selectedPerson = $state(getPersonDraft());
+  // Local state bound to drafts (synced with store)
+  let textValue = $state('');
+  let linkValue = $state('');
+  let selectedPerson = $state<{ did: string; displayName: string; avatarUri?: string } | null>(null);
 
-  // Refs for auto-focus
-  let textRef = $state<HTMLTextAreaElement>();
-  let linkRef = $state<HTMLInputElement>();
-
-  // Sync local state with drafts when active input changes
+  // Load drafts on mount
   $effect(() => {
-    textValue = getTextDraft();
+    loadDrafts().then(() => {
+      // Sync local state with loaded drafts
+      syncWithStore();
+    });
   });
 
+  // Sync local state when active input changes
   $effect(() => {
-    linkValue = getLinkDraft();
+    syncWithStore();
   });
 
-  $effect(() => {
-    selectedPerson = getPersonDraft();
-  });
+  function syncWithStore() {
+    const acc = getAccumulation();
+    
+    // Find existing drafts in accumulation
+    const textBit = acc.bits.find((b: AccumulableBit) => b.type === 'text');
+    const linkBit = acc.bits.find((b: AccumulableBit) => b.type === 'link');
+    const personBit = acc.bits.find((b: AccumulableBit) => b.type === 'person');
+    
+    textValue = textBit?.type === 'text' ? textBit.content : '';
+    linkValue = linkBit?.type === 'link' ? linkBit.url : '';
+    selectedPerson = personBit?.type === 'person' ? {
+      did: personBit.did,
+      displayName: personBit.displayName,
+      avatarUri: personBit.avatarUri
+    } : null;
+  }
 
   // Auto-focus when activeInput changes
   $effect(() => {
@@ -56,18 +64,20 @@
     }
   });
 
-  // Update drafts on input
+  // Refs for auto-focus
+  let textRef = $state<HTMLTextAreaElement>();
+  let linkRef = $state<HTMLInputElement>();
+
+  // Update local state on input (don't add bit yet)
   function handleTextInput(e: Event) {
     const target = e.target as HTMLTextAreaElement;
     textValue = target.value;
-    setTextDraft(textValue);
     autoResize();
   }
 
   function handleLinkInput(e: Event) {
     const target = e.target as HTMLInputElement;
     linkValue = target.value;
-    setLinkDraft(linkValue);
   }
 
   // Auto-resize textarea
@@ -76,6 +86,12 @@
     textRef.style.height = 'auto';
     textRef.style.height = Math.min(textRef.scrollHeight, 150) + 'px';
   }
+
+  $effect(() => {
+    if (textRef && textValue) {
+      autoResize();
+    }
+  });
 
   // Computed: can we add current input?
   let canAdd = $derived(() => {
@@ -96,43 +112,29 @@
     }
   }
 
-  function handleAdd() {
+  async function handleAdd() {
     switch (activeInput) {
       case 'text':
         if (textValue.trim()) {
-          addBit({ type: 'text', content: textValue.trim() });
-          clearTextDraft();
+          await addBit({ type: 'text', content: textValue });
           textValue = '';
+          onClose();
         }
         break;
       case 'link':
         if (linkValue.trim() && isValidUrl(linkValue)) {
-          addBit({ 
-            type: 'link', 
-            url: linkValue.trim(),
-            preview: {
-              title: 'Link Preview',
-              siteName: new URL(linkValue.trim()).hostname
-            }
-          });
-          clearLinkDraft();
+          await addBit({ type: 'link', url: linkValue, preview: { title: 'Link Preview' } });
           linkValue = '';
+          onClose();
         }
         break;
       case 'person':
         if (selectedPerson) {
-          addBit({ 
-            type: 'person', 
-            did: selectedPerson.did,
-            displayName: selectedPerson.displayName,
-            avatarUri: selectedPerson.avatarUri
-          });
-          clearPersonDraft();
-          selectedPerson = null;
+          // Person already added via selectPerson, just close
+          onClose();
         }
         break;
     }
-    onClose();
   }
 
   // Person selection
@@ -142,9 +144,13 @@
     { did: 'did:keri:carol', displayName: 'Carol' },
   ];
 
-  function selectPerson(person: typeof mockPeople[0]) {
+  async function selectPerson(person: typeof mockPeople[0]) {
     selectedPerson = person;
-    setPersonDraft(person);
+    await addBit({ 
+      type: 'person', 
+      did: person.did,
+      displayName: person.displayName
+    });
   }
 </script>
 
@@ -177,7 +183,7 @@
         <div class="selected-person">
           <span class="avatar">{selectedPerson.displayName[0]}</span>
           <span class="name">{selectedPerson.displayName}</span>
-          <button class="clear-btn" onclick={() => { selectedPerson = null; setPersonDraft(null); }}>×</button>
+          <button class="clear-btn" onclick={() => { selectedPerson = null; }}>×</button>
         </div>
       {:else}
         <div class="people-list">

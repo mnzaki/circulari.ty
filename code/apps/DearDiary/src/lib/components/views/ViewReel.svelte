@@ -1,30 +1,38 @@
 <script lang="ts">
   import { 
     getViews, 
-    getCurrentView,
-    getActiveViewIndex,
+    currentView,
+    activeViewIndex,
     canGoLeft, 
     canGoRight,
     goLeft, 
     goRight,
     activateView,
     createView,
-    closeView,
-    getPostsForView
+    closeView
   } from '$lib/stores/views.svelte';
+  import { posts, loadPosts } from '$lib/stores/posts.svelte';
   import PostList from '$lib/components/feed/PostList.svelte';
   
   // Local state for new view configuration
   let showNewViewPanel = $state(false);
   let searchQuery = $state('');
   
-  // Get reactive values from stores
+  // Get reactive values from stores (using getter functions)
   let views = $derived(getViews());
-  let currentView = $derived(getCurrentView());
-  let activeViewIndex = $derived(getActiveViewIndex());
+  let activeIndex = $derived(activeViewIndex());
+  
+  // Load posts on mount (only once)
+  let mounted = $state(false);
+  $effect(() => {
+    if (!mounted) {
+      mounted = true;
+      loadPosts().catch(err => console.error('Failed to load posts:', err));
+    }
+  });
   
   // Get posts for current view
-  let currentPosts = $derived(getPostsForView(currentView));
+  let currentPosts = $derived(posts());
   
   // Handle creating a new view from search
   function handleCreateSearchView() {
@@ -38,7 +46,7 @@
     showNewViewPanel = false;
     
     // Navigate to the new view (last one)
-    activateView(getViews().length - 1);
+    activateView(views.length - 1);
   }
   
   // Handle swipe gesture
@@ -76,10 +84,10 @@
   <!-- Views Container - Transforms to show active view -->
   <div 
     class="views-container"
-    style="transform: translateX(-{activeViewIndex * 100}%)"
+    style="transform: translateX(-{activeIndex * 100}%)"
   >
     {#each views as view, i (view.id)}
-      <div class="view" class:active={i === activeViewIndex}>
+      <div class="view" class:active={i === activeIndex}>
         <!-- View Header -->
         <div class="view-header">
           <div class="view-label">
@@ -111,7 +119,15 @@
         
         <!-- View Content -->
         <div class="view-content">
-          <PostList posts={i === activeViewIndex ? currentPosts : []} />
+          {#key i}
+            {#if i === activeIndex}
+              <PostList posts={currentPosts} />
+            {:else}
+              <div class="view-inactive">
+                <span>Inactive view</span>
+              </div>
+            {/if}
+          {/key}
         </div>
       </div>
     {/each}
@@ -122,7 +138,7 @@
     {#each views as _, i}
       <button 
         class="dot"
-        class:active={i === activeViewIndex}
+        class:active={i === activeIndex}
         onclick={() => activateView(i)}
         aria-label="Go to view {i + 1}"
       ></button>
@@ -423,5 +439,14 @@
   .btn-primary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  .view-inactive {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #888;
+    font-size: 0.9rem;
   }
 </style>

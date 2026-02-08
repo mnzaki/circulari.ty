@@ -1,6 +1,6 @@
 <script lang="ts">
-  import PostCard from './PostCard.svelte';
-  import type { Post } from '$lib/types/post';
+  import SafePostCard from './SafePostCard.svelte';
+  import type { Post } from '@repo/persistence';
 
   interface Props {
     posts: Post[];
@@ -10,8 +10,16 @@
 </script>
 
 <div class="post-list">
-  {#each posts as post (post.id)}
-    <PostCard {post} />
+  {#each posts as post, i (post.id)}
+    {#key post.id}
+      {#if post && post.id && post.createdAt && !isNaN(post.createdAt.getTime())}
+        <SafePostCard {post} />
+      {:else}
+        <div class="post-error">
+          <span>⚠️ Invalid post data (index {i})</span>
+        </div>
+      {/if}
+    {/key}
   {:else}
     <div class="empty-state">
       <span class="empty-emoji">🌱</span>
@@ -25,6 +33,16 @@
   .post-list {
     padding: 16px;
     padding-bottom: 32px;
+  }
+
+  .post-error {
+    padding: 16px;
+    background: rgba(255, 200, 200, 0.5);
+    border: 1px solid rgba(255, 100, 100, 0.3);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    color: #c33;
+    font-size: 0.9rem;
   }
 
   .empty-state {

@@ -1,23 +1,34 @@
 <script lang="ts">
   import { 
-    getAccumulation, 
-    hasAccumulation, 
-    getBitCount,
-    commit
+    getAccumulation,
+    isAccumulating,
+    bitCount,
+    commit,
+    loadDrafts
   } from '$lib/stores/accumulatingPost.svelte';
-  import { addPost } from '$lib/stores/posts.svelte';
+  import { loadPosts } from '$lib/stores/posts.svelte';
 
-  // Visual state
-  let isAccumulating = $derived(hasAccumulation());
-  let bitCount = $derived(getBitCount());
-  let accumulation = $derived(getAccumulation());
+  // Visual state from store
+  let isAccumulatingValue = $derived(isAccumulating());
+  let bitCountValue = $derived(bitCount());
+  let accumulationValue = $derived(getAccumulation());
 
-  function handleClick() {
-    if (isAccumulating) {
+  // Load drafts on mount (only once)
+  let mounted = $state(false);
+  $effect(() => {
+    if (!mounted) {
+      mounted = true;
+      loadDrafts().catch(err => console.error('Failed to load drafts:', err));
+    }
+  });
+
+  async function handleClick() {
+    if (isAccumulatingValue) {
       // Commit the accumulation
-      const post = commit();
+      const post = await commit();
       if (post) {
-        addPost(post);
+        // Reload posts to show new one
+        await loadPosts();
       }
     }
   }
@@ -47,30 +58,30 @@
 
 <button 
   class="capture-button"
-  class:accumulating={isAccumulating}
-  class:ready={isAccumulating && bitCount > 0}
+  class:accumulating={isAccumulatingValue}
+  class:ready={isAccumulatingValue && bitCountValue > 0}
   onclick={handleClick}
   onpointerdown={onPointerDown}
   onpointerup={onPointerUp}
   onpointerleave={onPointerLeave}
-  aria-label={isAccumulating ? 'Commit post' : 'Staging area'}
-  disabled={!isAccumulating}
+  aria-label={isAccumulatingValue ? 'Commit post' : 'Staging area'}
+  disabled={!isAccumulatingValue}
 >
-  <div class="outer-ring" class:has-content={isAccumulating}>
+  <div class="outer-ring" class:has-content={isAccumulatingValue}>
     <div class="inner-circle">
-      {#if isAccumulating}
-        <span class="bit-count">{bitCount}</span>
+      {#if isAccumulatingValue}
+        <span class="bit-count">{bitCountValue}</span>
         <span class="commit-hint">Tap to post</span>
       {:else}
-        <span class="placeholder-icon">✦</span>
+        <span class="placeholder-icon emoji">✦</span>
       {/if}
     </div>
   </div>
   
   <!-- Staged bits preview - arranged around the CCCB -->
-  {#if isAccumulating}
+  {#if isAccumulatingValue}
     <div class="staged-bits">
-      {#each accumulation.bits.slice(0, 4) as bit, i}
+      {#each accumulationValue.bits.slice(0, 4) as bit, i}
         <div class="staged-bit staged-bit--{i}" title={bit.type}>
           {#if bit.type === 'text'}
             <span class="bit-preview text-preview">"{bit.content.slice(0, 15)}..."</span>
@@ -85,8 +96,8 @@
           {/if}
         </div>
       {/each}
-      {#if accumulation.bits.length > 4}
-        <div class="more-bits">+{accumulation.bits.length - 4}</div>
+      {#if accumulationValue.bits.length > 4}
+        <div class="more-bits">+{accumulationValue.bits.length - 4}</div>
       {/if}
     </div>
   {/if}

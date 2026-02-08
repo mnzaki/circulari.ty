@@ -1,6 +1,5 @@
 <script lang="ts">
-  import type { Post } from '$lib/types/post';
-  import type { AccumulableBit } from '$lib/types/xanadu';
+  import type { Post, AccumulableBit } from '@repo/persistence';
 
   interface Props {
     post: Post;
@@ -8,13 +7,31 @@
 
   let { post }: Props = $props();
 
+  // Validate post data
+  function isValidPost(p: Post): boolean {
+    return !!p && 
+           typeof p.id === 'string' && 
+           Array.isArray(p.bits) && 
+           p.createdAt instanceof Date && 
+           !isNaN(p.createdAt.getTime());
+  }
+
   function formatDate(date: Date): string {
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
+    try {
+      // Validate date before formatting
+      if (!date || isNaN(date.getTime())) {
+        return 'Invalid date';
+      }
+      return new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(date);
+    } catch (e) {
+      console.error('Date formatting error:', e);
+      return 'Invalid date';
+    }
   }
 
   function renderBitPreview(bit: AccumulableBit): string {
@@ -35,6 +52,7 @@
   }
 </script>
 
+{#if isValidPost(post)}
 <article class="post-card" data-post-id={post.id}>
   <div class="post-header">
     <span class="post-date">{formatDate(post.createdAt)}</span>
@@ -58,7 +76,7 @@
               {#if bit.preview?.description}
                 <span class="link-desc">{bit.preview.description.slice(0, 80)}...</span>
               {/if}
-              <span class="link-url">{new URL(bit.url).hostname}</span>
+              <span class="link-url">{(() => { try { return new URL(bit.url).hostname; } catch { return bit.url || 'Invalid URL'; } })()}</span>
             </div>
           </div>
         {:else if bit.type === 'media'}
@@ -83,6 +101,11 @@
     {/each}
   </div>
 </article>
+{:else}
+  <div class="post-card post-card--invalid">
+    <span>⚠️ Invalid post data</span>
+  </div>
+{/if}
 
 <style>
   .post-card {
@@ -91,6 +114,12 @@
     padding: 16px;
     margin-bottom: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .post-card--invalid {
+    background: rgba(255, 200, 200, 0.5);
+    border: 1px solid rgba(255, 100, 100, 0.3);
+    color: #c33;
   }
 
   .post-header {

@@ -10,7 +10,7 @@
  * Philosophy: The app remembers where you last were, as you would.
  */
 
-import type { InputType } from '$lib/components/inputs/InputArea.svelte';
+import type { InputType } from '@repo/persistence';
 
 const STORAGE_KEY = 'deardiary_session_state';
 

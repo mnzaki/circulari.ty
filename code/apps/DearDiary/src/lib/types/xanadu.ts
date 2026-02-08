@@ -58,3 +58,6 @@ export interface LinkPreview {
   imageUri?: string;
   siteName?: string;
 }
+
+// Active input type in creation tools
+export type InputType = 'text' | 'link' | 'person' | null;

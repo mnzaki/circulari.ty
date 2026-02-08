@@ -8,9 +8,6 @@ importers:
 
   .:
     devDependencies:
-      concurrently:
-        specifier: ^9.2.1
-        version: 9.2.1
       prettier:
         specifier: ^3.7.4
         version: 3.7.4

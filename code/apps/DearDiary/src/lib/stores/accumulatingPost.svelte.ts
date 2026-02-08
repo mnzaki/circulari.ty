@@ -1,97 +1,149 @@
-import { createEmptyAccumulation, commitAccumulation } from '$lib/types/post';
-import type { AccumulatingPost, Post } from '$lib/types/post';
-import type { AccumulableBit, XanaduLink } from '$lib/types/xanadu';
-
 /**
- * The Accumulating Post Store
+ * Accumulating Post Store (Database-Backed)
  * 
- * Manages the ephemeral composition that lives in the CCCB.
- * This is the staging area where bits gather before commitment.
+ * Manages the staging area for post creation.
+ * Drafts are persisted to database for continuity.
  */
 
-// Reactive state using Svelte 5 runes
-let accumulation = $state<AccumulatingPost>(createEmptyAccumulation());
-let isAccumulating = $derived(accumulation.bits.length > 0);
+import { addPost, loadPosts } from './posts.svelte';
+import type { AccumulableBit, AccumulatingPost, Post, ISessionService } from '@repo/persistence';
 
-// Read-only access
+// Reactive state
+let accumulationState = $state<AccumulatingPost>({
+  bits: [],
+  draftLinks: []
+});
+
+// Service reference
+let service: ISessionService | null = null;
+
+// Derived state
+export const isAccumulating = () => accumulationState.bits.length > 0;
+export const bitCount = () => accumulationState.bits.length;
+
 export function getAccumulation(): AccumulatingPost {
-  return accumulation;
+  return accumulationState;
 }
 
-export function hasAccumulation(): boolean {
-  return isAccumulating;
+/**
+ * Set the session service (called during app initialization)
+ */
+export function setSessionService(svc: ISessionService): void {
+  service = svc;
 }
 
-export function getBitCount(): number {
-  return accumulation.bits.length;
+/**
+ * Load drafts from database on init
+ */
+export async function loadDrafts(): Promise<void> {
+  if (!service) return;
+  
+  const textDraft = await service.getTextDraft();
+  const linkDraft = await service.getLinkDraft();
+  const personDraft = await service.getPersonDraft();
+  
+  const bits: AccumulableBit[] = [];
+  
+  if (textDraft) {
+    bits.push({ type: 'text', content: textDraft });
+  }
+  if (linkDraft) {
+    bits.push({ type: 'link', url: linkDraft, preview: { title: 'Draft Link' } });
+  }
+  if (personDraft) {
+    bits.push({ 
+      type: 'person', 
+      did: personDraft.did, 
+      displayName: personDraft.displayName,
+      avatarUri: personDraft.avatarUri 
+    });
+  }
+  
+  accumulationState = { bits, draftLinks: [] };
 }
-
-// Actions
 
 /**
  * Add a bit to the accumulation
  */
-export function addBit(bit: AccumulableBit): void {
-  accumulation.bits = [...accumulation.bits, bit];
+export async function addBit(bit: AccumulableBit): Promise<void> {
+  accumulationState.bits = [...accumulationState.bits, bit];
+  
+  if (!service) return;
+  
+  switch (bit.type) {
+    case 'text':
+      await service.setTextDraft(bit.content);
+      break;
+    case 'link':
+      await service.setLinkDraft(bit.url);
+      break;
+    case 'person':
+      await service.setPersonDraft({
+        did: bit.did,
+        displayName: bit.displayName,
+        avatarUri: bit.avatarUri
+      });
+      break;
+  }
 }
 
 /**
  * Remove a bit by index
  */
-export function removeBit(index: number): void {
-  accumulation.bits = accumulation.bits.filter((_, i) => i !== index);
+export async function removeBit(index: number): Promise<void> {
+  const removed = accumulationState.bits[index];
+  accumulationState.bits = accumulationState.bits.filter((_, i) => i !== index);
+  
+  if (!removed || !service) return;
+  
+  switch (removed.type) {
+    case 'text':
+      await service.setTextDraft('');
+      break;
+    case 'link':
+      await service.setLinkDraft('');
+      break;
+    case 'person':
+      await service.setPersonDraft(null);
+      break;
+  }
 }
 
 /**
- * Reorder bits (for future drag-to-reorder UI)
+ * Reorder bits
  */
 export function reorderBits(fromIndex: number, toIndex: number): void {
-  const bits = [...accumulation.bits];
+  const bits = [...accumulationState.bits];
   const [moved] = bits.splice(fromIndex, 1);
   bits.splice(toIndex, 0, moved);
-  accumulation.bits = bits;
+  accumulationState.bits = bits;
 }
 
 /**
- * Add a draft link
+ * Clear the accumulation
  */
-export function addDraftLink(link: Omit<XanaduLink, 'id' | 'createdAt'>): void {
-  accumulation.draftLinks = [...accumulation.draftLinks, link];
-}
-
-/**
- * Clear the accumulation (discard)
- */
-export function clearAccumulation(): void {
-  accumulation = createEmptyAccumulation();
+export async function clearAccumulation(): Promise<void> {
+  accumulationState = { bits: [], draftLinks: [] };
+  if (service) {
+    await service.clearAllDrafts();
+  }
 }
 
 /**
  * Commit the accumulation to a Post
- * This transforms the staging area into a permanent feed item
  */
-export function commit(): Post | null {
-  if (accumulation.bits.length === 0) return null;
+export async function commit(): Promise<Post | null> {
+  if (accumulationState.bits.length === 0) return null;
   
-  const id = generatePostId();
-  const post = commitAccumulation(accumulation, id);
-  
-  // Clear the staging area
-  clearAccumulation();
-  
+  const post = await addPost(accumulationState);
+  await clearAccumulation();
   return post;
 }
 
-// ID generation (future: content hash)
-function generatePostId(): string {
-  return `post-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-}
-
-// Debug helper
+// Debug
 export function debugAccumulation(): void {
   console.log('Accumulating:', {
-    bitCount: accumulation.bits.length,
-    bits: accumulation.bits.map(b => b.type),
-    draftLinks: accumulation.draftLinks.length
+    bitCount: accumulationState.bits.length,
+    bits: accumulationState.bits.map(b => b.type)
   });
 }
