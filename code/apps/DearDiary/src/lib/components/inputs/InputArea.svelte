@@ -1,6 +1,6 @@
 <script lang="ts">
   import { tick } from 'svelte';
-  import { addBit, commit, clearAccumulation, getAccumulation, loadDrafts } from '$lib/stores/accumulatingPost.svelte';
+  import { addBit, commit, clearAccumulation, getAccumulation } from '$lib/stores/accumulatingPost.svelte';
   import type { LinkPreview, AccumulableBit } from '@repo/persistence';
 
   export type InputType = 'text' | 'link' | 'person' | null;
@@ -17,35 +17,8 @@
   let linkValue = $state('');
   let selectedPerson = $state<{ did: string; displayName: string; avatarUri?: string } | null>(null);
 
-  // Load drafts on mount
-  $effect(() => {
-    loadDrafts().then(() => {
-      // Sync local state with loaded drafts
-      syncWithStore();
-    });
-  });
-
-  // Sync local state when active input changes
-  $effect(() => {
-    syncWithStore();
-  });
-
-  function syncWithStore() {
-    const acc = getAccumulation();
-    
-    // Find existing drafts in accumulation
-    const textBit = acc.bits.find((b: AccumulableBit) => b.type === 'text');
-    const linkBit = acc.bits.find((b: AccumulableBit) => b.type === 'link');
-    const personBit = acc.bits.find((b: AccumulableBit) => b.type === 'person');
-    
-    textValue = textBit?.type === 'text' ? textBit.content : '';
-    linkValue = linkBit?.type === 'link' ? linkBit.url : '';
-    selectedPerson = personBit?.type === 'person' ? {
-      did: personBit.did,
-      displayName: personBit.displayName,
-      avatarUri: personBit.avatarUri
-    } : null;
-  }
+  // Local draft state - independent from accumulation until explicitly added
+  // No automatic sync from store - we don't want added bits to reappear as drafts
 
   // Auto-focus when activeInput changes
   $effect(() => {
@@ -131,6 +104,7 @@
       case 'person':
         if (selectedPerson) {
           // Person already added via selectPerson, just close
+          selectedPerson = null;
           onClose();
         }
         break;
