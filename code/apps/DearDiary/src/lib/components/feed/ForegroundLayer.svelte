@@ -1,35 +1,40 @@
 <script lang="ts">
-  import CaptureButton from './CaptureButton.svelte';
+  import CreationTools from './CreationTools.svelte';
   import PostList from './PostList.svelte';
-  import { postsNewestFirst } from '$lib/stores/posts.svelte';
+  import { getPostsNewestFirst, loadMockPosts } from '$lib/stores/posts.svelte';
+  import type { InputType } from '$lib/components/inputs/InputArea.svelte';
 
-  // Configuration - all in vh units for consistency
-  const PEEK_POSITION_VH = 15; // vh - peek position showing capture
-  const FULL_POSITION_VH = 0;  // vh - full feed at top
-  const TOP_SNAP_VH = 15;      // vh - snap to full if dragged above this
-  const BOTTOM_SNAP_VH = 85;   // vh - snap to peek if dragged below this
+  // Initialize mock data for demo
+  loadMockPosts();
+
+  // Configuration
+  const PEEK_POSITION_VH = 15;
+  const FULL_POSITION_VH = 0;
+  const TOP_SNAP_VH = 15;
+  const BOTTOM_SNAP_VH = 85;
   const DRAG_RESISTANCE = 0.85;
-  const MIN_FEED_VISIBLE_VH = 15; // Minimum feed that must stay visible
+  const MIN_FEED_VISIBLE_VH = 15;
   
   // State
-  let translateY = $state(PEEK_POSITION_VH); // Current position in vh
+  let translateY = $state(PEEK_POSITION_VH);
   let isDragging = $state(false);
   let startClientY = $state(0);
   let startTranslateY = $state(PEEK_POSITION_VH);
-  let scrollContainer: HTMLElement;
+  let feedScrollContainer: HTMLElement;
   let windowHeight = $state(0);
+  let activeInput = $state<InputType>(null);
 
-  // Max position (don't let feed slide off bottom)
   let maxTranslateVh = $derived(100 - MIN_FEED_VISIBLE_VH);
+  let posts = $derived(getPostsNewestFirst());
 
-  function handlePointerDown(e: PointerEvent) {
+  function handleDragHandlePointerDown(e: PointerEvent) {
+    // Don't drag if clicking interactive elements
     const target = e.target as HTMLElement;
-    const isHandle = target.closest('.drag-handle');
-    const scrollTop = scrollContainer?.scrollTop ?? 0;
+    if (target.closest('button') || target.closest('input') || target.closest('textarea')) return;
     
-    // Allow drag if clicking handle, or if near top with no scroll
-    if (!isHandle && scrollTop > 5) return;
-    if (!isHandle && translateY < 5) return;
+    // Don't drag if feed is scrolled and we're not at the top
+    const scrollTop = feedScrollContainer?.scrollTop ?? 0;
+    if (translateY < 5 && scrollTop > 0) return;
     
     isDragging = true;
     startClientY = e.clientY;
@@ -43,13 +48,8 @@
     
     const deltaY = e.clientY - startClientY;
     const deltaVh = (deltaY / windowHeight) * 100;
-    
-    // Apply resistance for natural feel
     let newTranslateY = startTranslateY + deltaVh * DRAG_RESISTANCE;
-    
-    // Clamp to valid range
     newTranslateY = Math.max(FULL_POSITION_VH, Math.min(newTranslateY, maxTranslateVh));
-    
     translateY = newTranslateY;
   }
 
@@ -57,50 +57,57 @@
     if (!isDragging) return;
     isDragging = false;
     
-    // Snap logic using vh units directly
     if (translateY < TOP_SNAP_VH) {
-      // In top zone - snap to full
       translateY = FULL_POSITION_VH;
     } else if (translateY > BOTTOM_SNAP_VH) {
-      // In bottom zone - snap to peek
       translateY = PEEK_POSITION_VH;
     }
-    // Otherwise: stay at current position (free placement)
+  }
+
+  function handleActivateInput(type: InputType) {
+    activeInput = type;
   }
 </script>
 
 <svelte:window bind:innerHeight={windowHeight} />
 
 <div 
-  class="feed-layer"
+  class="foreground-layer"
   class:dragging={isDragging}
   style="transform: translateY({translateY}vh)"
 >
-  <!-- Drag Handle Area with Capture Button -->
+  <!-- Creation Tools - Draggable area containing CCCB, tabs, and inline input -->
   <div 
-    class="drag-handle"
-    onpointerdown={handlePointerDown}
+    class="creation-tools"
+    onpointerdown={handleDragHandlePointerDown}
     onpointermove={handlePointerMove}
     onpointerup={handlePointerUp}
     onpointercancel={handlePointerUp}
   >
+    <!-- Drag Indicator -->
     <div class="drag-indicator"></div>
-    <div class="capture-button-container">
-      <CaptureButton />
-    </div>
+    
+    <!-- Creation Tools: CCCB + Tab Bar + Inline Input -->
+    <CreationTools 
+      {activeInput}
+      onActivateInput={handleActivateInput}
+    />
+    
+    <!-- Divider -->
+    <div class="tools-feed-divider"></div>
   </div>
 
-  <!-- Scrollable Feed Content -->
+  <!-- Feed Area - Independently Scrollable -->
   <div 
-    class="feed-scroll-area"
-    bind:this={scrollContainer}
+    class="feed-container"
+    bind:this={feedScrollContainer}
   >
-    <PostList posts={postsNewestFirst} />
+    <PostList {posts} />
   </div>
 </div>
 
 <style>
-  .feed-layer {
+  .foreground-layer {
     position: fixed;
     top: 0;
     left: 0;
@@ -113,31 +120,26 @@
     display: flex;
     flex-direction: column;
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    /* Start at peek position */
     transform: translateY(15vh);
     will-change: transform;
   }
 
-  .feed-layer.dragging {
+  .foreground-layer.dragging {
     transition: none;
   }
 
-  .drag-handle {
+  /* Creation Tools - The draggable handle containing everything */
+  .creation-tools {
     flex-shrink: 0;
-    height: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding-top: 12px;
-    cursor: grab;
+    background: linear-gradient(180deg, #ffffff 0%, #f8f8f8 100%);
+    border-radius: 24px 24px 0 0;
     touch-action: none;
     user-select: none;
-    position: relative;
-  }
-
-  .drag-handle:active {
-    cursor: grabbing;
+    padding-top: 12px;
+    padding-bottom: 8px;
   }
 
   .drag-indicator {
@@ -145,24 +147,29 @@
     height: 4px;
     background: #ddd;
     border-radius: 2px;
-    margin-bottom: 8px;
+    margin-bottom: 20px;
+    flex-shrink: 0;
   }
 
-  .capture-button-container {
-    position: absolute;
-    top: 28px;
+  .tools-feed-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 10%, rgba(0,0,0,0.08) 50%, transparent 90%);
+    margin-top: 8px;
   }
 
-  .feed-scroll-area {
+  /* Feed Container - Independently scrollable */
+  .feed-container {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    touch-action: pan-y;
   }
 
-  .feed-scroll-area::-webkit-scrollbar {
+  .feed-container::-webkit-scrollbar {
     display: none;
   }
 </style>

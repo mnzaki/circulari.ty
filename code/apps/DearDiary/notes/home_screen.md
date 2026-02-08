@@ -35,7 +35,7 @@ contents downward, a new post sliding from staging into the accumulated Feed.
 ---
 
 ## Overview
-Two-layer architecture with a background Capture interface and a foreground Feed interface. The foreground layer is draggable to reveal the background capture interface.
+Two-layer architecture with a background Capture interface and a Foreground interface. The Foreground contains both the Creation Tools (CCCB + CTAs) and the Feed, and is draggable to reveal the background Capture interface.
 
 ## Component Hierarchy
 
@@ -98,10 +98,10 @@ interface Post {
 
 ## Key Interactions
 
-1. **Drag to Reveal Capture**: Touch-drag feed layer down to see more camera preview
-2. **Tap Capture Button**: Opens capture/create flow (photo or text post)
-3. **Scroll Feed**: When feed layer is in 'full' position, normal scroll behavior
-4. **Snap Animation**: Smooth spring animation between position states
+1. **Drag to Reveal Capture**: Touch-drag the Foreground layer down to see more camera preview
+2. **Tap CCCB**: Commits staged bits into a new post
+3. **Scroll Feed**: The Feed area scrolls independently when the Foreground is in full view
+4. **Snap Animation**: Smooth animation between position states (peek/full)
 
 ## File Structure
 
@@ -115,7 +115,8 @@ src/
 │   │   │   ├── CaptureLayer.svelte
 │   │   │   └── CameraPreview.svelte
 │   │   └── feed/
-│   │       ├── FeedLayer.svelte
+│   │       ├── ForegroundLayer.svelte
+│   │       ├── CaptureControls.svelte
 │   │       ├── CaptureButton.svelte
 │   │       ├── PostList.svelte
 │   │       └── PostCard.svelte

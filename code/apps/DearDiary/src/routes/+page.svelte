@@ -1,14 +1,14 @@
 <script lang="ts">
   import CaptureLayer from '$lib/components/capture/CaptureLayer.svelte';
-  import FeedLayer from '$lib/components/feed/FeedLayer.svelte';
+  import ForegroundLayer from '$lib/components/feed/ForegroundLayer.svelte';
 </script>
 
 <div class="home-page">
-  <!-- Background: Capture Interface -->
+  <!-- Background: Camera Capture Interface -->
   <CaptureLayer />
   
-  <!-- Foreground: Feed Interface -->
-  <FeedLayer />
+  <!-- Foreground: Creation Tools + Feed -->
+  <ForegroundLayer />
 </div>
 
 <style>

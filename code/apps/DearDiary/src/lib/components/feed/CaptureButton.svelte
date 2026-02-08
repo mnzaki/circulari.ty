@@ -3,11 +3,9 @@
     getAccumulation, 
     hasAccumulation, 
     getBitCount,
-    commit,
-    addBit 
+    commit
   } from '$lib/stores/accumulatingPost.svelte';
   import { addPost } from '$lib/stores/posts.svelte';
-  import type { AccumulableBit } from '$lib/types/xanadu';
 
   // Visual state
   let isAccumulating = $derived(hasAccumulation());
@@ -21,23 +19,16 @@
       if (post) {
         addPost(post);
       }
-    } else {
-      // Start accumulation with a text bit (placeholder)
-      // In real UI, this would open the appropriate input
-      addBit({
-        type: 'text',
-        content: 'New thought...'
-      });
     }
   }
 
   function handleLongPress() {
-    // Future: capture photo/video
-    console.log('Long press - capture media');
+    // TODO: Quick photo capture
+    console.log('Long press - quick capture');
   }
 
   let pressTimer: ReturnType<typeof setTimeout>;
-  const LONG_PRESS_DURATION = 500;
+  const LONG_PRESS_DURATION = 600;
 
   function onPointerDown() {
     pressTimer = setTimeout(() => {
@@ -57,35 +48,46 @@
 <button 
   class="capture-button"
   class:accumulating={isAccumulating}
+  class:ready={isAccumulating && bitCount > 0}
   onclick={handleClick}
   onpointerdown={onPointerDown}
   onpointerup={onPointerUp}
   onpointerleave={onPointerLeave}
-  aria-label={isAccumulating ? 'Commit post' : 'Start capture'}
+  aria-label={isAccumulating ? 'Commit post' : 'Staging area'}
+  disabled={!isAccumulating}
 >
   <div class="outer-ring" class:has-content={isAccumulating}>
     <div class="inner-circle">
       {#if isAccumulating}
-        <span class="bit-indicator">{bitCount}</span>
+        <span class="bit-count">{bitCount}</span>
+        <span class="commit-hint">Tap to post</span>
       {:else}
-        <span class="capture-icon">+</span>
+        <span class="placeholder-icon">✦</span>
       {/if}
     </div>
   </div>
   
-  <!-- Accumulation preview (tiny bits orbiting or stacked) -->
+  <!-- Staged bits preview - arranged around the CCCB -->
   {#if isAccumulating}
-    <div class="accumulation-preview">
-      {#each accumulation.bits.slice(0, 3) as bit, i}
-        <div class="mini-bit mini-bit--{i}">
-          {#if bit.type === 'text'}📝
-          {:else if bit.type === 'link'}🔗
-          {:else if bit.type === 'media'}📷
-          {:else if bit.type === 'person'}👤
-          {:else if bit.type === 'spatiotemporal'}🎬
+    <div class="staged-bits">
+      {#each accumulation.bits.slice(0, 4) as bit, i}
+        <div class="staged-bit staged-bit--{i}" title={bit.type}>
+          {#if bit.type === 'text'}
+            <span class="bit-preview text-preview">"{bit.content.slice(0, 15)}..."</span>
+          {:else if bit.type === 'link'}
+            <span class="bit-preview link-preview">🔗 {bit.preview?.title || bit.url.slice(0, 20)}</span>
+          {:else if bit.type === 'media'}
+            <div class="media-thumb">📷</div>
+          {:else if bit.type === 'person'}
+            <span class="person-chip">@{bit.displayName}</span>
+          {:else if bit.type === 'spatiotemporal'}
+            <span class="clip-badge">🎬</span>
           {/if}
         </div>
       {/each}
+      {#if accumulation.bits.length > 4}
+        <div class="more-bits">+{accumulation.bits.length - 4}</div>
+      {/if}
     </div>
   {/if}
 </button>
@@ -96,106 +98,165 @@
     border: none;
     padding: 0;
     cursor: pointer;
-    transition: transform 0.15s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    z-index: 2;
   }
 
-  .capture-button:active {
+  .capture-button:disabled {
+    cursor: default;
+  }
+
+  .capture-button:not(:disabled):active {
     transform: scale(0.95);
   }
 
+  .capture-button.ready {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.1); }
+  }
+
   .outer-ring {
-    width: 64px;
-    height: 64px;
+    width: 88px;
+    height: 88px;
     border-radius: 50%;
     background: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .outer-ring.has-content {
-    width: 72px;
-    height: 72px;
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    width: 100px;
+    height: 100px;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.25);
   }
 
   .inner-circle {
-    width: 56px;
-    height: 56px;
+    width: 76px;
+    height: 76px;
     border-radius: 50%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: white;
   }
 
   .outer-ring.has-content .inner-circle {
-    width: 64px;
-    height: 64px;
+    width: 88px;
+    height: 88px;
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
   }
 
-  .capture-icon {
-    color: white;
-    font-size: 1.8rem;
-    font-weight: 300;
+  .placeholder-icon {
+    font-size: 2rem;
+    opacity: 0.5;
+  }
+
+  .bit-count {
+    font-size: 2rem;
+    font-weight: 700;
     line-height: 1;
   }
 
-  .bit-indicator {
-    color: white;
-    font-size: 1.4rem;
-    font-weight: 600;
+  .commit-hint {
+    font-size: 0.65rem;
+    font-weight: 500;
+    opacity: 0.9;
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
-  /* Accumulation preview - tiny bits floating around */
-  .accumulation-preview {
+  /* Staged bits - arranged in a row above the CCCB */
+  .staged-bits {
     position: absolute;
-    top: 50%;
+    bottom: 100%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 16px;
+    min-width: 200px;
     pointer-events: none;
   }
 
-  .mini-bit {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
+  .staged-bit {
     background: white;
+    border-radius: 20px;
+    padding: 8px 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    font-size: 0.85rem;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    animation: slide-in 0.3s ease-out;
+  }
+
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .text-preview {
+    color: #444;
+    font-style: italic;
+  }
+
+  .link-preview {
+    color: #667eea;
+  }
+
+  .media-thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.7rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    animation: orbit 2s ease-in-out infinite;
+    font-size: 1.5rem;
   }
 
-  .mini-bit--0 {
-    top: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    animation-delay: 0s;
+  .person-chip {
+    background: #f0f0f0;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-weight: 500;
   }
 
-  .mini-bit--1 {
-    top: -20px;
-    right: -35px;
-    animation-delay: 0.2s;
+  .clip-badge {
+    background: #1a1a2e;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
   }
 
-  .mini-bit--2 {
-    top: -20px;
-    left: -35px;
-    animation-delay: 0.4s;
-  }
-
-  @keyframes orbit {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-3px) scale(1.05); }
+  .more-bits {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
   }
 </style>
