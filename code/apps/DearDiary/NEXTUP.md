@@ -4,14 +4,13 @@
 
 ## Doing
 
-## TODO
-
 - Media Daemons
   - We need some rusty long running tasks that monitor the common filesystem
     areas where new media is added (currently only camera photos, but designed
     for more later once we figure out UX)
-  - but I found UNIVERSAL STAYREAL THEY HAVE EVERYTHING HOLY SHIT FCKEVERYTHING
-    GOTTA MERGE SOME BRANCHES BRB git@github.com:StayRealHQ/Universal.git
+  - 
+
+## TODO
 
 - The Feed 2.0: it's TheStream™ now
   - It is not WHEN a thing was created that is important, it is when the thing

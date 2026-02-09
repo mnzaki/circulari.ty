@@ -45,6 +45,21 @@ maps to the communal p2p cybersocietal network in sight: `Vision.`
 
 Started [here](./code/apps/DearDiary/).
 
+Suddenly, a [Universal.StayReal](https://github.com/StayRealHQ/Universal) appears
+
+And in the *accumulating becoming* `DearDiary` finds itself swirling into the
+threads of `Univeral`, becoming an emergent `MeStreamm`, without losing sight of
+its offline-onlyness, pulls back out of the swirl and cherishes the long-
+-distance inspiration.
+
+### [Y1.1] MeStreamm
+
+TODO is TOBE
+
+`MeStreamm` is just another suggested name for `DearDiary` which might not do
+well with younger audience. Why not both? different marketing avenues? Same app
+no problem?
+
 ### [Y2] Hal-loW
 
 Chatroullette of "AITA" and "askmen" and "askwomen" and "/r/lonely" and
