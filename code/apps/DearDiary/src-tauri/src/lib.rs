@@ -1,5 +1,6 @@
 mod drizzle_proxy;
-mod link_preview;
+mod html_preview;
+mod media_preview;
 include!(concat!(env!("OUT_DIR"), "/generated_migrations.rs"));
 
 /// Simple health check command - returns "pong" when backend is ready
@@ -19,7 +20,13 @@ pub fn run() {
                 .build(),
         )
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![ping, drizzle_proxy::run_sql, link_preview::link_preview_json])
+        .invoke_handler(tauri::generate_handler![
+            ping, 
+            drizzle_proxy::run_sql, 
+            html_preview::html_preview_json,
+            media_preview::url_preview_json,
+            media_preview::media_preview_json
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

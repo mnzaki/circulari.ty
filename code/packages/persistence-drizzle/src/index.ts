@@ -1,11 +1,11 @@
 import type { BaseSQLiteDatabase } from 'drizzle-orm/sqlite-core';
 import type { IPersistenceServices } from '@repo/persistence/services';
-import type { FetchLinkPreviewFn } from './services/linkPreview.service.js';
+import type { FetchUrlPreviewFn } from './services/preview.service.js';
 import { PersonService } from './services/person.service.js';
 import { PostService } from './services/post.service.js';
 import { SessionService } from './services/session.service.js';
 import { ViewService } from './services/view.service.js';
-import { LinkPreviewService } from './services/linkPreview.service.js';
+import { PreviewService } from './services/preview.service.js';
 
 // Types
 export type {
@@ -22,7 +22,8 @@ export type {
   ViewFilters,
   SortBy,
   View,
-  Person
+  Person,
+  CachedPreview
 } from '@repo/persistence';
 
 export {
@@ -37,6 +38,7 @@ export type {
   IViewService,
   ISessionService,
   IPersonService,
+  IPreviewService,
   IPersistenceServices
 } from '@repo/persistence';
 
@@ -45,15 +47,20 @@ export {
   ViewService,
   SessionService,
   PersonService,
-  LinkPreviewService
+  PreviewService
 } from './services/index.js';
 
-export type { FetchLinkPreviewFn } from './services/linkPreview.service.js';
+export type { 
+  FetchUrlPreviewFn,
+  PreviewResult,
+  HtmlPreviewResult,
+  MediaPreviewResult 
+} from './services/preview.service.js';
 
 export function createServices(
   db: BaseSQLiteDatabase<any, any>,
   options?: {
-    linkPreviewFetcher?: FetchLinkPreviewFn;
+    urlPreviewFetcher?: FetchUrlPreviewFn;
   }
 ) {
   return {
@@ -61,6 +68,6 @@ export function createServices(
     view: new ViewService(db),
     session: new SessionService(db),
     person: new PersonService(db),
-    linkPreview: new LinkPreviewService(db, options?.linkPreviewFetcher)
+    preview: new PreviewService(db, options?.urlPreviewFetcher)
   };
 }

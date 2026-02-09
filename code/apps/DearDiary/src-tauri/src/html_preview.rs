@@ -5,7 +5,7 @@ use serde::Serialize;
 const MAX_IMAGES: usize = 10;
 
 #[derive(Serialize)]
-pub struct LinkPreviewJSON {
+pub struct HtmlPreviewJSON {
     pub title: Option<String>,
     pub description: Option<String>,
     /// The main/primary image URL
@@ -16,7 +16,7 @@ pub struct LinkPreviewJSON {
 }
 
 #[tauri::command]
-pub async fn link_preview_json(url: String) -> Result<LinkPreviewJSON, String> {
+pub async fn html_preview_json(url: String) -> Result<HtmlPreviewJSON, String> {
     // Fetch the webpage
     let response = reqwest::get(&url)
         .await
@@ -45,7 +45,7 @@ pub async fn link_preview_json(url: String) -> Result<LinkPreviewJSON, String> {
     // The main image is the first one (if any)
     let image_url = images.first().cloned();
     
-    Ok(LinkPreviewJSON {
+    Ok(HtmlPreviewJSON {
         title,
         description,
         image_url,

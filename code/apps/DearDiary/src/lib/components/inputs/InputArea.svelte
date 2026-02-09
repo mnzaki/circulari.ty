@@ -36,6 +36,7 @@
 
       debounceTimer = setTimeout(async () => {
         const url = getValidUrl(linkValue);
+        if (!url) return;
         const preview = await getPreview(url);
         if (preview && !preview.error) {
           // Use the first image from images array, fallback to imageUrl

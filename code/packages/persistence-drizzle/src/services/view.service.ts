@@ -105,6 +105,7 @@ export class ViewService implements IViewService {
       index: 0,
       filters: {},
       sortBy: 'recent',
+      /*<!-- The Feed™ indicator -->*/
       label: 'Feed',
       createdAt: new Date()
     };

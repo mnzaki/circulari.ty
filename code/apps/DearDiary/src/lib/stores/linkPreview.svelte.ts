@@ -1,25 +1,33 @@
 /**
- * Link Preview Store
+ * URL Preview Store
  * 
- * Manages link preview fetching and caching.
- * Uses the LinkPreviewService from persistence.
+ * Manages URL preview fetching and caching for both HTML and media.
+ * Uses the PreviewService from persistence.
  */
 
-import type { CachedLinkPreview, ILinkPreviewService } from '@repo/persistence';
+import type { CachedPreview, IPreviewService } from '@repo/persistence';
 
 // Service reference
-let linkPreviewService: ILinkPreviewService | null = null;
+let previewService: IPreviewService | null = null;
 
 // Reactive state
-let previews = $state<Map<string, CachedLinkPreview>>(new Map());
+let previews = $state<Map<string, CachedPreview>>(new Map());
 let loading = $state<Set<string>>(new Set());
 let errors = $state<Map<string, string>>(new Map());
 
 /**
- * Set the link preview service (called during app initialization)
+ * Set the preview service (called during app initialization)
  */
-export function setLinkPreviewService(service: ILinkPreviewService): void {
-  linkPreviewService = service;
+export function setPreviewService(service: IPreviewService): void {
+  previewService = service;
+}
+
+/**
+ * Alias for backwards compatibility
+ * @deprecated Use setPreviewService instead
+ */
+export function setLinkPreviewService(service: IPreviewService): void {
+  setPreviewService(service);
 }
 
 /**
@@ -27,9 +35,9 @@ export function setLinkPreviewService(service: ILinkPreviewService): void {
  * Returns cached if available, otherwise fetches.
  * Multiple concurrent requests for the same URL share the same promise.
  */
-export async function getPreview(url: string): Promise<CachedLinkPreview | null> {
-  if (!linkPreviewService) {
-    console.warn('Link preview service not initialized');
+export async function getPreview(url: string): Promise<CachedPreview | null> {
+  if (!previewService) {
+    console.warn('Preview service not initialized');
     return null;
   }
   
@@ -46,7 +54,7 @@ export async function getPreview(url: string): Promise<CachedLinkPreview | null>
   errors = new Map([...errors].filter(([k]) => k !== url));
   
   try {
-    const preview = await linkPreviewService.getForURL(url);
+    const preview = await previewService.getForURL(url);
     
     // Update reactive state
     previews = new Map([...previews, [url, preview]]);
@@ -70,7 +78,7 @@ export async function getPreview(url: string): Promise<CachedLinkPreview | null>
 /**
  * Get cached preview without fetching
  */
-export function getCachedPreview(url: string): CachedLinkPreview | null {
+export function getCachedPreview(url: string): CachedPreview | null {
   return previews.get(url) ?? null;
 }
 

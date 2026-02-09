@@ -111,8 +111,7 @@
                 ×
               </button>
             {:else}
-              <!-- The Feed™ indicator -->
-              <span class="feed-badge">Feed</span>
+              <span class="feed-badge">Stream</span>
             {/if}
           </div>
         </div>

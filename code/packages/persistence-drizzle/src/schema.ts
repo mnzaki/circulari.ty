@@ -62,14 +62,27 @@ export const people = sqliteTable('people', {
   updatedAt: integer('updated_at', { mode: 'timestamp_ms' })
 });
 
-// Link previews - cached webpage metadata
-export const linkPreviews = sqliteTable('link_previews', {
+// URL previews - cached webpage and media metadata
+export const previews = sqliteTable('previews', {
   url: text('url').primaryKey(),
+  previewType: text('preview_type').notNull().default('html'), // 'html', 'media', or 'unknown'
+  
+  // HTML preview fields
   title: text('title'),
   description: text('description'),
-  imageUrl: text('image_url'),  // Primary/main image
+  imageUrl: text('image_url'),  // Primary/main image for HTML, thumbnail for media
   images: text('images', { mode: 'json' }),  // Array of all images (up to 10)
   siteName: text('site_name'),
+  
+  // Media preview fields
+  mediaType: text('media_type'), // 'image', 'video', 'audio'
+  width: integer('width'),
+  height: integer('height'),
+  duration: integer('duration'), // in milliseconds
+  fileSize: integer('file_size'),
+  thumbnailPath: text('thumbnail_path'), // local filesystem path
+  mediaUrl: text('media_url'), // original media URL (may differ from preview URL)
+  
   // When this preview was fetched (for cache invalidation)
   fetchedAt: integer('fetched_at', { mode: 'timestamp_ms' }).notNull(),
   // Error message if fetch failed

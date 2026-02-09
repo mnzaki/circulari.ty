@@ -132,18 +132,35 @@ export interface Person {
 }
 
 /**
- * Cached link preview - stored in database for reuse
+ * Cached URL preview - stored in database for reuse
+ * Supports both HTML webpage previews and media file previews
  */
-export interface CachedLinkPreview {
+export interface CachedPreview {
   url: string;
+  previewType: 'html' | 'media' | 'unknown';
+  
+  // HTML preview fields
   title?: string;
   description?: string;
   imageUrl?: string;
   images?: string[];  // All images found (up to 10)
   siteName?: string;
+  
+  // Media preview fields
+  mediaType?: string; // 'image', 'video', 'audio'
+  width?: number;
+  height?: number;
+  duration?: number;
+  fileSize?: number;
+  thumbnailPath?: string;
+  mediaUrl?: string;
+  
   fetchedAt: Date;
   error?: string;
 }
+
+// Alias for backwards compatibility (deprecated)
+export type CachedLinkPreview = CachedPreview;
 
 // Helper to commit an accumulation to a real post
 export function commitAccumulation(

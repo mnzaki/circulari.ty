@@ -53,6 +53,8 @@
 
 
 ## TODO LAAAAAAAAAATTTTEERRRRR
+- Make the CTAs furiously rejoice when empty CCCB is tapped. Furiouser still on
+  further tapping.
 - fix issue with creation area becoming too big in link previews (add button
   disappears)
 - bring up the view reel dots from the bottom before the forground layer is
