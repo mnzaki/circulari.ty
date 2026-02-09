@@ -20,22 +20,23 @@
 
   // Local draft state - independent from accumulation until explicitly added
   // No automatic sync from store - we don't want added bits to reappear as drafts
-  
+
   // Link preview state
   let currentPreview = $state<LinkPreview | null>(null);
   let previewLoading = $state(false);
   let previewError = $state<string | null>(null);
-  
+
   // Fetch preview when link input changes (with debounce)
   let debounceTimer: ReturnType<typeof setTimeout>;
   $effect(() => {
-    if (activeInput === 'link' && linkValue && isValidUrl(linkValue)) {
+    if (activeInput === 'link' && linkValue && !!getValidUrl(linkValue)) {
       clearTimeout(debounceTimer);
       previewLoading = true;
       previewError = null;
-      
+
       debounceTimer = setTimeout(async () => {
-        const preview = await getPreview(linkValue);
+        const url = getValidUrl(linkValue);
+        const preview = await getPreview(url);
         if (preview && !preview.error) {
           // Use the first image from images array, fallback to imageUrl
           const mainImage = preview.images?.[0] || preview.imageUrl;
@@ -106,18 +107,21 @@
   let canAdd = $derived(() => {
     switch (activeInput) {
       case 'text': return textValue.trim().length > 0;
-      case 'link': return linkValue.trim().length > 0 && isValidUrl(linkValue);
+      case 'link': return !!getValidUrl(linkValue);
       case 'person': return selectedPerson !== null;
       default: return false;
     }
   });
 
-  function isValidUrl(url: string): boolean {
+  function getValidUrl(url: string): string | null {
+    if (!url.match(/^.*:\/\/.*/) && url.match(/\..*$/)) {
+      url = 'https://' + url;
+    }
     try {
       new URL(url);
-      return true;
+      return url;
     } catch {
-      return false;
+      return null;
     }
   }
 
@@ -131,10 +135,11 @@
         }
         break;
       case 'link':
-        if (linkValue.trim() && isValidUrl(linkValue)) {
+        const url = getValidUrl(linkValue);
+        if (url) {
           // Use fetched preview or fallback
-          const preview = currentPreview || { title: linkValue };
-          await addBit({ type: 'link', url: linkValue, preview });
+          const preview = currentPreview || { title: url };
+          await addBit({ type: 'link', url, preview });
           linkValue = '';
           currentPreview = null;
           onClose();
@@ -159,8 +164,8 @@
 
   async function selectPerson(person: typeof mockPeople[0]) {
     selectedPerson = person;
-    await addBit({ 
-      type: 'person', 
+    await addBit({
+      type: 'person',
       did: person.did,
       displayName: person.displayName
     });
@@ -189,7 +194,7 @@
         placeholder="https://..."
         class="link-input"
       />
-      
+
       {#if previewLoading}
         <div class="link-preview loading">
           <span>Fetching preview...</span>
@@ -240,12 +245,12 @@
     <div class="add-bar">
       <span class="hint">
         {#if activeInput === 'text'}{textValue.length} chars
-        {:else if activeInput === 'link'}{isValidUrl(linkValue) ? 'Valid URL' : 'Enter valid URL'}
+        {:else if activeInput === 'link'}{!!getValidUrl(linkValue) ? 'Valid URL' : 'Enter valid URL'}
         {:else if activeInput === 'person'}{selectedPerson ? 'Ready to tag' : 'Select someone'}
         {/if}
       </span>
-      <button 
-        class="add-btn" 
+      <button
+        class="add-btn"
         onclick={handleAdd}
         disabled={!canAdd()}
       >
@@ -309,7 +314,7 @@
   .link-input::placeholder {
     color: #999;
   }
-  
+
   .link-preview {
     margin-top: 12px;
     padding: 12px;
@@ -317,17 +322,17 @@
     border-radius: 8px;
     border: 1px solid rgba(0, 0, 0, 0.08);
   }
-  
+
   .link-preview.loading {
     color: #888;
     font-size: 0.9rem;
   }
-  
+
   .link-preview.error {
     color: #c33;
     font-size: 0.9rem;
   }
-  
+
   .preview-image {
     width: 100%;
     height: 120px;
@@ -335,24 +340,24 @@
     border-radius: 6px;
     margin-bottom: 8px;
   }
-  
+
   .preview-meta {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
-  
+
   .preview-meta strong {
     font-size: 0.95rem;
     color: #333;
   }
-  
+
   .preview-desc {
     font-size: 0.85rem;
     color: #666;
     line-height: 1.4;
   }
-  
+
   .preview-site {
     font-size: 0.8rem;
     color: #667eea;

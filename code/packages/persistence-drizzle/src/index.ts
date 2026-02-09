@@ -55,7 +55,7 @@ export function createServices(
   options?: {
     linkPreviewFetcher?: FetchLinkPreviewFn;
   }
-): IPersistenceServices {
+) {
   return {
     post: new PostService(db),
     view: new ViewService(db),

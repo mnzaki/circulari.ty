@@ -112,6 +112,7 @@ export class PostService implements IPostService {
 
   async count(): Promise<number> {
     const result = await this.db.select({ count: sql<number>`COUNT(*)` }).from(posts);
+    console.log({result})
     return result[0]?.count ?? 0;
   }
 

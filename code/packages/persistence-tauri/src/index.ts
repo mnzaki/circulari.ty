@@ -5,7 +5,7 @@
  */
 
 import { invoke } from '@tauri-apps/api/core';
-import { createServices as createDrizzleServices, type IPersistenceServices, type FetchLinkPreviewFn } from '@repo/persistence-drizzle';
+import { createServices as createDrizzleServices, type FetchLinkPreviewFn } from '@repo/persistence-drizzle';
 import { createDrizzleProxy } from './drizzleProxy.js';
 
 // Fetcher that uses the Tauri command
@@ -27,11 +27,12 @@ const linkPreviewFetcher: FetchLinkPreviewFn = async (url: string) => {
   };
 };
 
-export function createServices(dbName = "database.db"): IPersistenceServices {
+export function createServices(dbName = "database.db") {
   // @ts-ignore
   return createDrizzleServices(createDrizzleProxy(dbName), {
     linkPreviewFetcher
   });
 }
 
-export type { IPersistenceServices, FetchLinkPreviewFn } from '@repo/persistence-drizzle';
+export type IPersistenceServices = ReturnType<typeof createServices>;
+export type { FetchLinkPreviewFn } from '@repo/persistence-drizzle';

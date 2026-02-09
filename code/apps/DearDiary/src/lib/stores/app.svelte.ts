@@ -5,6 +5,7 @@
  * Call this early in the app lifecycle (e.g., in +layout.ts)
  */
 
+import { invoke } from '@tauri-apps/api/core';
 import { createServices, type IPersistenceServices } from '@repo/persistence-tauri';
 import { setPostService } from './posts.svelte';
 import { setViewService } from './views.svelte';
@@ -27,6 +28,38 @@ function isTauri(): boolean {
 }
 
 /**
+ * Wait for Tauri backend to be ready by pinging it
+ * Retries every 100ms for up to 10 seconds
+ */
+async function waitForBackend(maxWaitMs = 10000, intervalMs = 100): Promise<void> {
+  const startTime = Date.now();
+  let lastError: Error | null = null;
+  
+  console.log('Waiting for backend to be ready...');
+  
+  while (Date.now() - startTime < maxWaitMs) {
+    try {
+      const response = await invoke<string>('ping');
+      if (response === 'pong') {
+        console.log('Backend is ready');
+        return;
+      }
+    } catch (err) {
+      // Backend not ready yet, store last error for debugging
+      lastError = err instanceof Error ? err : new Error(String(err));
+      // Only log periodically to avoid console spam
+      if (Math.floor((Date.now() - startTime) / 1000) % 2 === 0) {
+        console.log(`Backend not ready yet, retrying... (${Math.round((Date.now() - startTime) / 100) / 10}s)`);
+      }
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, intervalMs));
+  }
+  
+  throw new Error(`Backend failed to respond within ${maxWaitMs}ms. Last error: ${lastError?.message || 'Unknown'}`);
+}
+
+/**
  * Initialize the app (database, services, initial data)
  */
 export async function initializeApp(): Promise<void> {
@@ -42,6 +75,9 @@ export async function initializeApp(): Promise<void> {
     if (!isTauri()) {
       throw new Error('DearDiary requires the Tauri runtime. Please run with `tauri dev` or use the built application.');
     }
+
+    // Wait for backend to be ready before proceeding
+    await waitForBackend();
 
     // Create persistence services (initializes drizzle proxy)
     services = createServices("deardiary.db");
