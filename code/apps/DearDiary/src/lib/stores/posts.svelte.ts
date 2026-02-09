@@ -6,7 +6,6 @@
  */
 
 import type { Post, AccumulatingPost } from '@repo/persistence';
-import { commitAccumulation } from '@repo/persistence';
 import type { IPostService } from '@repo/persistence';
 
 // Reactive state

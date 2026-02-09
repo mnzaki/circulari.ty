@@ -18,7 +18,6 @@
 
   function formatDate(date: Date): string {
     try {
-      // Validate date before formatting
       if (!date || isNaN(date.getTime())) {
         return 'Invalid date';
       }
@@ -50,6 +49,11 @@
         return 'Unknown';
     }
   }
+  
+  // Limit bits shown to fit within max height
+  const MAX_BITS_SHOWN = 3;
+  let displayedBits = $derived(post.bits?.slice(0, MAX_BITS_SHOWN) ?? []);
+  let hasMoreBits = $derived((post.bits?.length ?? 0) > MAX_BITS_SHOWN);
 </script>
 
 {#if isValidPost(post)}
@@ -62,19 +66,19 @@
   </div>
   
   <div class="post-bits">
-    {#each post.bits as bit, i (i)}
+    {#each displayedBits as bit, i (i)}
       <div class="bit bit--{bit.type}">
         {#if bit.type === 'text'}
-          <p>{bit.content}</p>
+          <p class="truncated-text">{bit.content}</p>
         {:else if bit.type === 'link'}
           <div class="link-preview">
             {#if bit.preview?.imageUri}
               <div class="link-image" style="background-image: url({bit.preview.imageUri})"></div>
             {/if}
             <div class="link-meta">
-              <strong>{bit.preview?.title || 'Link'}</strong>
+              <strong class="truncated-title">{bit.preview?.title || 'Link'}</strong>
               {#if bit.preview?.description}
-                <span class="link-desc">{bit.preview.description.slice(0, 80)}...</span>
+                <span class="link-desc truncated-desc">{bit.preview.description}</span>
               {/if}
               <span class="link-url">{(() => { try { return new URL(bit.url).hostname; } catch { return bit.url || 'Invalid URL'; } })()}</span>
             </div>
@@ -99,6 +103,9 @@
         {/if}
       </div>
     {/each}
+    {#if hasMoreBits}
+      <div class="more-bits">+{post.bits.length - MAX_BITS_SHOWN} more</div>
+    {/if}
   </div>
 </article>
 {:else}
@@ -108,18 +115,35 @@
 {/if}
 
 <style>
+  /* Configurable spacing between posts */
+  :root {
+    --post-margin: 16px;
+  }
+  
   .post-card {
     background: white;
     border-radius: 16px;
     padding: 16px;
-    margin-bottom: 12px;
+    margin-bottom: var(--post-margin);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    
+    /* Fixed dimensions for virtual scrolling */
+    min-height: 120px;
+    max-height: 280px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   .post-card--invalid {
     background: rgba(255, 200, 200, 0.5);
     border: 1px solid rgba(255, 100, 100, 0.3);
     color: #c33;
+    min-height: 80px;
+    max-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .post-header {
@@ -127,6 +151,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
+    flex-shrink: 0;
   }
 
   .post-date {
@@ -145,13 +170,42 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    overflow: hidden;
+    flex: 1;
+  }
+
+  .bit {
+    flex-shrink: 0;
   }
 
   .bit p {
     margin: 0;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #333;
     font-size: 0.95rem;
+  }
+  
+  /* Text truncation */
+  .truncated-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-height: 6em;
+  }
+  
+  .truncated-title {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .truncated-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   /* Link preview styling */
@@ -164,37 +218,38 @@
   }
 
   .link-image {
-    height: 120px;
+    height: 80px;
     background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
     background-size: cover;
     background-position: center;
   }
 
   .link-meta {
-    padding: 12px;
+    padding: 10px 12px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
 
   .link-meta strong {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: #333;
   }
 
   .link-desc {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: #666;
   }
 
   .link-url {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #667eea;
   }
 
   /* Media placeholder */
   .media-placeholder {
     aspect-ratio: 16/9;
+    max-height: 100px;
     border-radius: 12px;
     background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
     display: flex;
@@ -240,5 +295,16 @@
     border-radius: 8px;
     font-size: 0.9rem;
     align-self: flex-start;
+    display: inline-block;
+  }
+  
+  /* More bits indicator */
+  .more-bits {
+    font-size: 0.85rem;
+    color: #888;
+    text-align: center;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
   }
 </style>
