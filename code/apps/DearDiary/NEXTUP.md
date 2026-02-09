@@ -6,6 +6,13 @@
 
 ## TODO
 
+- Media Daemons
+  - We need some rusty long running tasks that monitor the common filesystem
+    areas where new media is added (currently only camera photos, but designed
+    for more later once we figure out UX)
+  - but I found UNIVERSAL STAYREAL THEY HAVE EVERYTHING HOLY SHIT FCKEVERYTHING
+    GOTTA MERGE SOME BRANCHES BRB git@github.com:StayRealHQ/Universal.git
+
 - The Feed 2.0: it's TheStream™ now
   - It is not WHEN a thing was created that is important, it is when the thing
     is first _seen_
@@ -24,34 +31,9 @@
 - Let's keep the word "feed" as the badge for the unfiltered TheStream™
 
 - Autocomplete for Person lookups
+- Make things clickable (media, links, etc)
 
-- Media Previews
-  - Rust side:
-    - change `link_preview` to `html_preview`
-    - create new `media_preview` command
-      - use `nom-exif` crate
-        - if media is remote (http(s))
-          - HEAD for media size
-          - if size less than MAX_REMOTE_MEDIA_SIZE_FOR_ANALYSIS constant then download all of it to temp
-            - otherwise first 64kb of media to temp location location
-          - analyze downloaded data
-            - create thumbnail if we have downloaded all of it
-            - store thumbnail in thumbnail cache (on filesystem)
-          - if size less than MAX_REMOTE_MEDIA_SIZE_FOR_SAVING then move from temp
-            to permanent filesystem storage
-          - remove temp files
-    - create new `url_preview` command that calls the correct preview command
 
-  - persistence-tauri
-    - Media table
-      - URL
-      - media meta data as columns
-    - transition `linkPreview` service to `preview` service
-      - update usage of `link_preview_json` to `url_preview_json`
-      - etc
-
-  - DearDiary
-    - update usage of `linkPreview` service
 
 
 
@@ -86,3 +68,28 @@
 - fix issue with bad deserialization of NULL type columns in drizzle_proxy.rs
 - fix issue with requiring a protocol for links (if no protocol assume https)
 
+- Media Previews
+  - Rust side:
+    - change `link_preview` to `html_preview`
+    - create new `media_preview` command
+      - use `nom-exif` crate
+        - if media is remote (http(s))
+          - HEAD for media size
+          - if size less than MAX_REMOTE_MEDIA_SIZE_FOR_ANALYSIS constant then download all of it to temp
+            - otherwise first 64kb of media to temp location location
+          - analyze downloaded data
+            - create thumbnail if we have downloaded all of it
+            - store thumbnail in thumbnail cache (on filesystem)
+          - if size less than MAX_REMOTE_MEDIA_SIZE_FOR_SAVING then move from temp
+            to permanent filesystem storage
+          - remove temp files
+    - create new `url_preview` command that calls the correct preview command
+  - persistence-tauri
+    - Media table
+      - URL
+      - media meta data as columns
+    - transition `linkPreview` service to `preview` service
+      - update usage of `link_preview_json` to `url_preview_json`
+      - etc
+  - DearDiary
+    - update usage of `linkPreview` service
