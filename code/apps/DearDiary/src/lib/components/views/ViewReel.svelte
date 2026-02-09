@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { 
-    getViews, 
+  import {
+    getViews,
     currentView,
     activeViewIndex,
-    canGoLeft, 
+    canGoLeft,
     canGoRight,
-    goLeft, 
+    goLeft,
     goRight,
     activateView,
     createView,
@@ -13,15 +13,15 @@
   } from '$lib/stores/views.svelte';
   import { posts, loadPosts } from '$lib/stores/posts.svelte';
   import PostList from '$lib/components/feed/PostList.svelte';
-  
+
   // Local state for new view configuration
   let showNewViewPanel = $state(false);
   let searchQuery = $state('');
-  
+
   // Get reactive values from stores (using getter functions)
   let views = $derived(getViews());
   let activeIndex = $derived(activeViewIndex());
-  
+
   // Load posts on mount (only once)
   let mounted = $state(false);
   $effect(() => {
@@ -30,42 +30,42 @@
       loadPosts().catch(err => console.error('Failed to load posts:', err));
     }
   });
-  
+
   // Get posts for current view
   let currentPosts = $derived(posts());
-  
+
   // Handle creating a new view from search
   function handleCreateSearchView() {
     if (!searchQuery.trim()) return;
-    
+
     createView({
       keywords: [searchQuery.trim()]
     });
-    
+
     searchQuery = '';
     showNewViewPanel = false;
-    
+
     // Navigate to the new view (last one)
     activateView(views.length - 1);
   }
-  
+
   // Handle swipe gesture
   let touchStartX = $state(0);
   let touchEndX = $state(0);
   const SWIPE_THRESHOLD = 50;
-  
+
   function handleTouchStart(e: TouchEvent) {
     touchStartX = e.changedTouches[0].screenX;
   }
-  
+
   function handleTouchEnd(e: TouchEvent) {
     touchEndX = e.changedTouches[0].screenX;
     handleSwipe();
   }
-  
+
   function handleSwipe() {
     const swipeDistance = touchEndX - touchStartX;
-    
+
     if (Math.abs(swipeDistance) > SWIPE_THRESHOLD) {
       if (swipeDistance > 0 && canGoLeft()) {
         goLeft();
@@ -76,13 +76,13 @@
   }
 </script>
 
-<div 
+<div
   class="view-reel"
   ontouchstart={handleTouchStart}
   ontouchend={handleTouchEnd}
 >
   <!-- Views Container - Transforms to show active view -->
-  <div 
+  <div
     class="views-container"
     style="transform: translateX(-{activeIndex * 100}%)"
   >
@@ -99,11 +99,11 @@
               <span class="label-default">View {i}</span>
             {/if}
           </div>
-          
+
           <div class="view-actions">
             {#if i > 0}
               <!-- Only Child Views can be closed -->
-              <button 
+              <button
                 class="close-btn"
                 onclick={() => closeView(i)}
                 aria-label="Close view"
@@ -111,11 +111,11 @@
                 ×
               </button>
             {:else}
-              <span class="feed-badge">Stream</span>
+              <span class="feed-badge">Feed</span>
             {/if}
           </div>
         </div>
-        
+
         <!-- View Content -->
         <div class="view-content">
           {#key i}
@@ -131,20 +131,20 @@
       </div>
     {/each}
   </div>
-  
+
   <!-- Reel Indicator (dots) -->
   <div class="reel-indicator">
     {#each views as _, i}
-      <button 
+      <button
         class="dot"
         class:active={i === activeIndex}
         onclick={() => activateView(i)}
         aria-label="Go to view {i + 1}"
       ></button>
     {/each}
-    
+
     <!-- New View button -->
-    <button 
+    <button
       class="new-view-btn"
       onclick={() => showNewViewPanel = true}
       aria-label="Create new view"
@@ -152,13 +152,13 @@
       +
     </button>
   </div>
-  
+
   <!-- New View Panel (overlay) -->
   {#if showNewViewPanel}
     <div class="new-view-panel">
       <div class="panel-content">
         <h3>New View</h3>
-        
+
         <div class="search-input-wrapper">
           <input
             type="text"
@@ -168,12 +168,12 @@
             onkeydown={(e) => e.key === 'Enter' && handleCreateSearchView()}
           />
         </div>
-        
+
         <div class="panel-actions">
           <button class="btn-secondary" onclick={() => showNewViewPanel = false}>
             Cancel
           </button>
-          <button 
+          <button
             class="btn-primary"
             onclick={handleCreateSearchView}
             disabled={!searchQuery.trim()}
@@ -364,11 +364,11 @@
   }
 
   @keyframes slide-up {
-    from { 
+    from {
       opacity: 0;
       transform: translateY(20px);
     }
-    to { 
+    to {
       opacity: 1;
       transform: translateY(0);
     }

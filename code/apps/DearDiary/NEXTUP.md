@@ -4,11 +4,24 @@
 
 ## Doing
 
-- fix issue with loading posts before backend ready (add ping command)
-- fix issue with bad deserialization of NULL type columns in drizzle_proxy.rs
-- fix issue with requiring a protocol for links (if no protocol assume https)
-
 ## TODO
+
+- The Feed 2.0: it's TheStream™ now
+  - It is not WHEN a thing was created that is important, it is when the thing
+    is first _seen_
+  - One remembers one's experience, not the thing initself
+  - TheStream™ reflects this. It is a thing initself, not the things in it
+    inthemselves
+    - some stream chunks are just a single Post
+    - another chunk might be a handful of camera photos that were taken right
+      before this post
+    - another still might be remote object, like a social media conversation
+    - or maybe a wholeass person?
+  - TheStream™ just points to what is in the other tables, and this will reflect
+    as a polymorphic foreign key, and I have what I think is an interesting
+    approach of implementation: each column in `thefeed` table is the name of a
+    table that can be seen instream and is a nullable FK to it.
+- Let's keep the word "feed" as the badge for the unfiltered TheStream™
 
 - Autocomplete for Person lookups
 
@@ -68,3 +81,8 @@
 - `pnpm db:cli` in `persistence-drizzle`
 - `app.html` now says "DearDiary: today i..."
 - svelte-virtuallist for virtual scrolling of posts
+
+- fix issue with loading posts before backend ready (add ping command)
+- fix issue with bad deserialization of NULL type columns in drizzle_proxy.rs
+- fix issue with requiring a protocol for links (if no protocol assume https)
+

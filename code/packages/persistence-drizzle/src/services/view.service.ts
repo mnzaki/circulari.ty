@@ -105,8 +105,8 @@ export class ViewService implements IViewService {
       index: 0,
       filters: {},
       sortBy: 'recent',
-      /*<!-- The Feed™ indicator -->*/
-      label: 'Feed',
+      /*<!-- The Stream™ indicator -->*/
+      label: 'Stream',
       createdAt: new Date()
     };
 
