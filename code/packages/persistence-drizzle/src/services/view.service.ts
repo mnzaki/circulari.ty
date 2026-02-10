@@ -99,8 +99,8 @@ export class ViewService implements IViewService {
       return this.toDomainView(result[0]);
     }
 
-    // Create The Feed™
-    const feed: View = {
+    // Create TheStream™
+    const TheStream: View = {
       id: 'feed',
       index: 0,
       filters: {},
@@ -111,16 +111,16 @@ export class ViewService implements IViewService {
     };
 
     await this.db.insert(views).values({
-      id: feed.id,
-      viewIndex: feed.index,
-      filters: feed.filters,
-      sortBy: feed.sortBy,
-      label: feed.label,
-      createdAt: feed.createdAt,
+      id: TheStream.id,
+      viewIndex: TheStream.index,
+      filters: TheStream.filters,
+      sortBy: TheStream.sortBy,
+      label: TheStream.label,
+      createdAt: TheStream.createdAt,
       isFeed: true
     });
 
-    return feed;
+    return TheStream;
   }
 
   async closeAllChildViews(): Promise<void> {

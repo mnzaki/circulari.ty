@@ -1,10 +1,12 @@
 use scraper::{Html, Selector};
 use serde::Serialize;
+use crate::preview::resolve_url;
+use crate::error::{Error, Result};
 
 // Maximum number of images to extract from the page
 const MAX_IMAGES: usize = 10;
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct HtmlPreviewJSON {
     pub title: Option<String>,
     pub description: Option<String>,
@@ -15,36 +17,35 @@ pub struct HtmlPreviewJSON {
     pub site_name: Option<String>,
 }
 
-#[tauri::command]
-pub async fn html_preview_json(url: String) -> Result<HtmlPreviewJSON, String> {
+pub async fn json(url: String) -> Result<HtmlPreviewJSON> {
     // Fetch the webpage
     let response = reqwest::get(&url)
         .await
-        .map_err(|e| format!("Failed to fetch page: {}", e))?;
-    
+        .map_err(|e| Error::Fetch(e.to_string()))?;
+
     let html_text = response
         .text()
         .await
-        .map_err(|e| format!("Failed to read response: {}", e))?;
-    
+        .map_err(|e| Error::Parse(e.to_string()))?;
+
     // Parse HTML
     let document = Html::parse_document(&html_text);
-    
+
     // Extract title
     let title = extract_title(&document);
-    
+
     // Extract description
     let description = extract_description(&document);
-    
+
     // Extract site name
     let site_name = extract_site_name(&document);
-    
+
     // Extract images
     let images = extract_images(&document, &url);
-    
+
     // The main image is the first one (if any)
     let image_url = images.first().cloned();
-    
+
     Ok(HtmlPreviewJSON {
         title,
         description,
@@ -59,12 +60,12 @@ fn extract_title(document: &Html) -> Option<String> {
     if let Some(title) = extract_meta_content(document, "og:title", "property") {
         return Some(title);
     }
-    
+
     // Try Twitter title
     if let Some(title) = extract_meta_content(document, "twitter:title", "name") {
         return Some(title);
     }
-    
+
     // Fall back to <title> tag
     let selector = Selector::parse("title").ok()?;
     document.select(&selector).next()?.text().next().map(|t| t.trim().to_string())
@@ -75,12 +76,12 @@ fn extract_description(document: &Html) -> Option<String> {
     if let Some(desc) = extract_meta_content(document, "og:description", "property") {
         return Some(desc);
     }
-    
+
     // Try Twitter description
     if let Some(desc) = extract_meta_content(document, "twitter:description", "name") {
         return Some(desc);
     }
-    
+
     // Fall back to meta description
     extract_meta_content(document, "description", "name")
 }
@@ -99,7 +100,7 @@ fn extract_meta_content(document: &Html, attr_value: &str, attr_name: &str) -> O
 
 fn extract_images(document: &Html, base_url: &str) -> Vec<String> {
     let mut images = Vec::new();
-    
+
     // First try Open Graph images
     let og_selector = Selector::parse("meta[property='og:image']").unwrap();
     for element in document.select(&og_selector) {
@@ -112,7 +113,7 @@ fn extract_images(document: &Html, base_url: &str) -> Vec<String> {
             }
         }
     }
-    
+
     // Try Twitter images
     let twitter_selector = Selector::parse("meta[name='twitter:image']").unwrap();
     for element in document.select(&twitter_selector) {
@@ -127,7 +128,7 @@ fn extract_images(document: &Html, base_url: &str) -> Vec<String> {
             }
         }
     }
-    
+
     // Fall back to <img> tags
     let img_selector = Selector::parse("img").unwrap();
     for element in document.select(&img_selector) {
@@ -142,24 +143,6 @@ fn extract_images(document: &Html, base_url: &str) -> Vec<String> {
             }
         }
     }
-    
-    images
-}
 
-fn resolve_url(url: &str, base_url: &str) -> Option<String> {
-    // If already absolute, use as-is
-    if url.starts_with("http://") || url.starts_with("https://") {
-        return Some(url.to_string());
-    }
-    
-    // Skip data URLs
-    if url.starts_with("data:") {
-        return None;
-    }
-    
-    // Parse base URL
-    let base = reqwest::Url::parse(base_url).ok()?;
-    
-    // Join with base
-    base.join(url).ok().map(|u| u.to_string())
+    images
 }

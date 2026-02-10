@@ -1,0 +1,36 @@
+{
+  "name": "tauri-plugin-o19-ffc",
+  "version": "0.1.0",
+  "author": "Circulari.ty",
+  "description": "Tauri bindings for the core of the foundational framework of Circulari.ty apps",
+  "type": "module",
+  "types": "./js-dist/index.d.ts",
+  "main": "./js-dist/index.cjs",
+  "module": "./js-dist/index.js",
+  "exports": {
+    "types": "./js-dist/index.d.ts",
+    "import": "./js-dist/index.js",
+    "require": "./js-dist/index.cjs"
+  },
+  "files": [
+    "js-dist"
+  ],
+  "scripts": {
+    "build": "cargo build && rollup -c",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@repo/persistence-drizzle": "workspace:*",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-sql": "~2.2.0",
+    "drizzle-orm": "^0.45.1"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "rollup": "^4.40.1",
+    "tslib": "^2.8.1",
+    "typescript": "^5.8.3"
+  }
+}

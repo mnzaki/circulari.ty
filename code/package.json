@@ -4,7 +4,9 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "tauri:dev": "turbo run tauri:dev",
+    "tauri:dev": "turbo run tauri:dev --filter='!DearDiary' -F '!stayreal'",
+    "tauri:dev:MeStreamm": "turbo run tauri:dev --filter='!DearDiary' -F '!stayreal'",
+    "tauri:dev:DearDiary": "turbo run tauri:dev --filter='!MeStreamm' -F '!stayreal'",
     "lint": "turbo run lint",
     "format": "prettier --write .",
     "check-types": "turbo run check-types"

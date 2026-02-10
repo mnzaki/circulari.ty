@@ -19,16 +19,17 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 tauri = { version = "2", features = [] }
+tauri-plugin-o19-ffc = { path = "../../../packages/tauri-plugin-o19-ffc" }
 tauri-plugin-opener = "2"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
 tauri-plugin-sql = { version = "2.3.2", features = ["sqlite"] }
-base64 = "0.22.1"
-sqlx = { version = "0.8.6", features = ["sqlite", "runtime-tokio-native-tls"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-reqwest = { version = "0.12", features = ["json", "stream"] }
-scraper = "0.22"
-nom-exif = "2.4"
-image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp", "gif"] }
-blake3 = "1.5"
-uuid = { version = "1.10", features = ["v4"] }
+#serde = { version = "1", features = ["derive"] }
+#serde_json = "1"
+#base64 = "0.22.1"
+#sqlx = { version = "0.8.6", features = ["sqlite", "runtime-tokio-native-tls"] }
+#reqwest = { version = "0.12", features = ["json", "stream"] }
+#scraper = "0.22"
+#nom-exif = "2.4"
+#image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp", "gif"] }
+#blake3 = "1.5"
+#uuid = { version = "1.10", features = ["v4"] }

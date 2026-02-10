@@ -27,7 +27,7 @@
     as a polymorphic foreign key, and I have what I think is an interesting
     approach of implementation: each column in `thefeed` table is the name of a
     table that can be seen instream and is a nullable FK to it.
-- Let's keep the word "feed" as the badge for the unfiltered TheStream™
+  - Let's keep the word "feed" as the badge for the unfiltered TheStream™
 
 - Autocomplete for Person lookups
 - Make things clickable (media, links, etc)

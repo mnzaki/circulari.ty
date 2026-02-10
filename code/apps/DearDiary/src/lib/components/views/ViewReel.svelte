@@ -1,7 +1,6 @@
 <script lang="ts">
   import {
     getViews,
-    currentView,
     activeViewIndex,
     canGoLeft,
     canGoRight,

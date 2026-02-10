@@ -11,7 +11,7 @@ export function createDrizzleProxy(dbName: string) {
   return drizzle(
     async (sql, params, method) => {
       try {
-        const rows = await invoke<Row[]>("run_sql", {
+        const rows = await invoke<Row[]>("plugin:o19-ffc|run_sql", {
           query: { sql, params }
         });
         if (rows.length === 0 && method === "get") {

@@ -1,11 +1,32 @@
 # Circulari.ty
 
-This is the code. You will need to install `rust`, and the `webkit2gtk-4.1`
-package if you are on linux, then just `pnpm install` then just `pnpm dev`
+This is the code; a monorepo. Assuming you have read
+[../CIRCULARI.TY.md](../CIRCULARI.TY.md) which explains the spiral idea, here
+you find all the `apps`.
 
-# Monorepo things
+There are also `packages`, but these are just copied over from
+[o19](https://github.com/mnzaki/o19) which aspires to be a foundational
+framework for Circulari.ty apps.
 
-## Create a new Tauri app
+## Monorepo things
+
+### Prereqs
+
+You will need installed globally:
+
+- [Node.js](https://nodejs.org/) (for all frontend apps)
+- [pnpm](https://pnpm.io/) (monorepo uses pnpm workspaces)
+- [Rust](https://rustup.rs/) (for native code on mobile)
+- `cargo install bacon` (it's a rust code watcher/rebuilder)
+- install a package for `webkit2gtk-4.1` if you are on linux because Tauri is
+  picky
+- `pnpm install` for enumerable npm happiness
+
+### Doing the dev
+
+- `pnpm tauri:dev:DearDiary`
+
+### Create a new Tauri app
 
 ```sh
 cd apps
