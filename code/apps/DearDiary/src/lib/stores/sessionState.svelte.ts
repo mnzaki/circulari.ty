@@ -10,7 +10,7 @@
  * Philosophy: The app remembers where you last were, as you would.
  */
 
-import type { InputType } from '@repo/persistence';
+import type { InputType } from '@o19/foundframe';
 
 const STORAGE_KEY = 'deardiary_session_state';
 

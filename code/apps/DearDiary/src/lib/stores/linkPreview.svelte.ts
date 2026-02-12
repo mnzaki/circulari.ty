@@ -1,24 +1,23 @@
 /**
  * URL Preview Store
- * 
- * Manages URL preview fetching and caching for both HTML and media.
- * Uses the PreviewService from persistence.
+ *
+ * Manages URL preview fetching and caching using the PreviewService.
  */
 
-import type { CachedPreview, IPreviewService } from '@repo/persistence';
+import type { PreviewMetadata, PreviewPort } from '@o19/foundframe';
 
 // Service reference
-let previewService: IPreviewService | null = null;
+let previewService: PreviewPort | null = null;
 
-// Reactive state
-let previews = $state<Map<string, CachedPreview>>(new Map());
-let loading = $state<Set<string>>(new Set());
-let errors = $state<Map<string, string>>(new Map());
+// static state
+let previews = new Map<string, PreviewMetadata>();
+let loading = new Set<string>();
+let errors = new Map<string, string>();
 
 /**
  * Set the preview service (called during app initialization)
  */
-export function setPreviewService(service: IPreviewService): void {
+export function setPreviewService(service: PreviewPort): void {
   previewService = service;
 }
 
@@ -26,7 +25,7 @@ export function setPreviewService(service: IPreviewService): void {
  * Alias for backwards compatibility
  * @deprecated Use setPreviewService instead
  */
-export function setLinkPreviewService(service: IPreviewService): void {
+export function setLinkPreviewService(service: PreviewPort): void {
   setPreviewService(service);
 }
 
@@ -35,51 +34,53 @@ export function setLinkPreviewService(service: IPreviewService): void {
  * Returns cached if available, otherwise fetches.
  * Multiple concurrent requests for the same URL share the same promise.
  */
-export async function getPreview(url: string): Promise<CachedPreview | null> {
+export async function getPreview(url: string): Promise<PreviewMetadata | null> {
   if (!previewService) {
     console.warn('Preview service not initialized');
     return null;
   }
-  
+
   if (!url.trim()) return null;
-  
+
   // Check if already in reactive state
   const cached = previews.get(url);
-  if (cached && !cached.error) {
+  if (cached) {
     return cached;
   }
-  
+
   // Mark as loading
-  loading = new Set([...loading, url]);
-  errors = new Map([...errors].filter(([k]) => k !== url));
-  
+  loading.add(url);
+  errors.delete(url);
+
   try {
     const preview = await previewService.getForURL(url);
-    
-    // Update reactive state
-    previews = new Map([...previews, [url, preview]]);
-    
-    if (preview.error) {
-      errors = new Map([...errors, [url, preview.error]]);
-    }
-    
+
+    previews.set(url, preview);
+
     return preview;
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Failed to fetch preview';
-    errors = new Map([...errors, [url, errorMessage]]);
+    errors.set(url, errorMessage);
     return null;
   } finally {
-    const newLoading = new Set(loading);
-    newLoading.delete(url);
-    loading = newLoading;
+    loading.delete(url);
   }
 }
 
 /**
  * Get cached preview without fetching
  */
-export function getCachedPreview(url: string): CachedPreview | null {
-  return previews.get(url) ?? null;
+export async function getCachedPreview(url: string): Promise<PreviewMetadata | null> {
+  const cached = previews.get(url);
+  if (cached) return cached;
+
+  if (!previewService) return null;
+
+  const preview = await previewService.getCached(url);
+  if (preview) {
+    previews.set(url, preview);
+  }
+  return preview;
 }
 
 /**
@@ -100,8 +101,8 @@ export function getError(url: string): string | null {
  * Clear all cached previews
  */
 export function clearPreviews(): void {
-  previews = new Map();
-  errors = new Map();
+  previews.clear();
+  errors.clear();
 }
 
 /**

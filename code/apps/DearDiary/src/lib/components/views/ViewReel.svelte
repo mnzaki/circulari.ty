@@ -37,9 +37,10 @@
   function handleCreateSearchView() {
     if (!searchQuery.trim()) return;
 
-    createView({
-      keywords: [searchQuery.trim()]
-    });
+    createView(
+      `Search: ${searchQuery.trim()}`,
+      { keywords: [searchQuery.trim()], dateRange: { from: undefined, to: undefined } }
+    );
 
     searchQuery = '';
     showNewViewPanel = false;

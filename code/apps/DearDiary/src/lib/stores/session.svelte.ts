@@ -1,21 +1,21 @@
 /**
- * Session Store (Database-Backed)
+ * Session Store
  * 
- * Reactive session state backed by database for continuity.
+ * Reactive session state for continuity.
+ * Uses localStorage for persistence.
  * Uses getter functions (Svelte 5 pattern for module-level state).
  */
 
-import type { InputType, ISessionService } from '@repo/persistence';
+import type { InputType } from '@o19/foundframe';
+
+const STORAGE_KEY = 'deardiary_session_v2';
 
 // Reactive state
 let foregroundPositionState = $state(15);
 let activeInputState = $state<InputType>(null);
 let feedScrollPositionState = $state(0);
-let lastReadPostIdState = $state<string | null>(null);
+let lastReadPostIdState = $state<number | null>(null);
 let loadedState = $state(false);
-
-// Service reference
-let service: ISessionService | null = null;
 
 // Getter functions
 export const foregroundPosition = () => foregroundPositionState;
@@ -24,24 +24,53 @@ export const feedScrollPosition = () => feedScrollPositionState;
 export const lastReadPostId = () => lastReadPostIdState;
 export const isSessionLoaded = () => loadedState;
 
-/**
- * Set the session service (called during app initialization)
- */
-export function setSessionService(svc: ISessionService): void {
-  service = svc;
+// Load from localStorage
+function loadFromStorage(): void {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      foregroundPositionState = parsed.foregroundPosition ?? 15;
+      activeInputState = parsed.activeInput ?? null;
+      feedScrollPositionState = parsed.feedScrollPosition ?? 0;
+      lastReadPostIdState = parsed.lastReadPostId ?? null;
+    }
+  } catch (e) {
+    console.warn('Failed to load session state:', e);
+  }
+}
+
+// Save to localStorage
+function saveToStorage(): void {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      foregroundPosition: foregroundPositionState,
+      activeInput: activeInputState,
+      feedScrollPosition: feedScrollPositionState,
+      lastReadPostId: lastReadPostIdState
+    }));
+  } catch (e) {
+    console.warn('Failed to save session state:', e);
+  }
 }
 
 /**
- * Load session state from database
+ * Set the session service (no-op for localStorage-based implementation)
+ */
+export function setSessionService(_svc: unknown): void {
+  // No service needed for localStorage implementation
+}
+
+/**
+ * Load session state from localStorage
  */
 export async function loadSessionState(): Promise<void> {
-  if (loadedState || !service) return;
-  
-  foregroundPositionState = await service.getForegroundPosition();
-  activeInputState = await service.getActiveInput();
-  feedScrollPositionState = await service.getFeedScrollPosition();
-  lastReadPostIdState = await service.getLastReadPostId();
-  
+  if (loadedState) return;
+  loadFromStorage();
   loadedState = true;
 }
 
@@ -50,8 +79,7 @@ export async function loadSessionState(): Promise<void> {
  */
 export async function saveForegroundPosition(position: number): Promise<void> {
   foregroundPositionState = position;
-  if (!service) return;
-  await service.setForegroundPosition(position);
+  saveToStorage();
 }
 
 /**
@@ -59,8 +87,7 @@ export async function saveForegroundPosition(position: number): Promise<void> {
  */
 export async function saveActiveInput(input: InputType): Promise<void> {
   activeInputState = input;
-  if (!service) return;
-  await service.setActiveInput(input);
+  saveToStorage();
 }
 
 /**
@@ -68,15 +95,13 @@ export async function saveActiveInput(input: InputType): Promise<void> {
  */
 export async function saveFeedScrollPosition(position: number): Promise<void> {
   feedScrollPositionState = position;
-  if (!service) return;
-  await service.setFeedScrollPosition(position);
+  saveToStorage();
 }
 
 /**
  * Save last read post
  */
-export async function saveLastReadPostId(postId: string | null): Promise<void> {
+export async function saveLastReadPostId(postId: number | null): Promise<void> {
   lastReadPostIdState = postId;
-  if (!service) return;
-  await service.setLastReadPostId(postId);
+  saveToStorage();
 }

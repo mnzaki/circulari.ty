@@ -3,8 +3,7 @@
     getAccumulation,
     isAccumulating,
     bitCount,
-    commit,
-    loadDrafts
+    commit
   } from '$lib/stores/accumulatingPost.svelte';
   import { loadPosts } from '$lib/stores/posts.svelte';
 
@@ -13,14 +12,7 @@
   let bitCountValue = $derived(bitCount());
   let accumulationValue = $derived(getAccumulation());
 
-  // Load drafts on mount (only once)
-  let mounted = $state(false);
-  $effect(() => {
-    if (!mounted) {
-      mounted = true;
-      loadDrafts().catch(err => console.error('Failed to load drafts:', err));
-    }
-  });
+  // Drafts are now handled at component level, no session storage needed
 
   async function handleClick() {
     if (isAccumulatingValue) {

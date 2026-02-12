@@ -12,14 +12,14 @@ circulari.ty/
 │   └── web/              ← Web presence
 │
 └── packages/
-    ├── persistence/      ← Core persistence layer (moved here!)
-    ├── persistence-tauri/ ← Tauri-specific adapter
+    ├── foundframe/       ← Domain layer: entities, ports, services
+    ├── foundframe-drizzle/ ← Drizzle ORM + Tauri SQL implementation
     ├── ui/               ← Shared UI components
     ├── eslint-config/
     └── typescript-config/
 ```
 
-**When working on DearDiary**, remember that persistence types and services now live in `@repo/persistence` and `@repo/persistence-tauri` workspace packages—not in `src/lib/drizzle/`.
+**When working on DearDiary**, remember that persistence types and services now live in `@o19/foundframe` (domain layer) and `@o19/foundframe-drizzle` (Drizzle/Tauri implementation)—not in `src/lib/drizzle/` or the old `@repo/persistence` packages.
 
 ## What We Built Together
 

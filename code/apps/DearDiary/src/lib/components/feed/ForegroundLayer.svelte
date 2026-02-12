@@ -4,7 +4,7 @@
   import ErrorBoundary from '../ErrorBoundary.svelte';
   import { loadSessionState, foregroundPosition, saveForegroundPosition, saveActiveInput } from '$lib/stores/session.svelte';
   import { loadViews } from '$lib/stores/views.svelte';
-  import type { InputType } from '@repo/persistence';
+  import type { InputType } from '@o19/foundframe';
 
   // Configuration
   const PEEK_POSITION_VH = 15;

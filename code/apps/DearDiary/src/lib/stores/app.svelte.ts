@@ -6,19 +6,21 @@
  */
 
 import { invoke } from '@tauri-apps/api/core';
-import { createServices, type IPersistenceServices } from '@repo/persistence-tauri';
+import { attachConsole } from '@tauri-apps/plugin-log';
+import { createServices } from 'tauri-plugin-o19-ffi';
 import { setPostService } from './posts.svelte';
 import { setViewService } from './views.svelte';
-import { setSessionService as setSessionForAccumulation } from './accumulatingPost.svelte';
-import { setSessionService } from './session.svelte';
 import { setPersonService } from './people.svelte';
 import { setPreviewService } from './linkPreview.svelte';
 import { loadMockPosts } from './posts.svelte';
 
+// send log messages from Rust to the webview console
+attachConsole().then((_detach) => {});
+
 let initialized = $state(false);
 let initializing = $state(false);
 let error = $state<string | null>(null);
-let services = $state<IPersistenceServices | null>(null);
+let services = $state<ReturnType<typeof createServices> | null>(null);
 
 /**
  * Check if running in Tauri environment
@@ -34,12 +36,12 @@ function isTauri(): boolean {
 async function waitForBackend(maxWaitMs = 10000, intervalMs = 100): Promise<void> {
   const startTime = Date.now();
   let lastError: Error | null = null;
-  
+
   console.log('Waiting for backend to be ready...');
-  
+
   while (Date.now() - startTime < maxWaitMs) {
     try {
-      const response = await invoke<string>('ping');
+      const response = await invoke<string>('plugin:o19-ffi|ping');
       if (response === 'pong') {
         console.log('Backend is ready');
         return;
@@ -52,10 +54,10 @@ async function waitForBackend(maxWaitMs = 10000, intervalMs = 100): Promise<void
         console.log(`Backend not ready yet, retrying... (${Math.round((Date.now() - startTime) / 100) / 10}s)`);
       }
     }
-    
+
     await new Promise(resolve => setTimeout(resolve, intervalMs));
   }
-  
+
   throw new Error(`Backend failed to respond within ${maxWaitMs}ms. Last error: ${lastError?.message || 'Unknown'}`);
 }
 
@@ -79,15 +81,13 @@ export async function initializeApp(): Promise<void> {
     // Wait for backend to be ready before proceeding
     await waitForBackend();
 
-    // Create persistence services (initializes drizzle proxy)
-    services = createServices("deardiary.db");
+    // Create persistence services
+    services = createServices();
     console.log('Persistence services created');
 
     // Wire up services to stores
     setPostService(services.post);
     setViewService(services.view);
-    setSessionService(services.session);
-    setSessionForAccumulation(services.session);
     setPersonService(services.person);
     setPreviewService(services.preview);
 
@@ -102,8 +102,8 @@ export async function initializeApp(): Promise<void> {
       console.log(`Found ${postCount} existing posts`);
     }
 
-    // Ensure The Feed™ view exists
-    await services.view.getFeed();
+    // Ensure TheStream™ view exists
+    await services.view.getTheStream();
 
     initialized = true;
     console.log('App initialization complete');
@@ -119,7 +119,7 @@ export async function initializeApp(): Promise<void> {
 /**
  * Get the persistence services
  */
-export function getServices(): IPersistenceServices {
+export function getServices(): ReturnType<typeof createServices> {
   if (!services) {
     throw new Error('Services not initialized. Call initializeApp() first.');
   }

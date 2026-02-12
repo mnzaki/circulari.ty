@@ -4,10 +4,10 @@
  * Manages people/mentions state and provides search functionality.
  */
 
-import type { Person, IPersonService } from '@repo/persistence';
+import type { Person, PersonPort } from '@o19/foundframe';
 
 // Service reference
-let personService: IPersonService | null = null;
+let personService: PersonPort | null = null;
 
 // Reactive state
 let searchResults = $state<Person[]>([]);
@@ -18,7 +18,7 @@ let searchError = $state<string | null>(null);
 /**
  * Set the person service (called during app initialization)
  */
-export function setPersonService(service: IPersonService): void {
+export function setPersonService(service: PersonPort): void {
   personService = service;
 }
 
@@ -109,7 +109,7 @@ export function clearLinkedPeople(): void {
 /**
  * Create a new person (for adding new contacts)
  */
-export async function createPerson(person: Omit<Person, 'createdAt'>): Promise<Person | null> {
+export async function createPerson(person: { displayName: string; did?: string; handle?: string; avatarMediaId?: number; metadata?: Record<string, unknown> }): Promise<Person | null> {
   if (!personService) {
     console.warn('Person service not initialized');
     return null;

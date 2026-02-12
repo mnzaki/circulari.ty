@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Post, AccumulableBit } from '@repo/persistence';
+  import type { Post, AccumulableBit } from '@o19/foundframe';
 
   interface Props {
     post: Post;
@@ -10,7 +10,7 @@
   // Validate post data
   function isValidPost(p: Post): boolean {
     return !!p && 
-           typeof p.id === 'string' && 
+           typeof p.id === 'number' && 
            Array.isArray(p.bits) && 
            p.createdAt instanceof Date && 
            !isNaN(p.createdAt.getTime());

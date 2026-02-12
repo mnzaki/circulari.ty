@@ -5,9 +5,9 @@
  * Uses getter functions (Svelte 5 pattern for module-level state).
  */
 
-import type { View, ViewFilters, SortBy, IViewService } from '@repo/persistence';
+import type { View, ViewFilters, SortBy, ViewPort } from '@o19/foundframe';
 
-export type { View, ViewFilters, SortBy } from '@repo/persistence';
+export type { View, ViewFilters, SortBy } from '@o19/foundframe';
 
 // Reactive state
 let viewsState = $state<View[]>([]);
@@ -15,7 +15,7 @@ let activeViewIndexState = $state(0);
 let loadedState = $state(false);
 
 // Service reference
-let service: IViewService | null = null;
+let service: ViewPort | null = null;
 
 // Derived state
 export const currentView = () => viewsState[activeViewIndexState];
@@ -37,7 +37,7 @@ export function getActiveViewIndex(): number {
 /**
  * Set the view service (called during app initialization)
  */
-export function setViewService(svc: IViewService): void {
+export function setViewService(svc: ViewPort): void {
   service = svc;
 }
 
@@ -47,7 +47,7 @@ export function setViewService(svc: IViewService): void {
 export async function loadViews(): Promise<void> {
   if (!service) return;
   
-  await service.getFeed();
+  await service.getTheStream();
   const dbViews = await service.getAll();
   viewsState = dbViews;
   loadedState = true;
@@ -56,10 +56,18 @@ export async function loadViews(): Promise<void> {
 /**
  * Create a new Child View
  */
-export async function createView(filters?: Partial<ViewFilters>): Promise<View> {
+export async function createView(label: string, filters?: ViewFilters): Promise<View> {
   if (!service) throw new Error('View service not initialized');
   
-  const newView = await service.create(filters);
+  const newView = await service.create({ 
+    label, 
+    filters: filters ?? {},
+    badge: 'SEARCH',
+    sortBy: 'recent',
+    isPinned: false,
+    isTheStream: false,
+    index: viewsState.length
+  });
   await loadViews();
   activeViewIndexState = viewsState.length - 1;
   return newView;
@@ -117,7 +125,11 @@ export async function closeView(index: number): Promise<void> {
 export async function closeAllChildViews(): Promise<void> {
   if (!service) return;
   
-  await service.closeAllChildViews();
+  // Close all views except TheStream (index 0)
+  const childViews = viewsState.filter(v => v.id !== 0);
+  for (const view of childViews) {
+    await service!.delete(view.id);
+  }
   await loadViews();
   activeViewIndexState = 0;
 }

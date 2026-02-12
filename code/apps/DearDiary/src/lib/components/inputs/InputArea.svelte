@@ -2,7 +2,7 @@
   import { tick } from 'svelte';
   import { addBit, commit, clearAccumulation, getAccumulation } from '$lib/stores/accumulatingPost.svelte';
   import { getPreview, isLoading, getError, getCachedPreview } from '$lib/stores/linkPreview.svelte';
-  import type { LinkPreview, AccumulableBit } from '@repo/persistence';
+  import type { LinkPreview, AccumulableBit } from '@o19/foundframe';
 
   export type InputType = 'text' | 'link' | 'person' | null;
 
@@ -38,17 +38,15 @@
         const url = getValidUrl(linkValue);
         if (!url) return;
         const preview = await getPreview(url);
-        if (preview && !preview.error) {
-          // Use the first image from images array, fallback to imageUrl
-          const mainImage = preview.images?.[0] || preview.imageUrl;
+        if (preview) {
+          // Use the imagePath from preview metadata
+          const mainImage = preview.imagePath;
           currentPreview = {
             title: preview.title || linkValue,
             description: preview.description,
             imageUri: mainImage,
             siteName: preview.siteName
           };
-        } else if (preview?.error) {
-          previewError = preview.error;
         }
         previewLoading = false;
       }, 500);
@@ -115,7 +113,7 @@
   });
 
   function getValidUrl(url: string): string | null {
-    if (!url.match(/^.*:\/\/.*/) && url.match(/\..*$/)) {
+    if (!url.match(/^.*:\/\/.*/) && url.match(/\..{2,}$/)) {
       url = 'https://' + url;
     }
     try {

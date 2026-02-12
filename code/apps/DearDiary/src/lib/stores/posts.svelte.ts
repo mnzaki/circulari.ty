@@ -5,13 +5,13 @@
  * Uses $effect for reactive updates and service layer for persistence.
  */
 
-import type { Post, AccumulatingPost } from '@repo/persistence';
-import type { IPostService } from '@repo/persistence';
+import type { Post, CreatePost, AccumulableBit, XanaduLink } from '@o19/foundframe';
+import type { PostPort } from '@o19/foundframe';
 
 // Reactive state
 let postsState = $state<Post[]>([]);
 let loadingState = $state(false);
-let service: IPostService | null = null;
+let service: PostPort | null = null;
 
 // Derived (getter functions - cannot export $derived from modules)
 export const postCount = () => postsState.length;
@@ -23,7 +23,7 @@ export const loading = () => loadingState;
 /**
  * Set the post service (called during app initialization)
  */
-export function setPostService(svc: IPostService): void {
+export function setPostService(svc: PostPort): void {
   service = svc;
 }
 
@@ -38,21 +38,21 @@ export async function loadPosts(): Promise<void> {
   
   loadingState = true;
   try {
-    postsState = await service.getAll();
+    postsState = await service.query();
   } finally {
     loadingState = false;
   }
 }
 
 /**
- * Add a new post from an accumulation
+ * Add a new post from bits and links
  */
-export async function addPost(accumulation: AccumulatingPost): Promise<Post> {
+export async function addPost(bits: AccumulableBit[], links?: XanaduLink[]): Promise<Post> {
   if (!service) {
     throw new Error('[posts] Service not initialized');
   }
   
-  const post = await service.create(accumulation);
+  const post = await service.create({ bits, links });
   postsState = [...postsState, post];
   return post;
 }
@@ -60,7 +60,7 @@ export async function addPost(accumulation: AccumulatingPost): Promise<Post> {
 /**
  * Remove a post by ID
  */
-export async function removePost(id: string): Promise<void> {
+export async function removePost(id: number): Promise<void> {
   if (!service) return;
   
   await service.delete(id);
@@ -70,7 +70,7 @@ export async function removePost(id: string): Promise<void> {
 /**
  * Update a post
  */
-export async function updatePost(id: string, updates: Partial<Post>): Promise<void> {
+export async function updatePost(id: number, updates: { bits?: AccumulableBit[]; links?: XanaduLink[] }): Promise<void> {
   if (!service) return;
   
   await service.update(id, updates);
@@ -92,7 +92,7 @@ export async function searchPosts(keyword: string): Promise<Post[]> {
  */
 export async function getPostsByDateRange(from: Date, to: Date): Promise<Post[]> {
   if (!service) return [];
-  return service.getByDateRange(from, to);
+  return service.query({ dateFrom: from, dateTo: to });
 }
 
 /**
@@ -144,11 +144,7 @@ export async function loadMockPosts(): Promise<void> {
   ];
   
   for (let i = 0; i < mockBits.length; i++) {
-    const accumulation: AccumulatingPost = {
-      bits: mockBits[i],
-      draftLinks: []
-    };
-    await service.create(accumulation);
+    await service.create({ bits: mockBits[i] as AccumulableBit[] });
   }
   
   await loadPosts();
@@ -159,8 +155,9 @@ export async function loadMockPosts(): Promise<void> {
  */
 export async function clearPosts(): Promise<void> {
   for (const post of postsState) {
-    await removePost(post.id);
+    await service!.delete(post.id);
   }
+  postsState = [];
 }
 
 /**
@@ -172,10 +169,10 @@ export async function getPostsForView(
   if (!service) return [];
   
   if (!view.filters || Object.keys(view.filters).length === 0) {
-    return service.getAll();
+    return service.query();
   }
   
-  let results = await service.getAll({
+  let results = await service.query({
     dateFrom: view.filters.dateFrom,
     dateTo: view.filters.dateTo
   });
