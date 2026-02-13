@@ -4,13 +4,54 @@
 
 ## Doing
 
+
+## TODO
+
 - Media Daemons
   - We need some rusty long running tasks that monitor the common filesystem
     areas where new media is added (currently only camera photos, but designed
     for more later once we figure out UX)
   - 
 
-## TODO
+- Fix ReceiveShareIntent actions (none work)
+
+- Autocomplete for Person lookups
+
+- Make things clickable (media, links, etc)
+
+
+- UX things
+  - ForegroundLayer needs to be pull-downable from CCCB
+  - ReceiveShareIntent needs more padding at the bottom
+  - ReceiveShareIntent can have a faux CCCB that is clickable/draggable to go to
+    the MainActivity, which loads ready with the editing tools preloaded with
+    the shared content
+
+
+
+
+
+
+
+
+
+
+
+
+
+## TODO LAAAAAAAAAATTTTEERRRRR
+
+- Make the CTAs furiously rejoice when empty CCCB is tapped. Furiouser still on
+  further tapping.
+- fix issue with creation area becoming too big in link previews (add button
+  disappears)
+- bring up the view reel dots from the bottom before the forground layer is
+  fully snapped to the top
+- fix tiny jank in PostList scrolling (scroll down slowly, notice it jumps by a
+  dozen pixels back) because of bad estimate of link previews
+
+
+## Done and committed
 
 - The Feed 2.0: it's TheStream™ now
   - It is not WHEN a thing was created that is important, it is when the thing
@@ -29,43 +70,6 @@
     table that can be seen instream and is a nullable FK to it.
   - Let's keep the word "feed" as the badge for the unfiltered TheStream™
 
-- Autocomplete for Person lookups
-- Make things clickable (media, links, etc)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## TODO LAAAAAAAAAATTTTEERRRRR
-- Make the CTAs furiously rejoice when empty CCCB is tapped. Furiouser still on
-  further tapping.
-- fix issue with creation area becoming too big in link previews (add button
-  disappears)
-- bring up the view reel dots from the bottom before the forground layer is
-  fully snapped to the top
-- fix tiny jank in PostList scrolling (scroll down slowly, notice it jumps by a
-  dozen pixels back) because of bad estimate of link previews
-
-
-## Done and committed
-
-- `pnpm db:cli` in `persistence-drizzle`
-- `app.html` now says "DearDiary: today i..."
-- svelte-virtuallist for virtual scrolling of posts
-
-- fix issue with loading posts before backend ready (add ping command)
-- fix issue with bad deserialization of NULL type columns in drizzle_proxy.rs
-- fix issue with requiring a protocol for links (if no protocol assume https)
 
 - Media Previews
   - Rust side:
@@ -92,3 +96,12 @@
       - etc
   - DearDiary
     - update usage of `linkPreview` service
+
+- fix issue with loading posts before backend ready (add ping command)
+- fix issue with bad deserialization of NULL type columns in drizzle_proxy.rs
+- fix issue with requiring a protocol for links (if no protocol assume https)
+
+- `pnpm db:cli` in `persistence-drizzle`
+- `app.html` now says "DearDiary: today i..."
+- svelte-virtuallist for virtual scrolling of posts
+

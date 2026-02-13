@@ -13,6 +13,8 @@ and I think it helps to share atmosphere :)
 
 Speaking of atmosphere, did you checkout the [ARCHITECTURE.md](./ARCHITECTURE.md)?
 
+Or if you wanna know what's up see [NEXTUP](./code/NEXTUP.md)
+
 And without furtherado, the
 
 ## SWiVeL plan.

@@ -8,7 +8,7 @@
   - [twitter](https://twitter.com/andrestaltz)
 - Other people that were behind [scuttlebutt](https://scuttlebutt.nz) and
   possibly those behind [p2panda](https://p2panda.org) like
-  - [mixmix](https://github.com/mixmix) contirbuted to scuttlebutt and p2panda
+  - [mixmix](https://github.com/mixmix) contributed to scuttlebutt and p2panda
   - [cblgh](https://cblgh.org) (on [github](https://github.com/cblgh))
     contributed to scuttlebutt
 - [RRD](https://www.linkedin.com/company/86790601/): Recursive Delegacies (software house)
