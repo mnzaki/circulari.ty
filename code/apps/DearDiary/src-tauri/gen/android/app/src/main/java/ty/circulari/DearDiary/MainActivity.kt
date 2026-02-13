@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 
 class MainActivity : TauriActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
-    initRustlsPlatformVerifier(this)
+    //initRustlsPlatformVerifier(this)
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
   }

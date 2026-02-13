@@ -3,8 +3,9 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --filter='!./apps/*'",
     "tauri:dev": "turbo run tauri:dev --filter='!DearDiary' -F '!stayreal'",
+    "tauri:dev:android": "turbo run tauri:dev --filter=DearDiary",
     "tauri:dev:MeStreamm": "turbo run tauri:dev --filter='!DearDiary' -F '!stayreal'",
     "tauri:dev:DearDiary": "turbo run tauri:dev --filter='!MeStreamm' -F '!stayreal'",
     "lint": "turbo run lint",
