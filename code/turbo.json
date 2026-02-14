@@ -21,6 +21,10 @@
       "cache": false,
       "persistent": true
     },
+    "tauri:android:dev:tokio_debug": {
+      "cache": false,
+      "persistent": true
+    },
     "tauri:build": {
       "outputs": ["src-tauri/target/**"]
     }

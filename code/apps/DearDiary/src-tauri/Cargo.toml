@@ -19,7 +19,7 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 tauri = { version = "2", features = [] }
-tauri-plugin-o19-ffi = { path = "../../../packages/tauri-plugin-o19-ffi" }
+tauri-plugin-o19-ffi = { path = "../../../../o19/packages/tauri-plugin-o19-ffi" }
 tauri-plugin-opener = "2"
 tauri-plugin-sql = { version = "2.3.2", features = ["sqlite"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }

@@ -3,14 +3,14 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev --filter='!./apps/*'",
-    "tauri:dev": "turbo run tauri:dev --filter='!DearDiary' -F '!stayreal'",
-    "tauri:dev:android": "turbo run tauri:dev --filter=DearDiary",
-    "tauri:dev:MeStreamm": "turbo run tauri:dev --filter='!DearDiary' -F '!stayreal'",
-    "tauri:dev:DearDiary": "turbo run tauri:dev --filter='!MeStreamm' -F '!stayreal'",
     "lint": "turbo run lint",
     "format": "prettier --write .",
-    "check-types": "turbo run check-types"
+    "check-types": "turbo run check-types",
+
+    "o19:dev": "turbo run dev --filter='!./apps/*'",
+
+    "DearDiary:android": "turbo run -F DearDiary -F '../o19/packages/*' tauri:android:dev",
+    "DearDiary:android:tokio_debug": "turbo run -F DearDiary -F '../o19/packages/*' tauri:android:dev:tokio_debug"
   },
   "devDependencies": {
     "prettier": "^3.7.4",
