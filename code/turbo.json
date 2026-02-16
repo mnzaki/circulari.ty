@@ -21,6 +21,14 @@
       "cache": false,
       "persistent": true
     },
+    "tauri:android:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "tauri:android:dev:verbose": {
+      "cache": false,
+      "persistent": true
+    },
     "tauri:android:dev:tokio_debug": {
       "cache": false,
       "persistent": true

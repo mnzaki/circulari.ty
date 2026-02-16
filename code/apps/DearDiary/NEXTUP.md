@@ -7,6 +7,13 @@
 
 ## TODO
 
+- PKB Support
+  - 
+
+- When a naked media item or url is added to the stream, capture it as such and
+  don't wrap it in a Post because @doniashohdy insisted telepathically and I was
+  gonna do it anyway but it's good to write things down you know?
+  
 - Media Daemons
   - We need some rusty long running tasks that monitor the common filesystem
     areas where new media is added (currently only camera photos, but designed

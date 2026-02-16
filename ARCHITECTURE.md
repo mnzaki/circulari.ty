@@ -29,4 +29,9 @@ and non-NAS options with:
 
 Mobile devices based on [lilygo.cc](https://lilygo.cc/)
 
+## Ethos
 
+See first; react later.
+No force; just guidance.
+Time of experience is more relevant than time of creation.
+One should not lose sight of oneself when adding to oneself.

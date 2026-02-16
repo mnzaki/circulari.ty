@@ -2,18 +2,12 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Capability for the main window",
-  "windows": [
-    "main"
-  ],
+  "windows": ["main"],
   "permissions": [
-    "o19-ffi:default",
-    "o19-ffi:allow-run-sql",
+    "o19-ff:default",
+    "o19-ff:allow-run-sql",
     "core:default",
     "opener:default",
-    "sql:default",
-    "sql:allow-load",
-    "sql:allow-execute",
-    "sql:allow-select",
     "log:default"
   ]
 }

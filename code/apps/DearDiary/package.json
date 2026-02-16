@@ -7,21 +7,18 @@
     "dev": "BROWSER=none vite dev",
     "build": "vite build",
     "preview": "vite preview",
-
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
+    "tauri:dev:verbose": "RUST_LOG=debug tauri dev",
     "tauri:build": "tauri build",
-
     "tauri:android:dev": "tauri android dev",
-    "tauri:android:dev:tokio_debug": "RUSTFLAGS=\"--cfg tokio_unstable\" tauri android dev --features tokio_debugging",
+    "tauri:android:dev:verbose": "RUST_LOG=debug tauri android dev",
+    "tauri:android:dev:tokio_debug": "RUST_LOG=debug RUSTFLAGS=\"--cfg tokio_unstable\" tauri android dev --features tokio_debugging",
     "tauri:android:dev:log": "$(which adb) logcat | grep RustStdoutStderr",
-
     "db:drop": "rm ~/.config/ty.circulari.DearDiary/deardiary.db*"
   },
-
   "license": "MIT",
   "dependencies": {
     "@o19/foundframe": "workspace:*",
@@ -29,9 +26,8 @@
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-log": "~2",
     "@tauri-apps/plugin-opener": "^2",
-    "@tauri-apps/plugin-sql": "^2.3.2",
     "svelte-virtuallists": "^1.4.2",
-    "tauri-plugin-o19-ffi": "workspace:*"
+    "tauri-plugin-o19-ff": "workspace:*"
   },
   "devDependencies": {
     "@o19/debug": "workspace:*",

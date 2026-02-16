@@ -18,7 +18,51 @@ importers:
         specifier: ^2.8.3
         version: 2.8.3
 
-  ../o19/packages/android-activities: {}
+  ../o19/crates/tauri-plugin-o19-ff:
+    dependencies:
+      '@o19/foundframe':
+        specifier: workspace:*
+        version: link:../../packages/foundframe
+      '@o19/foundframe-drizzle':
+        specifier: workspace:*
+        version: link:../../packages/foundframe-drizzle
+      '@tauri-apps/api':
+        specifier: ^2
+        version: 2.10.1
+      '@tauri-apps/plugin-sql':
+        specifier: ~2.2.0
+        version: 2.2.1
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(better-sqlite3@12.6.2)
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@rollup/plugin-typescript':
+        specifier: ^12.1.2
+        version: 12.3.0(rollup@4.41.1)(tslib@2.8.1)(typescript@5.9.2)
+      concurrently:
+        specifier: ^9.2.1
+        version: 9.2.1
+      rollup:
+        specifier: ^4.40.1
+        version: 4.41.1
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.2
+
+  ../o19/packages/android-activities:
+    devDependencies:
+      concurrently:
+        specifier: ^9.2.1
+        version: 9.2.1
 
   ../o19/packages/debug:
     dependencies:
@@ -87,46 +131,6 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
-  ../o19/packages/tauri-plugin-o19-ffi:
-    dependencies:
-      '@o19/foundframe':
-        specifier: workspace:*
-        version: link:../foundframe
-      '@o19/foundframe-drizzle':
-        specifier: workspace:*
-        version: link:../foundframe-drizzle
-      '@tauri-apps/api':
-        specifier: ^2
-        version: 2.10.1
-      '@tauri-apps/plugin-sql':
-        specifier: ~2.2.0
-        version: 2.2.1
-      drizzle-orm:
-        specifier: ^0.45.1
-        version: 0.45.1(better-sqlite3@12.6.2)
-    devDependencies:
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@rollup/plugin-typescript':
-        specifier: ^12.1.2
-        version: 12.3.0(rollup@4.41.1)(tslib@2.8.1)(typescript@5.9.2)
-      concurrently:
-        specifier: ^9.2.1
-        version: 9.2.1
-      rollup:
-        specifier: ^4.40.1
-        version: 4.41.1
-      tslib:
-        specifier: ^2.8.1
-        version: 2.8.1
-      typescript:
-        specifier: ^5.8.3
-        version: 5.9.2
-
   ../o19/packages/typescript-config: {}
 
   ../o19/packages/ui:
@@ -185,9 +189,9 @@ importers:
       svelte-virtuallists:
         specifier: ^1.4.2
         version: 1.4.2(svelte@5.46.0)
-      tauri-plugin-o19-ffi:
+      tauri-plugin-o19-ff:
         specifier: workspace:*
-        version: link:../../../o19/packages/tauri-plugin-o19-ffi
+        version: link:../../../o19/crates/tauri-plugin-o19-ff
     devDependencies:
       '@o19/debug':
         specifier: workspace:*
@@ -240,9 +244,9 @@ importers:
       svelte-virtuallists:
         specifier: ^1.4.2
         version: 1.4.2(svelte@5.46.0)
-      tauri-plugin-o19-ffi:
+      tauri-plugin-o19-ff:
         specifier: workspace:*
-        version: link:../../../o19/packages/tauri-plugin-o19-ffi
+        version: link:../../../o19/crates/tauri-plugin-o19-ff
     devDependencies:
       '@sveltejs/adapter-static':
         specifier: ^3.0.6

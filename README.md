@@ -1,9 +1,9 @@
-# Circulari.ty
+# Circulari.ty 💫
 
 The question was: what misses the Apple?
 
 The real answer is:
-[**Spirali.ty**](https://github.com/mnzaki/circulari.ty/#spirality)
+[**🌀Spirali.ty**](https://github.com/mnzaki/circulari.ty/#spirality)
 
 But we are limited in dimensionality as a species. So let's just say a
 `(semi-)`circular bite.
@@ -51,16 +51,32 @@ Suddenly, a [Universal.StayReal](https://github.com/StayRealHQ/Universal) appear
 
 And in the *accumulating becoming* `DearDiary` finds itself swirling into the
 threads of `Univeral`, becoming an emergent `MeStreamm`, without losing sight of
-its offline-onlyness, pulls back out of the swirl and cherishes the long-
+its offline-onlyness, pulls back out of the swirl and cherishes the long-     
 -distance inspiration.
 
-### [Y1.1] MeStreamm
+#### [Y1.1] MeStreamm
 
 TODO is TOBE
 
 `MeStreamm` is just another suggested name for `DearDiary` which might not do
 well with younger audience. Why not both? different marketing avenues? Same app
 no problem?
+
+
+#### [Y1.2] scuttlepundit
+
+Or "the knowledgeable gossip connoisseur"
+
+Because "[scuttlebutt](https://www.merriam-webster.com/dictionary/scuttlebutt)" means [gossip](https://en.wikipedia.org/wiki/Scuttlebutt) and pundits know stuff.
+
+This is the time in `DearDiary`'s life in which it is.......
+
+radicle
+
+.xyz
+
+
+and coarsi.ng is a friend
 
 ### [Y2] Hal-loW
 

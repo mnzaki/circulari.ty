@@ -7,7 +7,7 @@
 
 import { invoke } from '@tauri-apps/api/core';
 import { attachConsole } from '@tauri-apps/plugin-log';
-import { createServices } from 'tauri-plugin-o19-ffi';
+import { createServices } from 'tauri-plugin-o19-ff';
 import { setPostService } from './posts.svelte';
 import { setViewService } from './views.svelte';
 import { setPersonService } from './people.svelte';
@@ -41,7 +41,7 @@ async function waitForBackend(maxWaitMs = 10000, intervalMs = 100): Promise<void
 
   while (Date.now() - startTime < maxWaitMs) {
     try {
-      const response = await invoke<string>('plugin:o19-ffi|ping');
+      const response = await invoke<string>('plugin:o19-ff|ping');
       if (response === 'pong') {
         console.log('Backend is ready');
         return;
@@ -51,14 +51,18 @@ async function waitForBackend(maxWaitMs = 10000, intervalMs = 100): Promise<void
       lastError = err instanceof Error ? err : new Error(String(err));
       // Only log periodically to avoid console spam
       if (Math.floor((Date.now() - startTime) / 1000) % 2 === 0) {
-        console.log(`Backend not ready yet, retrying... (${Math.round((Date.now() - startTime) / 100) / 10}s)`);
+        console.log(
+          `Backend not ready yet, retrying... (${Math.round((Date.now() - startTime) / 100) / 10}s)`
+        );
       }
     }
 
-    await new Promise(resolve => setTimeout(resolve, intervalMs));
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
   }
 
-  throw new Error(`Backend failed to respond within ${maxWaitMs}ms. Last error: ${lastError?.message || 'Unknown'}`);
+  throw new Error(
+    `Backend failed to respond within ${maxWaitMs}ms. Last error: ${lastError?.message || 'Unknown'}`
+  );
 }
 
 /**
@@ -75,7 +79,9 @@ export async function initializeApp(): Promise<void> {
 
     // Check if running in Tauri
     if (!isTauri()) {
-      throw new Error('DearDiary requires the Tauri runtime. Please run with `tauri dev` or use the built application.');
+      throw new Error(
+        'DearDiary requires the Tauri runtime. Please run with `tauri dev` or use the built application.'
+      );
     }
 
     // Wait for backend to be ready before proceeding

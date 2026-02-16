@@ -2,14 +2,14 @@
 
 The main focus is [DearDiary's NEXTUP.md](./apps/DearDiary/NEXTUP.md)
 
-Here we have more high level goals with a concentration on `foundframeimpl`
+Here we have more high level goals with a concentration on `foundframe`
 covering as many bases as possible as quickly as possible. Because that's the
 focal point of the [circular](../CIRCULARI.TY.md) [spirali.ty](../O19.md) of the
 [o19](https://github.com/mnzaki/o19).
 
 # Doing
 
-- pkb support in `foundframeimpl`
+- pkb support in `foundframe`
   - write to local files in `$HOME/pkb/${DIRECTORY}/some_path/some_file.ext` structure
     - on mobile devices: somewhere that the user can access easily, not inside
       app data dirs
@@ -66,12 +66,12 @@ focal point of the [circular](../CIRCULARI.TY.md) [spirali.ty](../O19.md) of the
       `Entry`
       - no injesting without targets, we won't guess for you automatically
     - RUD an entry
-  - Clearly knowledge of `StreamChunks` is now needed in `foundframeimpl` and I
+  - Clearly knowledge of `StreamChunks` is now needed in `foundframe` and I
     think that's apropos.
 
 # TODO
 
-- mln support in `foundframeimpl`
+- mln support in `foundframe`
 
 - 2-phase loading of rust core
   - phase-1 minimal parts of core tauri, no plugins no deps
@@ -87,7 +87,6 @@ focal point of the [circular](../CIRCULARI.TY.md) [spirali.ty](../O19.md) of the
     - private by default
     - redundantly stored
 
-- `android-activities` flutter based package for easy modular screens
 - `ios-activities` later
 
 
@@ -101,6 +100,9 @@ focal point of the [circular](../CIRCULARI.TY.md) [spirali.ty](../O19.md) of the
       - "turn on autonotify seen"
   - on tap -> person.service.
 
+# Done and committed
+
+- `android-activities` package for easy modular screens
 
 ## Social Studies
 
