@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { initializeApp, isAppInitializing, isAppInitialized, getInitError } from '$lib/stores/app.svelte';
+  import ServiceErrorOverlay from '$lib/components/error/ServiceErrorOverlay.svelte';
 
   interface Props {
     children: import('svelte').Snippet;
@@ -36,6 +37,9 @@
 {:else}
   {@render children()}
 {/if}
+
+<!-- Fatal error overlay for service connection failures -->
+<ServiceErrorOverlay />
 
 <style>
   :global(*), :global(*::before), :global(*::after) {

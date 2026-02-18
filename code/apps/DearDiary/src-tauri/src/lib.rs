@@ -17,6 +17,7 @@ pub fn run() {
 
     // Database migrations
     tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
         .plugin(
             tauri_plugin_log::Builder::new()
                 .level(tauri_plugin_log::log::LevelFilter::Debug)
@@ -28,7 +29,7 @@ pub fn run() {
                 ))
                 .build(),
         )
-        .plugin(tauri_plugin_o19_ff::init())
+        .plugin(o19_foundframe_tauri::init())
         .plugin(tauri_plugin_opener::init())
         //.invoke_handler(tauri::generate_handler![])
         .run(tauri::generate_context!())

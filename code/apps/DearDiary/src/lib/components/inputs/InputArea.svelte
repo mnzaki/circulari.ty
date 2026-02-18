@@ -2,7 +2,7 @@
   import { tick } from 'svelte';
   import { addBit, commit, clearAccumulation, getAccumulation } from '$lib/stores/accumulatingPost.svelte';
   import { getPreview, isLoading, getError, getCachedPreview } from '$lib/stores/linkPreview.svelte';
-  import type { LinkPreview, AccumulableBit } from '@o19/foundframe';
+  import type { LinkPreview, AccumulableBit } from '@o19/foundframe-front';
 
   export type InputType = 'text' | 'link' | 'person' | null;
 

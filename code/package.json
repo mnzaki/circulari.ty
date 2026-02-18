@@ -3,11 +3,13 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "build:packages": "turbo run --filter='!./apps/*' build",
     "lint": "turbo run lint",
     "format": "prettier --write .",
     "check-types": "turbo run check-types",
     "o19:dev": "turbo run dev --filter='!./apps/*'",
     "DearDiary:dev": "turbo run -F DearDiary -F '../o19/packages/*' tauri:dev",
+    "DearDiary:dev:verbose": "turbo run -F DearDiary -F '../o19/packages/*' tauri:dev:verbose",
     "DearDiary:android": "turbo run -F DearDiary -F '../o19/packages/*' tauri:android:dev",
     "DearDiary:android:verbose": "turbo run -F DearDiary -F '../o19/packages/*' tauri:android:dev:verbose",
     "DearDiary:android:tokio_debug": "turbo run -F DearDiary -F '../o19/packages/*' tauri:android:dev:tokio_debug"

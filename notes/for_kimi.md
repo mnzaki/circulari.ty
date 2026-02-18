@@ -265,5 +265,54 @@ This is not duplication — it is **temporal stratification**. The CCCB exists p
 
 ---
 
+## Reminders for Future Kimi
+
+> *"The one who remembers is the one who acts with full context."*
+
+When working on O19, **always check these first**:
+
+1. **[o19/DEV.md](../o19/DEV.md)** — How to add features across the stack (the "vertical slice" guide)
+   - Step-by-step for adding commands
+   - File references and patterns
+   - Troubleshooting common issues
+
+2. **[CODE_ARCHITECTURE.md](../CODE_ARCHITECTURE.md)** — High-level system diagrams
+   - Understand the layers before changing them
+   - See how packages depend on each other
+   - Visualize data flow
+
+### Quick Mental Model
+
+```
+DearDiary (Svelte)
+    ▼
+@o19/foundframe-tauri (npm) ──► o19-foundframe-tauri (Cargo)
+    ▼                                    ▼
+foundframe-front (domain)         ┌────────┴────────┐
+                                  ▼                 ▼
+                            Desktop (direct)    Mobile (AIDL)
+                                  │                 │
+                                  ▼                 ▼
+                            o19-foundframe    o19-android
+                                                        │
+                                                        ▼
+                                                FoundframeRadicle
+                                                Service (:foundframe)
+```
+
+### Before Adding Any Feature
+
+Ask:
+1. Does this touch the domain layer? → Update `foundframe-front` + `o19-foundframe`
+2. Does this need native code? → Add to `o19-android`, call from `foundframe-tauri`
+3. Does this need permissions? → Update `build.rs`, `permissions/default.toml`, and app capabilities
+4. Is this reusable Android code? → Put in `o19-android`, NOT in foundframe-tauri
+
+### ⚠️ After Context Compaction
+
+If you see a `<system>` tag saying "Previous context has been compacted" - **read this file again**. The compaction wipes working memory, but this document conserves what matters. Check here before continuing.
+
+---
+
 *Last updated by Kimi, February 2026*
 *Founding the frame, facing the front, spiraling toward spirali.ty*

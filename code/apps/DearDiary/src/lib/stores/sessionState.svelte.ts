@@ -10,7 +10,7 @@
  * Philosophy: The app remembers where you last were, as you would.
  */
 
-import type { InputType } from '@o19/foundframe';
+import type { InputType } from '@o19/foundframe-front';
 
 const STORAGE_KEY = 'deardiary_session_state';
 
@@ -35,6 +35,12 @@ export interface SessionState {
   // UI: Last active input tab
   activeInput: InputType;
   
+  // Camera: Whether camera is enabled (not just hidden)
+  cameraEnabled: boolean;
+  
+  // User preferences
+  handedness: 'left' | 'right';
+  
   // Timestamp for debugging
   lastUpdated: number;
 }
@@ -50,6 +56,8 @@ const DEFAULT_STATE: SessionState = {
   feedScrollPosition: 0,
   lastReadPostId: null,
   activeInput: null,
+  cameraEnabled: true, // Camera on by default
+  handedness: 'right', // Right-handed by default
   lastUpdated: Date.now()
 };
 
@@ -109,6 +117,14 @@ export function getActiveInput(): InputType {
   return sessionState.activeInput;
 }
 
+export function getCameraEnabled(): boolean {
+  return sessionState.cameraEnabled;
+}
+
+export function getHandedness(): 'left' | 'right' {
+  return sessionState.handedness;
+}
+
 // Setters - each saves to localStorage after updating state
 export function setForegroundPosition(position: number): void {
   sessionState.foregroundPosition = position;
@@ -138,6 +154,16 @@ export function setActiveInput(input: InputType): void {
   saveState();
 }
 
+export function setCameraEnabled(enabled: boolean): void {
+  sessionState.cameraEnabled = enabled;
+  saveState();
+}
+
+export function setHandedness(handedness: 'left' | 'right'): void {
+  sessionState.handedness = handedness;
+  saveState();
+}
+
 // Clear specific draft
 export function clearInputDraft(type: keyof InputDraftsState): void {
   const defaults: InputDraftsState = { text: '', link: '', person: null };
@@ -163,4 +189,16 @@ export function resetSessionState(): void {
 // Debug
 export function debugSessionState(): void {
   console.log('Session State:', sessionState);
+}
+
+// Legacy compatibility - ForegroundLayer expects this
+let loadedState = $state(false);
+export function isSessionLoaded(): boolean {
+  return loadedState;
+}
+
+export async function loadSessionState(): Promise<void> {
+  if (loadedState) return;
+  // State is already loaded from localStorage on module init
+  loadedState = true;
 }

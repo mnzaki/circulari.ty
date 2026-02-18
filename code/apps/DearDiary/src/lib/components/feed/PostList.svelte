@@ -1,7 +1,7 @@
 <script lang="ts">
   import { VirtualList, type VLSlotSignature } from 'svelte-virtuallists';
   import SafePostCard from './SafePostCard.svelte';
-  import type { Post } from '@o19/foundframe';
+  import type { Post } from '@o19/foundframe-front';
 
   interface Props {
     posts: Post[];

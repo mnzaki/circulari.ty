@@ -4,7 +4,7 @@
  * Manages people/mentions state and provides search functionality.
  */
 
-import type { Person, PersonPort } from '@o19/foundframe';
+import type { Person, PersonPort } from '@o19/foundframe-front';
 
 // Service reference
 let personService: PersonPort | null = null;

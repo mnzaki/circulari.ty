@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Post, AccumulableBit } from '@o19/foundframe';
+  import type { Post, AccumulableBit } from '@o19/foundframe-front';
 
   interface Props {
     post: Post;

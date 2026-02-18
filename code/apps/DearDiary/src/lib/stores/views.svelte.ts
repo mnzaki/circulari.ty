@@ -5,9 +5,9 @@
  * Uses getter functions (Svelte 5 pattern for module-level state).
  */
 
-import type { View, ViewFilters, SortBy, ViewPort } from '@o19/foundframe';
+import type { View, ViewFilters, SortBy, ViewPort } from '@o19/foundframe-front';
 
-export type { View, ViewFilters, SortBy } from '@o19/foundframe';
+export type { View, ViewFilters, SortBy } from '@o19/foundframe-front';
 
 // Reactive state
 let viewsState = $state<View[]>([]);

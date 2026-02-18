@@ -6,8 +6,8 @@
  */
 
 import { addPost, loadPosts } from './posts.svelte';
-import type { AccumulableBit, AccumulatingPost, Post } from '@o19/foundframe';
-import { createEmptyAccumulation } from '@o19/foundframe';
+import type { AccumulableBit, AccumulatingPost, Post } from '@o19/foundframe-front';
+import { createEmptyAccumulation } from '@o19/foundframe-front';
 
 // Reactive state
 let accumulationState = $state<AccumulatingPost>(createEmptyAccumulation());

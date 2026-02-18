@@ -1,13 +1,18 @@
 <script lang="ts">
   import CaptureButton from './CaptureButton.svelte';
   import InputArea, { type InputType } from '$lib/components/inputs/InputArea.svelte';
+  import PairButton from '$lib/components/pairing/PairButton.svelte';
 
   interface Props {
     activeInput: InputType;
     onActivateInput: (type: InputType) => void;
+    /** Called when pair button is clicked (desktop only) */
+    onPairClick?: () => void;
+    /** Whether pairing is in progress */
+    isPairing?: boolean;
   }
 
-  let { activeInput, onActivateInput }: Props = $props();
+  let { activeInput, onActivateInput, onPairClick, isPairing = false }: Props = $props();
 
   // Left side CTAs (tabs)
   const leftCTAs: Array<{ id: InputType; label: string; icon: string }> = [
@@ -34,6 +39,11 @@
 </script>
 
 <div class="creation-tools-inner">
+  <!-- Pair Button - Desktop only, positioned to the left -->
+  <div class="pair-button-container">
+    <PairButton onClick={onPairClick} isPairing={isPairing} />
+  </div>
+
   <!-- Tab Bar: CTAs on left, CCCB breaking out in center, CTAs on right -->
   <div class="tab-bar-container">
     <!-- Left CTAs -->
@@ -105,6 +115,29 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
+    position: relative;
+  }
+
+  /* Pair Button Container - positioned to the left of creation tools */
+  .pair-button-container {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+  }
+
+  /* Adjust positioning for different screen sizes */
+  @media (max-width: 1024px) {
+    .pair-button-container {
+      left: 10px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .pair-button-container {
+      display: none; /* PairButton hides itself, but we also hide container */
+    }
   }
 
   /* Tab Bar Container - Flexbox with centered CCCB */

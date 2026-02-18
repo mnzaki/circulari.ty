@@ -21,6 +21,10 @@
       "cache": false,
       "persistent": true
     },
+    "tauri:dev:verbose": {
+      "cache": false,
+      "persistent": true
+    },
     "tauri:android:dev": {
       "cache": false,
       "persistent": true

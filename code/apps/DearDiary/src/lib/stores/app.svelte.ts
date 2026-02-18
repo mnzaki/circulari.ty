@@ -7,12 +7,15 @@
 
 import { invoke } from '@tauri-apps/api/core';
 import { attachConsole } from '@tauri-apps/plugin-log';
-import { createServices } from 'tauri-plugin-o19-ff';
+import { createServices } from '@o19/foundframe-tauri';
 import { setPostService } from './posts.svelte';
 import { setViewService } from './views.svelte';
 import { setPersonService } from './people.svelte';
 import { setPreviewService } from './linkPreview.svelte';
+import { setDeviceService } from './devices.svelte';
 import { loadMockPosts } from './posts.svelte';
+import { platform } from '@tauri-apps/plugin-os';
+import { initServiceStatusMonitoring, getServiceFatalError } from './serviceStatus.svelte';
 
 // send log messages from Rust to the webview console
 attachConsole().then((_detach) => {});
@@ -25,8 +28,12 @@ let services = $state<ReturnType<typeof createServices> | null>(null);
 /**
  * Check if running in Tauri environment
  */
-function isTauri(): boolean {
+export function isTauri(): boolean {
   return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+}
+export function isAndroid(): boolean {
+  // Check if we're running in Tauri on Android
+  return platform() == 'android';
 }
 
 /**
@@ -41,7 +48,8 @@ async function waitForBackend(maxWaitMs = 10000, intervalMs = 100): Promise<void
 
   while (Date.now() - startTime < maxWaitMs) {
     try {
-      const response = await invoke<string>('plugin:o19-ff|ping');
+      // FIXME move the ping command to foundframe-front
+      const response = await invoke<string>('plugin:o19-foundframe-tauri|ping');
       if (response === 'pong') {
         console.log('Backend is ready');
         return;
@@ -84,18 +92,30 @@ export async function initializeApp(): Promise<void> {
       );
     }
 
+    // Initialize service status monitoring early (before services are created)
+    // This ensures we catch fatal errors from service connection failures
+    await initServiceStatusMonitoring();
+
     // Wait for backend to be ready before proceeding
     await waitForBackend();
 
     // Create persistence services
     services = createServices();
     console.log('Persistence services created');
+    
+    // Check if service connection failed
+    const serviceError = getServiceFatalError();
+    if (serviceError) {
+      console.error('Service connection failed:', serviceError);
+      throw new Error(serviceError.message);
+    }
 
     // Wire up services to stores
     setPostService(services.post);
     setViewService(services.view);
     setPersonService(services.person);
     setPreviewService(services.preview);
+    setDeviceService(services.device);
 
     // Check if we have any posts
     const postCount = await services.post.count();

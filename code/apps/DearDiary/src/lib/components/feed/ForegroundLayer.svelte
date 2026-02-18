@@ -1,10 +1,38 @@
 <script lang="ts">
+  import { fade } from 'svelte/transition';
   import CreationTools from './CreationTools.svelte';
   import ViewReel from '$lib/components/views/ViewReel.svelte';
   import ErrorBoundary from '../ErrorBoundary.svelte';
-  import { loadSessionState, foregroundPosition, saveForegroundPosition, saveActiveInput } from '$lib/stores/session.svelte';
+  import { 
+    getForegroundPosition, 
+    setForegroundPosition, 
+    setActiveInput,
+    loadSessionState 
+  } from '$lib/stores/sessionState.svelte';
   import { loadViews } from '$lib/stores/views.svelte';
-  import type { InputType } from '@o19/foundframe';
+  import type { InputType } from '@o19/foundframe-front';
+
+  // Props
+  interface Props {
+    /** Called when QR scan mode should be enabled (foreground pulled > 50%) */
+    onQrScanModeChange?: (enabled: boolean) => void;
+    /** Called when a QR code is detected - for pairing flow */
+    onQrDetected?: (content: string) => void;
+    /** Called when position changes - for positioning overlays */
+    onPositionChange?: (positionVh: number) => void;
+    /** Called when pair button is clicked (desktop only) */
+    onPairClick?: () => void;
+    /** Whether pairing is in progress */
+    isPairing?: boolean;
+  }
+
+  let { 
+    onQrScanModeChange,
+    onQrDetected,
+    onPositionChange,
+    onPairClick,
+    isPairing = false
+  }: Props = $props();
 
   // Configuration
   const PEEK_POSITION_VH = 15;
@@ -13,14 +41,16 @@
   const BOTTOM_SNAP_VH = 85;
   const DRAG_RESISTANCE = 0.85;
   const MIN_FEED_VISIBLE_VH = 15;
+  const QR_SCAN_THRESHOLD_VH = 50; // Enable QR scanning when pulled down > 50%
   
   // State - restored from session
-  let translateY = $state(foregroundPosition());
+  let translateY = $state(getForegroundPosition());
   let isDragging = $state(false);
   let startClientY = $state(0);
-  let startTranslateY = $state(foregroundPosition());
+  let startTranslateY = $state(getForegroundPosition());
   let windowHeight = $state(0);
   let activeInput = $state<InputType>(null);
+  let isQrScanMode = $state(false);
 
   let maxTranslateVh = $derived(100 - MIN_FEED_VISIBLE_VH);
 
@@ -30,7 +60,7 @@
     if (!mounted) {
       mounted = true;
       loadSessionState().then(() => {
-        translateY = foregroundPosition();
+        translateY = getForegroundPosition();
       }).catch(err => console.error('Failed to load session:', err));
       loadViews().catch(err => console.error('Failed to load views:', err));
     }
@@ -42,9 +72,24 @@
     clearTimeout(positionTimeout);
     if (!isDragging) {
       positionTimeout = setTimeout(() => {
-        saveForegroundPosition(translateY);
+        setForegroundPosition(translateY);
       }, 100);
     }
+  });
+
+  // Track QR scan mode based on position
+  $effect(() => {
+    const shouldBeQrMode = translateY > QR_SCAN_THRESHOLD_VH;
+    if (shouldBeQrMode !== isQrScanMode) {
+      isQrScanMode = shouldBeQrMode;
+      onQrScanModeChange?.(shouldBeQrMode);
+      console.log('[ForegroundLayer] QR scan mode:', shouldBeQrMode ? 'enabled' : 'disabled');
+    }
+  });
+
+  // Notify parent of position changes
+  $effect(() => {
+    onPositionChange?.(translateY);
   });
 
   function handleDragHandlePointerDown(e: PointerEvent) {
@@ -80,12 +125,39 @@
     }
     
     // Save final position
-    saveForegroundPosition(translateY);
+    setForegroundPosition(translateY);
   }
 
   function handleActivateInput(type: InputType) {
     activeInput = type;
-    saveActiveInput(type);
+    setActiveInput(type);
+  }
+
+  /** Programmatically snap to a specific position */
+  export function snapTo(position: 'full' | 'peek' | 'qr-scan') {
+    switch (position) {
+      case 'full':
+        translateY = FULL_POSITION_VH;
+        break;
+      case 'peek':
+        translateY = PEEK_POSITION_VH;
+        break;
+      case 'qr-scan':
+        // Position for optimal QR scanning (about 60% down)
+        translateY = 60;
+        break;
+    }
+    setForegroundPosition(translateY);
+  }
+
+  /** Get current position */
+  export function getPosition() {
+    return {
+      translateY,
+      isQrScanMode,
+      isFullyOpen: translateY === FULL_POSITION_VH,
+      isPeek: translateY === PEEK_POSITION_VH
+    };
   }
 </script>
 
@@ -94,8 +166,18 @@
 <div 
   class="foreground-layer"
   class:dragging={isDragging}
+  class:qr-scan-mode={isQrScanMode}
   style="transform: translateY({translateY}vh)"
 >
+  <slot></slot>
+  <!-- QR Scan Mode Indicator - Shows when pulled down for scanning -->
+  {#if isQrScanMode}
+    <div class="qr-scan-indicator" transition:fade={{ duration: 200 }}>
+      <div class="qr-scan-pulse"></div>
+      <span class="qr-scan-text">Scanning for QR codes...</span>
+    </div>
+  {/if}
+
   <!-- Creation Tools - Draggable area containing CCCB, tabs, and inline input -->
   <div 
     class="creation-tools"
@@ -111,6 +193,8 @@
     <CreationTools 
       {activeInput}
       onActivateInput={handleActivateInput}
+      {onPairClick}
+      {isPairing}
     />
     
     <!-- Divider -->
@@ -146,6 +230,55 @@
     transition: none;
   }
 
+  .foreground-layer.qr-scan-mode {
+    /* Subtle visual cue when in QR scan mode */
+    box-shadow: 0 -4px 30px rgba(100, 200, 100, 0.15);
+    /* Make background transparent so camera shows through when pulled down */
+    background: transparent;
+  }
+
+  /* QR Scan Mode Indicator */
+  .qr-scan-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(180deg, rgba(100, 200, 100, 0.1) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .qr-scan-pulse {
+    width: 8px;
+    height: 8px;
+    background: #64c864;
+    border-radius: 50%;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+
+  .qr-scan-text {
+    font-size: 12px;
+    color: #4a9a4a;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.3);
+      opacity: 0.7;
+    }
+  }
+
   /* Creation Tools - The draggable handle containing everything */
   .creation-tools {
     flex-shrink: 0;
@@ -167,6 +300,10 @@
     border-radius: 2px;
     margin-bottom: 20px;
     flex-shrink: 0;
+  }
+
+  .foreground-layer.qr-scan-mode .drag-indicator {
+    background: linear-gradient(90deg, #ddd, #64c864, #ddd);
   }
 
   .tools-feed-divider {

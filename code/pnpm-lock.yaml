@@ -18,14 +18,20 @@ importers:
         specifier: ^2.8.3
         version: 2.8.3
 
-  ../o19/crates/tauri-plugin-o19-ff:
+  ../o19/crates/android:
+    devDependencies:
+      concurrently:
+        specifier: ^9.2.1
+        version: 9.2.1
+
+  ../o19/crates/foundframe-tauri:
     dependencies:
-      '@o19/foundframe':
-        specifier: workspace:*
-        version: link:../../packages/foundframe
       '@o19/foundframe-drizzle':
         specifier: workspace:*
-        version: link:../../packages/foundframe-drizzle
+        version: link:../../../code/packages/foundframe-drizzle
+      '@o19/foundframe-front':
+        specifier: workspace:*
+        version: link:../../../code/packages/foundframe-front
       '@tauri-apps/api':
         specifier: ^2
         version: 2.10.1
@@ -38,10 +44,10 @@ importers:
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
-        version: link:../../packages/eslint-config
+        version: link:../../../code/packages/eslint-config
       '@repo/typescript-config':
         specifier: workspace:*
-        version: link:../../packages/typescript-config
+        version: link:../../../code/packages/typescript-config
       '@rollup/plugin-typescript':
         specifier: ^12.1.2
         version: 12.3.0(rollup@4.41.1)(tslib@2.8.1)(typescript@5.9.2)
@@ -58,122 +64,17 @@ importers:
         specifier: ^5.8.3
         version: 5.9.2
 
-  ../o19/packages/android-activities:
-    devDependencies:
-      concurrently:
-        specifier: ^9.2.1
-        version: 9.2.1
-
-  ../o19/packages/debug:
-    dependencies:
-      concurrently:
-        specifier: ^9.2.1
-        version: 9.2.1
-
-  ../o19/packages/eslint-config:
-    devDependencies:
-      '@eslint/eslintrc':
-        specifier: ^3.3.1
-        version: 3.3.1
-      '@eslint/js':
-        specifier: ^9.39.1
-        version: 9.39.1
-      eslint-config-prettier:
-        specifier: ^10.1.1
-        version: 10.1.5(eslint@9.39.1(jiti@2.6.1))
-      eslint-config-turbo:
-        specifier: ^2.7.1
-        version: 2.7.1(eslint@9.39.1(jiti@2.6.1))(turbo@2.8.3)
-      eslint-plugin-svelte:
-        specifier: ^2.46.1
-        version: 2.46.1(eslint@9.39.1(jiti@2.6.1))(svelte@5.46.0)(ts-node@10.9.2(@types/node@25.2.2)(typescript@5.9.3))
-      globals:
-        specifier: ^15.15.0
-        version: 15.15.0
-      typescript-eslint:
-        specifier: ^8.50.0
-        version: 8.50.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
-
-  ../o19/packages/foundframe:
-    devDependencies:
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      typescript:
-        specifier: 5.9.2
-        version: 5.9.2
-
-  ../o19/packages/foundframe-drizzle:
-    dependencies:
-      '@o19/foundframe':
-        specifier: workspace:*
-        version: link:../foundframe
-    devDependencies:
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      better-sqlite3:
-        specifier: ^12.6.2
-        version: 12.6.2
-      drizzle-kit:
-        specifier: ^0.31.8
-        version: 0.31.8
-      drizzle-orm:
-        specifier: ^0.45.1
-        version: 0.45.1(better-sqlite3@12.6.2)
-      typescript:
-        specifier: 5.9.2
-        version: 5.9.2
-
-  ../o19/packages/typescript-config: {}
-
-  ../o19/packages/ui:
-    devDependencies:
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@sveltejs/kit':
-        specifier: ^2.49.0
-        version: 2.49.0(@sveltejs/vite-plugin-svelte@5.1.0(svelte@5.46.0)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)))(svelte@5.46.0)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1))
-      '@sveltejs/package':
-        specifier: ^2.5.0
-        version: 2.5.0(svelte@5.46.0)(typescript@5.9.2)
-      '@sveltejs/vite-plugin-svelte':
-        specifier: ^5.1.0
-        version: 5.1.0(svelte@5.46.0)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1))
-      eslint:
-        specifier: ^9.39.1
-        version: 9.39.1(jiti@2.6.1)
-      svelte:
-        specifier: ^5.46.0
-        version: 5.46.0
-      svelte-check:
-        specifier: ^4.3.0
-        version: 4.3.0(picomatch@4.0.3)(svelte@5.46.0)(typescript@5.9.2)
-      typescript:
-        specifier: 5.9.2
-        version: 5.9.2
-      vite:
-        specifier: ^6.3.2
-        version: 6.4.1(@types/node@25.2.2)(jiti@2.6.1)
-
   apps/DearDiary:
     dependencies:
-      '@o19/foundframe':
-        specifier: workspace:*
-        version: link:../../../o19/packages/foundframe
       '@o19/foundframe-drizzle':
         specifier: workspace:*
-        version: link:../../../o19/packages/foundframe-drizzle
+        version: link:../../packages/foundframe-drizzle
+      '@o19/foundframe-front':
+        specifier: workspace:*
+        version: link:../../packages/foundframe-front
+      '@o19/foundframe-tauri':
+        specifier: workspace:*
+        version: link:../../../o19/crates/foundframe-tauri
       '@tauri-apps/api':
         specifier: ^2
         version: 2.10.1
@@ -183,19 +84,16 @@ importers:
       '@tauri-apps/plugin-opener':
         specifier: ^2
         version: 2.5.3
-      '@tauri-apps/plugin-sql':
-        specifier: ^2.3.2
+      '@tauri-apps/plugin-os':
+        specifier: ~2
         version: 2.3.2
       svelte-virtuallists:
         specifier: ^1.4.2
         version: 1.4.2(svelte@5.46.0)
-      tauri-plugin-o19-ff:
-        specifier: workspace:*
-        version: link:../../../o19/crates/tauri-plugin-o19-ff
     devDependencies:
       '@o19/debug':
         specifier: workspace:*
-        version: link:../../../o19/packages/debug
+        version: link:../../packages/debug
       '@sveltejs/adapter-static':
         specifier: ^3.0.6
         version: 3.0.10(@sveltejs/kit@2.49.0(@sveltejs/vite-plugin-svelte@5.1.0(svelte@5.46.0)(vite@6.3.5(@types/node@25.2.2)(jiti@2.6.1)))(svelte@5.46.0)(vite@6.3.5(@types/node@25.2.2)(jiti@2.6.1)))
@@ -226,12 +124,15 @@ importers:
 
   apps/MeStreamm:
     dependencies:
-      '@o19/foundframe':
-        specifier: workspace:*
-        version: link:../../../o19/packages/foundframe
       '@o19/foundframe-drizzle':
         specifier: workspace:*
-        version: link:../../../o19/packages/foundframe-drizzle
+        version: link:../../packages/foundframe-drizzle
+      '@o19/foundframe-front':
+        specifier: workspace:*
+        version: link:../../packages/foundframe-front
+      '@o19/foundframe-tauri':
+        specifier: workspace:*
+        version: link:../../../o19/crates/foundframe-tauri
       '@tauri-apps/api':
         specifier: ^2
         version: 2.10.1
@@ -244,9 +145,6 @@ importers:
       svelte-virtuallists:
         specifier: ^1.4.2
         version: 1.4.2(svelte@5.46.0)
-      tauri-plugin-o19-ff:
-        specifier: workspace:*
-        version: link:../../../o19/crates/tauri-plugin-o19-ff
     devDependencies:
       '@sveltejs/adapter-static':
         specifier: ^3.0.6
@@ -392,14 +290,14 @@ importers:
     dependencies:
       '@repo/ui':
         specifier: workspace:*
-        version: link:../../../o19/packages/ui
+        version: link:../../packages/ui
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
-        version: link:../../../o19/packages/eslint-config
+        version: link:../../packages/eslint-config
       '@repo/typescript-config':
         specifier: workspace:*
-        version: link:../../../o19/packages/typescript-config
+        version: link:../../packages/typescript-config
       '@sveltejs/adapter-auto':
         specifier: ^4.0.0
         version: 4.0.0(@sveltejs/kit@2.49.0(@sveltejs/vite-plugin-svelte@5.1.0(svelte@5.46.0)(vite@6.3.5(@types/node@25.2.2)(jiti@2.6.1)))(svelte@5.46.0)(vite@6.3.5(@types/node@25.2.2)(jiti@2.6.1)))
@@ -441,14 +339,14 @@ importers:
     dependencies:
       '@repo/ui':
         specifier: workspace:*
-        version: link:../../../o19/packages/ui
+        version: link:../../packages/ui
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
-        version: link:../../../o19/packages/eslint-config
+        version: link:../../packages/eslint-config
       '@repo/typescript-config':
         specifier: workspace:*
-        version: link:../../../o19/packages/typescript-config
+        version: link:../../packages/typescript-config
       '@sveltejs/adapter-auto':
         specifier: ^4.0.0
         version: 4.0.0(@sveltejs/kit@2.49.0(@sveltejs/vite-plugin-svelte@5.1.0(svelte@5.46.0)(vite@6.3.5(@types/node@25.2.2)(jiti@2.6.1)))(svelte@5.46.0)(vite@6.3.5(@types/node@25.2.2)(jiti@2.6.1)))
@@ -485,6 +383,108 @@ importers:
       vitest:
         specifier: ^3.2.0
         version: 3.2.0(@types/node@25.2.2)(jiti@2.6.1)
+
+  packages/debug:
+    dependencies:
+      concurrently:
+        specifier: ^9.2.1
+        version: 9.2.1
+
+  packages/eslint-config:
+    devDependencies:
+      '@eslint/eslintrc':
+        specifier: ^3.3.1
+        version: 3.3.1
+      '@eslint/js':
+        specifier: ^9.39.1
+        version: 9.39.1
+      eslint-config-prettier:
+        specifier: ^10.1.1
+        version: 10.1.5(eslint@9.39.1(jiti@2.6.1))
+      eslint-config-turbo:
+        specifier: ^2.7.1
+        version: 2.7.1(eslint@9.39.1(jiti@2.6.1))(turbo@2.8.3)
+      eslint-plugin-svelte:
+        specifier: ^2.46.1
+        version: 2.46.1(eslint@9.39.1(jiti@2.6.1))(svelte@5.46.0)(ts-node@10.9.2(@types/node@25.2.2)(typescript@5.9.3))
+      globals:
+        specifier: ^15.15.0
+        version: 15.15.0
+      typescript-eslint:
+        specifier: ^8.50.0
+        version: 8.50.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+
+  packages/foundframe-drizzle:
+    dependencies:
+      '@o19/foundframe-front':
+        specifier: workspace:*
+        version: link:../foundframe-front
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      better-sqlite3:
+        specifier: ^12.6.2
+        version: 12.6.2
+      drizzle-kit:
+        specifier: ^0.31.8
+        version: 0.31.8
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(better-sqlite3@12.6.2)
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
+  packages/foundframe-front:
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
+  packages/typescript-config: {}
+
+  packages/ui:
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@sveltejs/kit':
+        specifier: ^2.49.0
+        version: 2.49.0(@sveltejs/vite-plugin-svelte@5.1.0(svelte@5.46.0)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1)))(svelte@5.46.0)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1))
+      '@sveltejs/package':
+        specifier: ^2.5.0
+        version: 2.5.0(svelte@5.46.0)(typescript@5.9.2)
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^5.1.0
+        version: 5.1.0(svelte@5.46.0)(vite@6.4.1(@types/node@25.2.2)(jiti@2.6.1))
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1(jiti@2.6.1)
+      svelte:
+        specifier: ^5.46.0
+        version: 5.46.0
+      svelte-check:
+        specifier: ^4.3.0
+        version: 4.3.0(picomatch@4.0.3)(svelte@5.46.0)(typescript@5.9.2)
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+      vite:
+        specifier: ^6.3.2
+        version: 6.4.1(@types/node@25.2.2)(jiti@2.6.1)
 
 packages:
 

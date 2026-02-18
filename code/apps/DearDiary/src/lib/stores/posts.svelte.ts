@@ -5,8 +5,8 @@
  * Uses $effect for reactive updates and service layer for persistence.
  */
 
-import type { Post, CreatePost, AccumulableBit, XanaduLink } from '@o19/foundframe';
-import type { PostPort } from '@o19/foundframe';
+import type { Post, CreatePost, AccumulableBit, XanaduLink } from '@o19/foundframe-front';
+import type { PostPort } from '@o19/foundframe-front';
 
 // Reactive state
 let postsState = $state<Post[]>([]);

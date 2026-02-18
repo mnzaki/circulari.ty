@@ -40,13 +40,13 @@
 
 
 
-
-
-
-
-
-
 ## TODO LAAAAAAAAAATTTTEERRRRR
+
+- creation macros
+  - record a react video
+    - player and recorder time are synchronised
+      - press play, it plays back and records you
+      - scrub time, overwrite recording
 
 - Make the CTAs furiously rejoice when empty CCCB is tapped. Furiouser still on
   further tapping.
@@ -57,6 +57,22 @@
 - fix tiny jank in PostList scrolling (scroll down slowly, notice it jumps by a
   dozen pixels back) because of bad estimate of link previews
 
+- Fun times
+  - journey through identity choice (if you want)
+    - The Onboarding flow starts with a simple screen that presents a newly
+      created identity (the first 5 emojis)
+      - but there's a randomize button
+        - and if you click it once a hint appears below: "what is this?"
+        - if you click it a few more times, the hint changes to "is choice
+          important?"
+          - clicking the hint explains a bit about the emojis and public keys
+            - with more subtle hints to read more of course
+              - then somewhere 3-5 layers deep, a reminder "hey maybe finish the
+                app onboarding first then go to the help section to read more
+                about these things, though you can continue here if you want"
+                - then aaaacccctually render the help section inline while the
+                  onboarding is on-hold xD and don't lose the latest entropy
+                  state the user found of course!!!
 
 ## Done and committed
 
@@ -111,4 +127,3 @@
 - `pnpm db:cli` in `persistence-drizzle`
 - `app.html` now says "DearDiary: today i..."
 - svelte-virtuallist for virtual scrolling of posts
-

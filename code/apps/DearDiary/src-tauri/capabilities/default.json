@@ -4,10 +4,11 @@
   "description": "Capability for the main window",
   "windows": ["main"],
   "permissions": [
-    "o19-ff:default",
-    "o19-ff:allow-run-sql",
+    "o19-foundframe-tauri:default",
+    "o19-foundframe-tauri:allow-run-sql",
     "core:default",
     "opener:default",
-    "log:default"
+    "log:default",
+    "os:default"
   ]
 }

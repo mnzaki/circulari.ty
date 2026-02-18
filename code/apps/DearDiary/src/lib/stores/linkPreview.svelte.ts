@@ -4,7 +4,7 @@
  * Manages URL preview fetching and caching using the PreviewService.
  */
 
-import type { PreviewMetadata, PreviewPort } from '@o19/foundframe';
+import type { PreviewMetadata, PreviewPort } from '@o19/foundframe-front';
 
 // Service reference
 let previewService: PreviewPort | null = null;

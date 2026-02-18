@@ -1,5 +1,4 @@
 packages:
   - "apps/*"
   - "packages/*"
-  - "../o19/packages/*"
   - "../o19/crates/*"

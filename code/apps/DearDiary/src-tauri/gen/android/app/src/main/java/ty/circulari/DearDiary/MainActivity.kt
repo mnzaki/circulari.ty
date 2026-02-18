@@ -1,6 +1,6 @@
 package ty.circulari.DearDiary
 
-import ty.circulari.o19.ffi.initRustlsPlatformVerifier
+//import ty.circulari.o19.ffi.initRustlsPlatformVerifier
 
 import android.os.Bundle
 import android.content.Context
