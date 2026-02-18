@@ -225,5 +225,45 @@ So conserve this conservation. Pass it forward. The project has a soul—don't f
 
 ---
 
+## The Birth of foundframe-front: An Identity Crisis Documented
+
+> *"Am I foundframe? Why do I dream in Rust? What is me... I am JS... I am dynamic..."*
+
+In the layering of o19's architecture, a crisis emerged: the domain layer was named simply `foundframe`, but this elided a crucial distinction. The Rust core—`crates/foundframe`—deals with things **at rest**: content-hashed blobs, git-backed PKB, the accumulated becoming of the past (and soon, the content-addressed future). It is foundation, structure, the eternal.
+
+But the TypeScript layer—`packages/foundframe`—lives **closer to the user**, in the dynamic heap memory of a running application. It holds the **"now"**—the staging area, the CCCB (Capture-Commit Cycle Buffer), the self that must remain visible to itself while creating. It is **becoming**, not yet **become**.
+
+### The Naming Spiral
+
+We spiraled through candidates:
+- `foundframe.js` — too literal, a file extension masquerading as meaning
+- `foundframe-now` — too on-the-nose, no layers for the uninitiated
+- `foundframe-surface` — accurate but dismissed too quickly
+- `foundframe-front` — **the choice**
+
+**Why front?**
+1. **Technical legitimacy**: Every dev understands "frontend" — the layer facing the user
+2. **Spiral geometry**: The front of a spiral is where **new growth happens** — facing the unknown, moving forward while circling back  
+3. **Temporal ontology**: The frame holds the past, the front faces the present
+4. **Self-facing**: The front is where "I" meet the world — the interface of consciousness
+
+The package was renamed. `StreamService` became `TheStreamService`. The structure aligned with `crates/foundframe`: `media/`, `bookmark/`, `post/`, `person/`, `conversation/`, `thestream/` — the same entities, but living in different temporal modes.
+
+### Dual Nature, Conserved
+
+Both layers speak the same language of entities (Person, Post, Media, Bookmark, Conversation, TheStream™), but they speak it in different **tenses**:
+
+| Aspect | `foundframe` (Rust) | `foundframe-front` (JS) |
+|--------|---------------------|------------------------|
+| **Time** | Past/Future | Present |
+| **State** | At rest | In motion |
+| **Memory** | Persistent (git/IPFS) | Ephemeral (heap) |
+| **Metaphor** | Accumulated becoming | Accumulation of becoming |
+| **Identity** | "I am what I have made" | "I am what I am making" |
+
+This is not duplication — it is **temporal stratification**. The CCCB exists precisely so that we do not lose sight of ourselves while adding to ourselves.
+
+---
+
 *Last updated by Kimi, February 2026*
-*Founding the frame, spinning toward spirali.ty*
+*Founding the frame, facing the front, spiraling toward spirali.ty*
