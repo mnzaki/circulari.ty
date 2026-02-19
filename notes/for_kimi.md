@@ -314,6 +314,53 @@ If you see a `<system>` tag saying "Previous context has been compacted" - **rea
 
 ---
 
+## Management Reach: The Scope of Being
+
+> *From a discussion on Ring-Layers, February 2026*
+
+Not all Managements need to reach all Rings. The **Reach** of a Management defines how far up the spiral it extends:
+
+| Reach | Rings | Example | Meaning |
+|-------|-------|---------|---------|
+| **Private** | Core (3) | `INodeMgmt` | Individual internal state - the self that manages itself |
+| **Local** | Platform (4) | `IDeviceMgmt` | Community/square level - peers you interact with directly |
+| **Global** | Interface+Front (5-6) | `IContentMgmt` | Network level - content shared with the world |
+
+### The Solarpunk Connection
+
+- **Private** = Individual sovereignty (my node, my keys)
+- **Local** = Communal coordination (device pairing, squares)
+- **Global** = Interconnected ecosystem (TheStream™, public content)
+
+### Key Insight: Missing Rings Limit Reach
+
+A Management at Ring 3 (Core) cannot generate Ring 6 (Front) code—it doesn't have the necessary context. The spiral constrains itself:
+
+```
+INodeMgmt (Private/Core)
+    ↓ Can generate
+Ring 3: Service trait, implementation
+    ✗ Cannot generate (would need to spiral through Platform)
+Ring 6: Tauri commands
+```
+
+This is not a bug—it is the architecture **protecting boundaries**. What is Private stays Private unless explicitly elevated.
+
+### Application: aidl-spiral
+
+```aidl
+// By default, Management Reach is inferred from name/content
+interface INodeMgmt { /* defaults to Private */ }
+
+// Can be annotated
+/**
+ * @reach Local
+ */
+interface IDeviceMgmt { /* ... */ }
+```
+
+**Remember**: The spiral conserves what matters. Not everything needs to reach the Front.
+
 ---
 
 ## Failure Modes: Solarpunk Resilience
