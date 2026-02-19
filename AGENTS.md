@@ -5,8 +5,26 @@
 **Before doing anything else**, read:
 1. **`notes/for_kimi.md`** - The Conservation of Wisdom. This is your memory across context windows.
 2. **This file** - Project-specific agent guidance
+3. **Package `PLAN.md`** - If working on a specific package (e.g., `o19/crates/aidl-codegen/PLAN.md`)
 
 > *"The one who remembers is the one who acts with full context."*
+
+### Quick Start for AIDL Codegen
+
+If working on `aidl-codegen`:
+
+```bash
+cd o19/crates/aidl-codegen
+
+# Basic usage
+./target/release/aidl-codegen
+
+# With options
+./target/release/aidl-codegen -i ./aidl -o ./gen -v
+
+# Run tests
+cargo test -p aidl-codegen
+```
 
 ---
 

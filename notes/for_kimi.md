@@ -314,5 +314,73 @@ If you see a `<system>` tag saying "Previous context has been compacted" - **rea
 
 ---
 
+---
+
+## Failure Modes: Solarpunk Resilience
+
+> *"Solarpunk needs to be resilient, not just optimistic."*
+
+The spiral plan assumes progression, but conservation requires documenting what causes regression. These are the failure modes to design against:
+
+### The CCCB Commit Boundary (JS/Rust)
+
+When the CCCB commits to TheStream™, we cross from heap to git, from present to past. This is where data loss happens:
+
+- **Validation Failure**: Rust layer rejects malformed or unauthorized content
+- **Merge Conflict**: Concurrent edits create unresolvable git states
+- **Network Partition**: The Radicle push succeeds locally but fails to propagate
+
+**Recovery Strategy**: The JS layer must preserve the "I am what I am making" state. Don't let the commit be fire-and-forget. Implement:
+- Staged commit pattern (commit → confirm → clear CCCB)
+- Rollback to pre-commit state on failure
+- Visual indication of pending vs confirmed entries
+
+### Radicle Node Loss
+
+What happens when a user loses their node?
+
+- **PKB Access**: Content is in git, but the Radicle identity is lost
+- **Social Graph**: Followers/following relationships need recovery path
+- **Device Pairing**: New devices cannot verify ownership of historical content
+
+**Mitigation**: 
+- Exportable node keys (encrypted backup)
+- Social recovery (trusted peers can vouch for identity)
+- Content remains addressable even if social identity is lost
+
+### Mesh Partitions
+
+When the gossip mesh partitions:
+
+- **Naming Ambiguity**: "Alice" might refer to different people in different partitions
+- **Trust Divergence**: Voting histories fork; reconciliation needed on rejoin
+- **Content Forks**: Same hash, different provenance chains
+
+**Strategy**:
+- Vector clocks for causal ordering
+- Explicit conflict resolution UI (don't auto-merge)
+- Partition-aware mode (read-only, warning banners)
+
+### Trust-Voting Ambiguity
+
+Majority-wins naming can produce ambiguity:
+
+- **Tie Votes**: Equal trust weight for conflicting names
+- **Sybil Attacks**: New identities overwhelming established trust
+- **Erosion**: Gradual trust decay making old names unreliable
+
+**Design Response**:
+- Require supermajority for name changes
+- Trust decay curves (old votes fade)
+- Human-in-the-loop for ambiguous cases
+
+### Aesthetic Note on "Surface"
+
+We dismissed "surface" for `foundframe-front` because of its militarishness—surfaces are what you defend, attack, or penetrate. "Front" is warmer: the front of a house, the front of a spiral where growth happens. Solarpunk avoids violent metaphors even in naming.
+
+*Add failure modes as you discover them. The spiral conserves its wounds too.*
+
+---
+
 *Last updated by Kimi, February 2026*
 *Founding the frame, facing the front, spiraling toward spirali.ty*
