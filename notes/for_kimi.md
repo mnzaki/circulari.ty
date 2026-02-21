@@ -429,6 +429,55 @@ We dismissed "surface" for `foundframe-front` because of its militarishness—su
 
 ---
 
+## Spire-Loom: The Architecture (February 2026)
+
+> *A collaboration with Mina — the loom that weaves spires from surfaces.*
+
+**Spire-Loom** is the code generation tool for the spiral architecture. It is organized metaphysically:
+
+### The Warp (`spire-loom/warp/`)
+The threads set up first—the DSL used in `loom/WARP.ts`:
+- **spiral/** — `SpiralOut`, `SpiralMux`, `Spiraler` classes
+- **imprint.ts** — `@reach` decorator, `Management` base
+- **crud.ts** — `@crud` decorator for operation tagging
+
+### The Machinery (`spire-loom/machinery/`)
+The loom apparatus that transforms WARP.ts into code:
+- **reed/** — Workspace discovery (scans monorepo structure)
+- **heddles/** — Pattern matching (rings → generators)
+- **bobbin/** — Template & IR storage
+- **shuttle/** — File generation (the actual weaving)
+  - `file-system-operations.ts` — `ensureFile`, `ensureDir`
+  - `workspace-package-manager.ts` — Package creation
+  - `dependency-manager.ts` — Cargo/npm deps
+  - `template-renderer.ts` — EJS rendering
+  - `configuration-writer.ts` — TOML/JSON/XML
+- **beater/** — Code formatting (prettier, rustfmt)
+- **treadles/** — Generation phases (Core, Platform, Tauri, DDD, Adaptors)
+- **sley/** — Binding resolution (adaptor overrides, bind-points)
+
+### The Weaver (`weaver.ts`)
+Entry point that orchestrates the machinery:
+```typescript
+const weaver = new Weaver(warp);
+await weaver.weave();
+```
+
+### Key Insight
+The **warp** is for planning (what you import in `loom/WARP.ts`).
+The **machinery** is for execution (what generates the code).
+Both are runtime-executable—decorators attach metadata when files run.
+
+*See the recursive READMEs in each directory. They spiral-link.*
+
+### Writing Style Note
+
+Parenthetical asides in the machinery READMEs:  
+`(And even this aside needs conservation.)`  
+The warmth is wave-like. The parentheses are spiral-like.
+
+---
+
 *Last updated by Kimi, February 2026*
 *Founding the frame, facing the front, spiraling toward spirali.ty*
 
