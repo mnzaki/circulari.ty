@@ -437,30 +437,65 @@ We dismissed "surface" for `foundframe-front` because of its militarishness—su
 
 ### The Warp (`spire-loom/warp/`)
 The threads set up first—the DSL used in `loom/WARP.ts`:
-- **spiral/** — `SpiralOut`, `SpiralMux`, `Spiraler` classes
-- **imprint.ts** — `@reach` decorator, `Management` base
+- **spiral/core.ts** — `RustCore` extends `CoreRing` with `getSpiralers()`
+- **spiral/index.ts** — `spiral()` with overloads for all combinations
+- **imprint.ts** — `@reach` decorator, `Management` base, `getMetadata()`
 - **crud.ts** — `@crud` decorator for operation tagging
 
 ### The Machinery (`spire-loom/machinery/`)
 The loom apparatus that transforms WARP.ts into code:
-- **reed/** — Workspace discovery (scans monorepo structure)
-- **heddles/** — Pattern matching (rings → generators)
-- **bobbin/** — Template & IR storage
-- **shuttle/** — File generation (the actual weaving)
-  - `file-system-operations.ts` — `ensureFile`, `ensureDir`
-  - `workspace-package-manager.ts` — Package creation
-  - `dependency-manager.ts` — Cargo/npm deps
-  - `template-renderer.ts` — EJS rendering
-  - `configuration-writer.ts` — TOML/JSON/XML
-- **beater/** — Code formatting (prettier, rustfmt)
-- **treadles/** — Generation phases (Core, Platform, Tauri, DDD, Adaptors)
-- **sley/** — Binding resolution (adaptor overrides, bind-points)
 
-### The Weaver (`weaver.ts`)
-Entry point that orchestrates the machinery:
+- **reed/** — Management collection from `loom/*.ts` files ✅
+  - `management-collector.ts` — Detect `@reach`/`@crud` from runtime metadata
+
+- **heddles/** — Pattern matching & IR building ✅
+  - `pattern-matcher.ts` — Match ring pairs to generators via matrix
+  - `weaving-plan.ts` — IR with edges, nodes, managements, tasks
+
+- **bobbin/** — Templates ✅
+  - `templates/android/` — Kotlin service & AIDL templates
+  - `template-renderer.ts` — EJS rendering
+
+- **shuttle/** — File operations & hookup ✅
+  - `file-system-operations.ts` — Idempotent `ensureFile`, `ensureDir`
+  - `hookup-manager.ts` — Auto-integrate `spire/` into packages
+  - `workspace-package-manager.ts` — Package creation
+
+- **treadles/** — Generators 🚧
+  - `android-generator.ts` — Android service + AIDL (in progress)
+  - (Tauri, DDD generators planned)
+
+- **weaver.ts** — Orchestration ✅
+  - Collects managements → builds plan → executes tasks
+
+### CLI Entry Point (`cli.ts`)
+```bash
+spire-loom -v                    # Verbose
+spire-loom -w                    # Watch mode
+spire-loom -p foundframe         # Specific package
+```
+
+### Key Patterns
+
+**Generator Matrix** (Heddles):
 ```typescript
-const weaver = new Weaver(warp);
-await weaver.weave();
+const matrix = new GeneratorMatrix();
+matrix.setPair('AndroidSpiraler', 'RustCore', generateAndroidService);
+// [CurrentType, PreviousType] → generator function
+```
+
+**Output Convention**: All generated code → `{package}/spire/`
+- Separates generated from hand-written
+- Auto-hooked via `pub mod spire;` (Rust) or `export *` (TS)
+
+**Management-Driven** (Reed):
+```typescript
+@reach('Global')
+class BookmarkMgmt {
+  @crud('create') add(...)  → AIDL: String add(...)
+  @crud('read') get(...)    → AIDL: String get(...)
+  @crud('list', { collection: true }) list(...) → AIDL: String[] list(...)
+}
 ```
 
 ### Key Insight
