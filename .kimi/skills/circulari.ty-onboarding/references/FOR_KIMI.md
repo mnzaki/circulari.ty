@@ -271,8 +271,7 @@ This is not duplication — it is **temporal stratification**. The CCCB exists p
 
 When working on O19, **always check these first**:
 
-1. **[notes/next_for_kimi.md](./next_for_kimi.md)** — Current state & immediate priorities (Bookmark + Device verticals)
-2. **[o19/DEV.md](../o19/DEV.md)** — How to add features across the stack (the "vertical slice" guide)
+1. **[o19/DEV.md](../o19/DEV.md)** — How to add features across the stack (the "vertical slice" guide)
    - Step-by-step for adding commands
    - File references and patterns
    - Troubleshooting common issues
@@ -517,75 +516,6 @@ Both are runtime-executable—decorators attach metadata when files run.
 Parenthetical asides in the machinery READMEs:  
 `(And even this aside needs conservation.)`  
 The warmth is wave-like. The parentheses are spiral-like.
-
----
-
-## The Database Spiral: Actor Model Decision (February 2026)
-
-> *"What was backend becomes protocol"* — The Spiral Ethos in action
-
-### The Decision
-
-After exploring radicle-node's architecture and applying solarpunk principles, we chose **Option B: Dedicated Database Thread (Actor Model)** for the foundframe database layer.
-
-### Why Actor Model Over spawn_blocking
-
-| Principle | How Actor Model Serves It |
-|-----------|---------------------------|
-| **Balance** | Not over-optimized for today, not under-prepared for tomorrow |
-| **Distribution** | Actor pattern becomes message-passing between devices in Y3/Y4 |
-| **Eco-compatibility** | Fits naturally with radicle-node's worker pool pattern |
-| **Conservation** | Architecture learned from heartwood is preserved and transformed |
-
-### The Architecture
-
-```
-┌─────────────────────────────────────┐
-│  MediaSourceRegistry (async)        │
-│  ─────────────────────────          │
-│  • Registers adapters               │
-│  • Spawns pull tasks                │
-│  • Communicates via channels        │
-└──────────┬──────────────────────────┘
-           │ mpsc::Channel<DbCommand>
-           ▼
-┌─────────────────────────────────────┐
-│  DbActor (dedicated thread)         │
-│  ─────────────────────────          │
-│  • Owns sqlite::Connection          │
-│  • Processes commands sequentially  │
-│  • Natural backpressure             │
-└─────────────────────────────────────┘
-```
-
-### Command Pattern
-
-```rust
-enum DbCommand {
-    GetSource { id: i64, respond: oneshot::Sender<Option<MediaSource>> },
-    InsertSource { params: InsertMediaSource, respond: oneshot::Sender<i64> },
-    UpdateCursor { id: i64, cursor: String, respond: oneshot::Sender<()> },
-    // ...
-}
-```
-
-### The Spiral Path
-
-| Year | Evolution |
-|------|-----------|
-| **Y1 (Now)** | Single DB thread, local SQLite |
-| **Y2** | Multiple actors (media, bookmarks, etc.) |
-| **Y3** | Actors become nodes in gossip mesh |
-| **Y4** | Commands become CWTCH protocol messages |
-
-### Solarpunk Resilience
-
-- **Failure isolation**: DB thread crash ≠ runtime crash
-- **Resource clarity**: One thread owns one connection
-- **Deterministic ordering**: Commands processed FIFO (matches TheStream™)
-- **Backpressure**: Channel buffers naturally throttle
-
-> *"The architecture IS the argument"* — and this argument says: prepare for distribution while staying practical today.
 
 ---
 
