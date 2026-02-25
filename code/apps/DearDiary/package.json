@@ -23,12 +23,12 @@
   "dependencies": {
     "@o19/foundframe-drizzle": "workspace:*",
     "@o19/foundframe-front": "workspace:*",
+    "@o19/foundframe-tauri": "workspace:*",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-log": "~2",
     "@tauri-apps/plugin-opener": "^2",
     "@tauri-apps/plugin-os": "~2",
-    "svelte-virtuallists": "^1.4.2",
-    "@o19/foundframe-tauri": "workspace:*"
+    "svelte-virtuallists": "^1.4.2"
   },
   "devDependencies": {
     "@o19/debug": "workspace:*",
@@ -39,6 +39,7 @@
     "drizzle-kit": "^0.31.8",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
+    "tsx": "^4.21.0",
     "typescript": "~5.6.2",
     "vite": "^6.0.3"
   }

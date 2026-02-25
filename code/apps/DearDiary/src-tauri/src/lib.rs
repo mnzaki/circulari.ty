@@ -35,3 +35,6 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+
+#[path = "spire_integration_test.rs"]
+mod spire_integration_test;

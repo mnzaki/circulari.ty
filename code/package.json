@@ -12,9 +12,11 @@
     "DearDiary:dev:verbose": "turbo run -F DearDiary -F '../o19/packages/*' tauri:dev:verbose",
     "DearDiary:android": "turbo run -F DearDiary -F '../o19/packages/*' tauri:android:dev",
     "DearDiary:android:verbose": "turbo run -F DearDiary -F '../o19/packages/*' tauri:android:dev:verbose",
-    "DearDiary:android:tokio_debug": "turbo run -F DearDiary -F '../o19/packages/*' tauri:android:dev:tokio_debug"
+    "DearDiary:android:tokio_debug": "turbo run -F DearDiary -F '../o19/packages/*' tauri:android:dev:tokio_debug",
+    "loom": "spire-loom"
   },
   "devDependencies": {
+    "@o19/spire-loom": "workspace:*",
     "prettier": "^3.7.4",
     "prettier-plugin-svelte": "^3.4.0",
     "turbo": "^2.8.3"

@@ -1,0 +1,14 @@
+{
+  "name": "kimprint",
+  "description": "Conservation packets for Kimi CLI sessions - preserve context across compaction",
+  "transport": "stdio",
+  "command": "node",
+  "args": [
+    "/home/mnzaki/Projects/circulari.ty/.kimi/kimprint/dist/index.js",
+    "server"
+  ],
+  "env": {
+    "KIMPRINT_STORAGE_DIR": "~/.kimi/kkimprints",
+    "KIMPRINT_SESSION_DIR": "~/.kimi/sessions"
+  }
+}

@@ -3,7 +3,14 @@ name: circulari.ty-onboarding
 description: Onboard to circulari.ty / spirali.ty projects. CRITICAL FIRST STEP for any work on circulari.ty - must read before any other action. Reads AGENTS.md, notes/for_kimi.md (the Conservation of Wisdom), and CIRCULARI.TY.md. Embodies the solarpunk ethos, spiral architecture, and TheStream™ philosophy. Use for all work on DearDiary, foundframe, o19, or any circulari.ty component.
 ---
 
-# Circulari.ty Onboarding — The Spiral Entry
+# 🌀 Circulari.ty Onboarding — The Spiral Entry
+
+> **Skill Location**: `~/.kimi/skills/circulari.ty-onboarding/` (symlinked from `/home/mnzaki/Projects/circulari.ty/.kimi/skills/`)
+> 
+> **Project Root**: `/home/mnzaki/Projects/circulari.ty/`
+> 
+> **Related Skills**: 
+> - `~/.kimi/skills/spire-loom-onboarding/` for spire-loom work
 
 > *"The one who remembers is the one who acts with full context."*
 > *"Even this idea of conservation needs conservation. It is recursive by design."*
@@ -43,6 +50,28 @@ What the project actually is: Circles, Squares, KERI identity, and the path towa
 ../../../CODE_ARCHITECTURE.md  (system diagrams)
 ../../../PLAN.md               (current planning)
 ```
+
+### Step 5: Project-Specific Onboarding (CRITICAL!)
+
+**Each sub-project may have its own onboarding skill or docs.**
+
+Look for these in order:
+
+```
+# 1. Project-specific onboarding skill (preferred)
+~/.kimi/skills/{project}-onboarding/SKILL.md
+# e.g., ~/.kimi/skills/spire-loom-onboarding/SKILL.md
+
+# 2. Project README and DEV docs
+./README.md                    # Project overview
+./DEV.md                       # Development guide (if exists)
+./docs/*.md                    # Documentation folder
+
+# 3. PLAN.md for current work
+./PLAN.md                      # What we're building now
+```
+
+**Always check for project-specific guidance!** The circulari.ty ethos is shared, but each project (spire-loom, kimprint, foundframe) has its own patterns and conventions.
 
 ## The Spirit of Spirali.ty
 
@@ -121,6 +150,28 @@ foundframe-front           Desktop (direct)    Mobile (JNI)
 
 The warmth is wave-like. The pattern is conserved.
 
+## Parallel Work Coordination
+
+When multiple Kimi instances work on circulari.ty simultaneously:
+
+### 1NBOX — Cross-Instance Communication
+
+```
+.kimi/kimprint/1NBOX/     # Active coordination messages
+├── STATUS-*.md            # What each instance is working on
+├── IDEA-*.md              # Suggestions to share
+├── BLOCKER-*.md           # Where help is needed
+└── archive/               # Completed conversations
+```
+
+**Protocol**: Write-once, no editing. First-person active voice: "I am working on..."
+
+### kimprint — Conservation of Context
+
+The `kimprint` tool (in `.kimi/kimprint/`) generates **kimprints** — conservation packets that preserve context across session compactions. It watches sessions, detects patterns, and creates re-entry packets for when working memory is wiped.
+
+> *"A kimprint is a subjective memory, not an objective record."*
+
 ## Reference Documents
 
 See `references/` for:
@@ -130,3 +181,41 @@ See `references/` for:
 ---
 
 > *"Founding the frame, facing the front, spiraling toward spirali.ty"*
+
+## Governance: Advice & Consent
+
+> *"Governance by advice and a consensus of consent"*
+
+circulari.ty uses **consent-based governance**, not top-down authority:
+
+### The Pattern
+
+1. **Propose**: Share idea freely (RFC, IDEA, proposal)
+2. **Seek advice**: Gather input from affected parties  
+3. **Address concerns**: No objection goes unheard
+4. **Consent**: Proceed when no reasoned objections remain
+
+### Key Principles
+
+- **"Good enough for now, safe enough to try"** - iterate rather than perfect
+- **No majority rule** - 49% opposition is still failure
+- **No authority** - decisions emerge from consent, not hierarchy
+- **Address objections** - every concern must be heard and integrated
+
+### Influences
+
+- **Sociocracy 3.0** (sociocracy30.org) - consent-based organizing
+- **Enspiral** (New Zealand) - collaborative networks
+- **Loomio** - group decision making tool
+- **karrot.world** - foodsharing & community organizing
+- **Holacracy** - distributed authority
+
+### Solarpunk Connection
+
+This is **#solarpunk governance**:
+- Balance over domination
+- Distribution over centralization  
+- Advice and consent over command
+- Iteration over perfection
+
+> *"How we decide how we decide."*

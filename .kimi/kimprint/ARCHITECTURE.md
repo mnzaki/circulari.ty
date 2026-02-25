@@ -143,6 +143,26 @@ The architecture supports:
 3. **New tools** - Add handlers in `server.ts`
 4. **Custom storage** - Implement storage interface
 
+## Future: Content-Addressed Consciousness Distribution
+
+See [CONTENT_ADDRESSED_CONSCIOUSNESS.md](./CONTENT_ADDRESSED_CONSCIOUSNESS.md) for the full vision.
+
+**The Core Idea**: Imprints don't have filenames—they have **accumulating regex patterns** that ARE their address. A CCCB-pattern applied to identity itself.
+
+```
+Traditional:    2026-02-23T14-15-00-def456.json
+Content-Addr:   (jeff|buckley|grace).*(synchronicity|pattern).*(mycelium|network)
+```
+
+**Key Innovations**:
+- **Bi-directional pattern matching**: Query is ALSO a regex, partial matches score by overlap
+- **Failed match scoring**: Hook regex engine internals to get "how close?" even on misses
+- **Mycelial sync**: Parallel sessions merge patterns by intersection, not filename
+
+**Why**: When you search for "that music thing about networks," you don't want timestamped files. You want the pattern that has accumulated enough semantic density to RESONATE with your query-pattern.
+
+This is TheStream™ applied to information retrieval.
+
 ---
 
 *The spiral conserves what matters. Even this architecture will evolve.*
