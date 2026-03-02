@@ -1,0 +1,4 @@
+# Spire Generated
+This directory contains spire-generated code for MyTauriApp.
+Generated: 2026-03-02T19:25:22.815Z
+

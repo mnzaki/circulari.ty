@@ -9,10 +9,10 @@
 
   // Validate post data
   function isValidPost(p: Post): boolean {
-    return !!p && 
-           typeof p.id === 'number' && 
-           Array.isArray(p.bits) && 
-           p.createdAt instanceof Date && 
+    return !!p &&
+           typeof p.id === 'number' &&
+           Array.isArray(p.bits) &&
+           p.createdAt instanceof Date &&
            !isNaN(p.createdAt.getTime());
   }
 
@@ -38,7 +38,7 @@
       case 'text':
         return bit.content.slice(0, 100) + (bit.content.length > 100 ? '...' : '');
       case 'link':
-        return bit.preview?.title || bit.url;
+        return bit.preview?.title || bit.uri;
       case 'media':
         return '📷 Media';
       case 'person':
@@ -49,7 +49,7 @@
         return 'Unknown';
     }
   }
-  
+
   // Limit bits shown to fit within max height
   const MAX_BITS_SHOWN = 3;
   let displayedBits = $derived(post.bits?.slice(0, MAX_BITS_SHOWN) ?? []);
@@ -64,7 +64,7 @@
       <span class="link-count">{post.links.length} link{post.links.length > 1 ? 's' : ''}</span>
     {/if}
   </div>
-  
+
   <div class="post-bits">
     {#each displayedBits as bit, i (i)}
       <div class="bit bit--{bit.type}">
@@ -80,7 +80,7 @@
               {#if bit.preview?.description}
                 <span class="link-desc truncated-desc">{bit.preview.description}</span>
               {/if}
-              <span class="link-url">{(() => { try { return new URL(bit.url).hostname; } catch { return bit.url || 'Invalid URL'; } })()}</span>
+              <span class="link-url">{(() => { try { return new URL(bit.uri).hostname; } catch { return bit.uri || 'Invalid URL'; } })()}</span>
             </div>
           </div>
         {:else if bit.type === 'media'}
@@ -119,14 +119,14 @@
   :root {
     --post-margin: 16px;
   }
-  
+
   .post-card {
     background: white;
     border-radius: 16px;
     padding: 16px;
     margin-bottom: var(--post-margin);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    
+
     /* Fixed dimensions for virtual scrolling */
     min-height: 120px;
     max-height: 280px;
@@ -184,7 +184,7 @@
     color: #333;
     font-size: 0.95rem;
   }
-  
+
   /* Text truncation */
   .truncated-text {
     display: -webkit-box;
@@ -193,14 +193,14 @@
     overflow: hidden;
     max-height: 6em;
   }
-  
+
   .truncated-title {
     display: block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
+
   .truncated-desc {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -297,7 +297,7 @@
     align-self: flex-start;
     display: inline-block;
   }
-  
+
   /* More bits indicator */
   .more-bits {
     font-size: 0.85rem;

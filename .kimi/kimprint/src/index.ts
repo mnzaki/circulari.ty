@@ -17,12 +17,21 @@
 import { startServer } from "./server.js";
 import { runCLI, createCLI } from "./cli.js";
 
+// Export ResonancePattern system
+export * from "./resonance/index.js";
+
 const args = process.argv.slice(2);
 const command = args[0];
+const subcommand = args[1];
 
 async function main() {
-  /* Server mode: MCP protocol */
-  if (command === "server") {
+  /* Server mode: MCP protocol (only when explicitly running server directly) */
+  /* Note: 'kimprint server' now goes through CLI to show management commands */
+  if (command === "server" && !subcommand) {
+    // Just "kimprint server" - will show help via CLI
+    // Fall through to CLI
+  } else if (command === "__internal-server-start") {
+    // Internal command to actually start the server
     await startServer();
     return;
   }

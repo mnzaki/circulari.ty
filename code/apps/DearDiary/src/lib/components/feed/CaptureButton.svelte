@@ -26,7 +26,7 @@
   }
 
   function handleLongPress() {
-    // TODO: Quick photo capture
+    // TODO
     console.log('Long press - quick capture');
   }
 
@@ -78,7 +78,7 @@
           {#if bit.type === 'text'}
             <span class="bit-preview text-preview">"{bit.content.slice(0, 15)}..."</span>
           {:else if bit.type === 'link'}
-            <span class="bit-preview link-preview">🔗 {bit.preview?.title || bit.url.slice(0, 20)}</span>
+            <span class="bit-preview link-preview">🔗 {bit.preview?.title || bit.uri.slice(0, 20)}</span>
           {:else if bit.type === 'media'}
             <div class="media-thumb">📷</div>
           {:else if bit.type === 'person'}

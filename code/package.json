@@ -19,6 +19,7 @@
     "@o19/spire-loom": "workspace:*",
     "prettier": "^3.7.4",
     "prettier-plugin-svelte": "^3.4.0",
+    "tsx": "^4.21.0",
     "turbo": "^2.8.3"
   },
   "packageManager": "pnpm@10.0.0",

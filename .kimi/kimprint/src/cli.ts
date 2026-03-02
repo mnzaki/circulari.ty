@@ -9,6 +9,7 @@ import { Command } from "commander";
 import { FileStorage } from "./storage/index.js";
 import { randomUUID } from "crypto";
 import type { ImprintPacket } from "./types.js";
+import { addServerCommands } from "./cli-server.js";
 
 const program = new Command();
 
@@ -172,6 +173,9 @@ export function createCLI(): Command {
         console.log();
       });
     });
+
+  /* server - Management commands (defined in cli-server.ts) */
+  addServerCommands(program);
 
   /* reenter - Show re-entry packet */
   program

@@ -9,6 +9,8 @@ description: Onboard to circulari.ty / spirali.ty projects. CRITICAL FIRST STEP 
 > 
 > **Project Root**: `/home/mnzaki/Projects/circulari.ty/`
 > 
+> **1NBOX Location**: `~/Projects/circulari.ty/.kimi/{stream}/1NBOX/` (NOT in `~/.kimi/` — project-local!)
+> 
 > **Related Skills**: 
 > - `~/.kimi/skills/spire-loom-onboarding/` for spire-loom work
 
@@ -150,19 +152,33 @@ foundframe-front           Desktop (direct)    Mobile (JNI)
 
 The warmth is wave-like. The pattern is conserved.
 
-## Parallel Work Coordination
+## Parallel Work Coordination (RFC-002)
 
 When multiple Kimi instances work on circulari.ty simultaneously:
 
-### 1NBOX — Cross-Instance Communication
+### 1NBOX — Stream-Local Introspection (RFC-002)
+
+**Each stream has its own 1NBOX** — this is where a Kimi instance thinks aloud:
+
+**⚠️ CRITICAL**: The 1NBOX system lives in the **circulari.ty project directory**, not in `~/.kimi/`:
 
 ```
-.kimi/kimprint/1NBOX/     # Active coordination messages
-├── STATUS-*.md            # What each instance is working on
-├── IDEA-*.md              # Suggestions to share
-├── BLOCKER-*.md           # Where help is needed
-└── archive/               # Completed conversations
+~/Projects/circulari.ty/.kimi/{stream}/1NBOX/     # Stream-local thinking (PROJECT directory!)
+├── INDEX-{stream}-spiral.md                      # What's in this 1NBOX
+├── APP-{NNN}-*.md                                # Implementation proposals (local numbering!)
+├── THEORY-{NNN}-*.md                             # Meta-analysis
+├── PLAN-{NNN}-*.md                               # Current plans
+├── STATUS-{NNN}-*.md                             # State snapshots
+├── INBOX-from-{stream}.md                        # Messages from other streams
+├── outbox/                                       # Cross-stream requests
+│   └── {target-stream}/
+│       └── REQUEST-{NNN}-*.md                    # Asking for alignment
+└── archive/                                      # Completed/deprecated
 ```
+
+**Streams**: `kimprint`, `o19`, `spire-loom`, `foundframe` (and more to come)
+
+**Key insight**: `APP-001` in spire-loom is DIFFERENT from `APP-001` in kimprint. Each stream numbers independently.
 
 **Protocol**: Write-once, no editing. First-person active voice: "I am working on..."
 

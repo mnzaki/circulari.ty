@@ -1,6 +1,6 @@
 /**
  * Accumulating Post Store
- * 
+ *
  * Manages the staging area for post creation.
  * Local state only - drafts handled at component level.
  */
@@ -56,15 +56,8 @@ export async function clearAccumulation(): Promise<void> {
  */
 export async function commit(): Promise<Post | null> {
   if (accumulationState.bits.length === 0) return null;
-  
-  // Convert draft links to full links with id and createdAt
-  const links = accumulationState.draftLinks.map(draft => ({
-    ...draft,
-    id: crypto.randomUUID(),
-    createdAt: new Date()
-  }));
-  
-  const post = await addPost(accumulationState.bits, links);
+
+  const post = await addPost(accumulationState.bits);
   await clearAccumulation();
   return post;
 }
@@ -73,6 +66,6 @@ export async function commit(): Promise<Post | null> {
 export function debugAccumulation(): void {
   console.log('Accumulating:', {
     bitCount: accumulationState.bits.length,
-    bits: accumulationState.bits.map(b => b.type)
+    bits: accumulationState.bits.map((b) => b.type)
   });
 }
