@@ -1,0 +1,20 @@
+{
+  "name": "@baa/divination-engine-prototype",
+  "version": "0.1.0",
+  "description": "Round-based lazy computation with mejs template integration",
+  "type": "module",
+  "scripts": {
+    "demo": "node --loader ts-node/esm demo.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "spire-loom": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@baa/deferred-value",
+  "version": "0.1.0",
+  "description": "Promise-like container for multi-pass computation with lazy query API",
+  "type": "module",
+  "main": "deferred-value.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "deferred",
+    "lazy",
+    "query",
+    "multi-pass",
+    "computation",
+    "template",
+    "code-generation"
+  ],
+  "author": "Barn Architecture Academy",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}

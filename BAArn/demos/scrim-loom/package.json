@@ -1,0 +1,9 @@
+{
+  "name": "@circulari.ty/scrim-loom",
+  "version": "0.1.0",
+  "description": "Drop-in replacement for spire-loom using Three Friends architecture",
+  "type": "module",
+  "scripts": {
+    "test": "tsx test-integration.ts"
+  }
+}

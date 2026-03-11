@@ -1,0 +1,17 @@
+{
+  "name": "@o19/demo-foundframe",
+  "version": "0.1.0",
+  "description": "Demo foundframe using scrim-loom (with spire-loom compatibility)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test:import": "node --import=tsx test-import.ts",
+    "test:warp": "node --import=tsx loom/WARP.ts"
+  },
+  "dependencies": {
+    "@o19/scrim-loom": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
+  }
+}

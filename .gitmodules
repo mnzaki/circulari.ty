@@ -1,3 +1,6 @@
 [submodule "o19"]
 	path = o19
 	url = git@github.com:mnzaki/o19
+[submodule ".kimi/kimprint/axon"]
+	path = .kimi/kimprint/axon
+	url = git@github.com:harshkedia177/axon

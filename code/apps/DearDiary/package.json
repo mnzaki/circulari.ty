@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "loom": "cd ../.. && pnpm loom -p DearDiary",
+    "loom": "pnpm spire-loom",
     "dev": "BROWSER=none vite dev",
     "build": "vite build",
     "preview": "vite preview",

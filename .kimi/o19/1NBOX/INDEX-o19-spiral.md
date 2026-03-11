@@ -10,6 +10,8 @@
 
 | File | Type | Status | Description |
 |------|------|--------|-------------|
+| [APP-001-post-loom-survey.md](APP-001-post-loom-survey.md) | APP | 📊 Complete | Loom generates 196 files! Working: Discovery, generation, hookup. Broken: Case issues (UPPERCASE types), index files, empty ports |
+| [PLAN-001-foundframe-alignment-weave.md](PLAN-001-foundframe-alignment-weave.md) | PLAN | Active | Foundframe alignment planning |
 | [STATUS-001-before-foundframe-alignment.json](STATUS-001-before-foundframe-alignment.json) | STATUS | Current | Pre-compaction conservation before diving into foundframe core |
 
 ---
