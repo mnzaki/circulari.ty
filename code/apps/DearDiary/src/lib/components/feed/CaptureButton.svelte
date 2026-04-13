@@ -83,8 +83,7 @@
             <div class="media-thumb">📷</div>
           {:else if bit.type === 'person'}
             <span class="person-chip">@{bit.displayName}</span>
-          {:else if bit.type === 'spatiotemporal'}
-            <span class="clip-badge">🎬</span>
+          
           {/if}
         </div>
       {/each}

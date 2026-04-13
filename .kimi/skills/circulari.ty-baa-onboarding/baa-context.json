@@ -1,0 +1,62 @@
+{
+  "name": "Barn Architecture Academy Context",
+  "version": "0.1.0",
+  "projects": {
+    "o19": {
+      "name": "o19 Weaving Architecture",
+      "path_patterns": ["*/o19/*", "o19/*"],
+      "packages": ["spire-loom", "scrim-loom", "aaaarchi", "ferror", "orka"],
+      "key_files": ["AGENTS.md", "HISTORY.md", "pnpm-workspace.yaml"],
+      "mascots": {
+        "spire-loom": "🌾",
+        "scrim-loom": "🦡",
+        "aaaarchi": "🦏",
+        "ferror": "🦀",
+        "orka": "🐋"
+      }
+    },
+    "deardiary": {
+      "name": "DearDiary",
+      "path_patterns": ["*/deardiary/*", "deardiary/*", "*/dear-diary/*"],
+      "key_files": ["AGENTS.md", "CIRCULARI.TY.md"],
+      "type": "circulari.ty-component"
+    },
+    "foundframe": {
+      "name": "FoundFrame",
+      "path_patterns": ["*/foundframe/*", "foundframe/*", "*/found-frame/*"],
+      "key_files": ["AGENTS.md", "CIRCULARI.TY.md"],
+      "type": "circulari.ty-component"
+    }
+  },
+  "terminology": {
+    "weaving": "Code generation from decorated TypeScript",
+    "warp": "The decorator/metadata layer",
+    "heddles": "Pattern matching and validation",
+    "treadles": "Generator triggers",
+    "shuttle": "File writing utilities",
+    "scrim": "Intermediate validation layer (🦡)"
+  },
+  "three_friends": {
+    "aaarchi": {
+      "name": "AAAArchi",
+      "role": "Architecture DAG builder and validator",
+      "mascot": "🦏",
+      "animal": "Aardvark",
+      "package": "@o19/aaaarchi"
+    },
+    "ferror": {
+      "name": "Ferror",
+      "role": "Contextual error handling",
+      "mascot": "🦀",
+      "animal": "Crab",
+      "package": "@o19/ferror"
+    },
+    "orka": {
+      "name": "Orka",
+      "role": "Saga orchestration and resilience",
+      "mascot": "🐋",
+      "animal": "Orca",
+      "package": "@o19/orka"
+    }
+  }
+}

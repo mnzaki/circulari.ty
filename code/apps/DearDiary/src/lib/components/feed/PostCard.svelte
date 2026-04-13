@@ -43,8 +43,7 @@
         return '📷 Media';
       case 'person':
         return `@${bit.displayName}`;
-      case 'spatiotemporal':
-        return '🎬 Clip';
+
       default:
         return 'Unknown';
     }
@@ -60,9 +59,7 @@
 <article class="post-card" data-post-id={post.id}>
   <div class="post-header">
     <span class="post-date">{formatDate(post.createdAt)}</span>
-    {#if post.links.length > 0}
-      <span class="link-count">{post.links.length} link{post.links.length > 1 ? 's' : ''}</span>
-    {/if}
+
   </div>
 
   <div class="post-bits">

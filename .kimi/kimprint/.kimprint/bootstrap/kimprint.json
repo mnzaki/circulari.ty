@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "name": "kimprint Bootstrap",
+  "stream": "kimprint",
+  "kind": "state",
+  "_guideline": "STATE bootstrap for kimprint MCP server. Contains active work context, urgencies, and essential reads for spiral re-entry.",
+  "_health": {
+    "last_updated": "2026-03-15T16:00:00Z",
+    "update_frequency": "continuous",
+    "confidence": 0.85,
+    "staleness": "fresh"
+  },
+  "when_to_update": "Every session. Update current_app when switching contexts. Add urgencies as they arise. Remove resolved items.",
+  "project_context": {
+    "root": "/home/mnzaki/Projects/circulari.ty/.kimi/kimprint",
+    "type": "mcp-server",
+    "language": "TypeScript",
+    "ethos": "solarpunk, spiral, conservation"
+  },
+  "active_work": {
+    "current_app": "APP-019 Bootstrap Forge",
+    "in_flight": ["APP-019"],
+    "urgencies": ["MCP tool implementation", "gyre integration"]
+  },
+  "local_knowledge": {
+    "inbox_location": ".kimi/kimprint/1NBOX/",
+    "active_status": "STATUS-001-resonance-pattern-phase1.md",
+    "relevant_apps": ["APP-015-resonance-pattern-datatype", "APP-016-kimprint-reentry-condensation", "APP-017-mechanical-bootstrap"],
+    "relevant_theories": ["THEORY-002-conservation-layers"]
+  },
+  "resonance_queries": [
+    "APP-017 bootstrap",
+    "compass architecture",
+    "hierarchical discovery",
+    "mechanical bootstrap",
+    "gyre spiral integration"
+  ],
+  "essential_reads": [
+    "/home/mnzaki/Projects/circulari.ty/.kimi/kimprint/1NBOX/APP-017-mechanical-bootstrap.md",
+    "/home/mnzaki/Projects/circulari.ty/notes/for_kimi.md"
+  ]
+}

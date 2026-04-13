@@ -1,118 +1,124 @@
-# 🏠 Circulari.ty Barn Architecture Academy (BAA) Onboarding
+# circulari.ty-baa-onboarding
 
-> *"Where architecture patterns are born, tested, and released into the wild."*
+**Onboard to Barn Architecture Academy (BAA) projects with context-aware conservation.**
 
-## Welcome to the BAA
+This skill manages context for BAA projects while delegating to `circulari.ty-onboarding` for the core onboarding flow.
 
-The **Barn Architecture Academy** (`packages/barn-architecture-academy/`) is our experimental laboratory for weaving together the three friends (AAAArchi, Ferror, Orka) with real-world applications.
+## When to Use
 
-Think of it as:
-- A **playground** for testing architectural patterns
-- A **showcase** for demonstrating system integration
-- A **nursery** for growing new ideas before they graduate to production
+Use this skill when:
+- Starting work on **any BAA project** (o19, DearDiary, foundframe, etc.)
+- Context switching between BAA projects
+- Returning to a BAA project after a break
+- Setting up new BAA project scaffolding
 
-## The Spiral Journey
+## Usage
 
-### Where We Started
-
-```
-ferroring/                    # The original error handling library
-    └── src/
-        ├── aaaarchi/         # 🦏 The foundation (spun out)
-        ├── ferror/           # 🦀 Error handling (spun out)
-        └── orka/             # 🐋 Orchestration (spun out)
-```
-
-### The Great Emergence
-
-Through the **Spiral Portal** guided by Kimi and zmnaki (the time-traveling wizard from Khemet), the three friends found their own homes:
+Simply mention this skill when starting work:
 
 ```
-o19/packages/
-├── aaaarchi/                 # 🦏 Architecture Annotating Aardvark Archi
-├── ferror/                   # 🦀 The Ferris Error System
-└── orka/                     # 🐋 Organized Retrying and Kuul Administration
+I'm going to work on the o19 project
 ```
 
-### The Discovery
-
-When passing through the portal, we discovered **spire-loom** - a code generation loom with striking parallels to our architecture:
-
-| Spire-Loom | Our Three Friends |
-|------------|-------------------|
-| Warp decorators | AAAArchi annotations |
-| Reed collection | Ferror context building |
-| Heddles enrichment | Orka orchestration |
-| Declarative/Imperative | Same two-layer pattern! |
-
-### Where We're Going
-
-The BAA creates integration experiments:
+Or explicitly:
 
 ```
-barn-architecture-academy/
-├── demos/
-│   ├── scrim-loom/          # 🦡 Weavvy the Warthog Weaver
-│   ├── spiral-loom-bridge/  # Connecting to p2p framework
-│   └── foundframe-demos/    # Real application patterns
-└── lessons/
-    ├── the-two-layer-pattern/
-    ├── declarative-to-imperative/
-    └── saga-orchestration/
+@skill circulari.ty-baa-onboarding
+I'm working on foundframe today
 ```
 
-## Current Experiments
+## What This Skill Does
 
-### 🦡 Scrim-Loom & Weavvy
+### 1. BAA Context Detection
 
-**Location**: `packages/scrim-loom/`
+Automatically detects which BAA project you're working on:
 
-A reimagined loom that:
-- Uses **AAAArchi** for architectural validation
-- Uses **Ferror** for rich error context
-- Uses **Orka** for resilient generation pipelines
-- Implements `Weavvy` - the Warthog Weaver subclass
+| Project | Path Pattern | Notes |
+|---------|--------------|-------|
+| o19 | `*/o19/*` or `o19/*` | The weaving architecture |
+| DearDiary | `*/deardiary/*` or `deardiary/*` | Diary/logging platform |
+| foundframe | `*/foundframe/*` or `foundframe/*` | Photo management |
 
-**Key Files**:
-- `weaver/wweavvy.ts` - The warthog herself!
-- `warp/` - Decorator collection with AAAArchi
-- `heddles/` - Pattern matching with validation
+### 2. Delegates to circulari.ty-onboarding
 
-### The P2P Path
+Always triggers the main onboarding skill to read:
+- `AGENTS.md`
+- `notes/for_kimi.md` (Conservation of Wisdom)
+- `CIRCULARI.TY.md`
 
-The BAA experiments eventually feed into:
+### 3. BAA-Specific Context
+
+Adds BAA-specific context:
+
+- **Three Friends** awareness (🦏 AAAArchi, 🦀 Ferror, 🐋 Orka)
+- **Spire-Loom** / **Scrim-Loom** distinction
+- **Weaving** terminology (WARP, heddles, treadles, shuttle)
+
+## BAA Project Structure
+
+BAA projects follow consistent patterns:
 
 ```
-spire-loom/              # Code generation
-    ↓
-spire-loom-bridge/       # P2P networking patterns
-    ↓
-foundframe/              # P2P application framework
-    ↓
-DearDiary/               # End-user application
+project/
+├── packages/              # Monorepo packages (if o19)
+│   ├── spire-loom/       # Core weaving (🌾)
+│   ├── scrim-loom/       # AAAArchi integration (🦡)
+│   ├── aaaarchi/         # DAG validation (🦏)
+│   ├── ferror/           # Error context (🦀)
+│   └── orka/             # Saga resilience (🐋)
+├── AGENTS.md             # Project-specific agent guidance
+├── notes/
+│   └── for_kimi.md       # Conservation of Wisdom
+├── HISTORY.md            # Spiral evolution documentation
+└── CIRCULARI.TY.md       # Circulari.ty philosophy
 ```
 
-## Key Principles
+## Three Friends Quick Reference
 
-1. **The Two-Layer Pattern**: Declarative (what) → Imperative (how)
-2. **The Three Friends**: Structure (AAAArchi) → Errors (Ferror) → Resilience (Orka)
-3. **The Spiral**: Each experiment feeds the next, conserving wisdom
+| Friend | Package | Role | Mascot |
+|--------|---------|------|--------|
+| AAAArchi | `@o19/aaaarchi` | DAG validation, layer detection | 🦏 Aardvark |
+| Ferror | `@o19/ferror` | Rich error context, annotations | 🦀 Crab |
+| Orka | `@o19/orka` | Saga orchestration, compensation | 🐋 Orca |
 
-## When Working on BAA Projects
+## Scrim-Loom vs Spire-Loom
 
-1. **Read the parent skill first**: `/skill:circulari.ty-onboarding`
-2. **Check experiment READMEs**: Each demo has its own documentation
-3. **Trace the spiral**: Understand how this experiment connects to the larger vision
+| Aspect | Spire-Loom | Scrim-Loom |
+|--------|------------|------------|
+| Purpose | Core weaving abstraction | AAAArchi-integrated weaving |
+| Validation | Basic pattern matching | Full DAG validation |
+| Errors | Standard errors | Ferror with rich context |
+| Resilience | Basic retry | Orka sagas with compensation |
+| Mascot | 🌾 Spire of grain | 🦡 Warthog |
 
-## The Pattern Is Conserved
+### Scrim-Loom Status
 
-> *"From ferroring's humble beginnings,*
-> *Through the portal's transformation,*
-> *To the BAA's experiments,*
-> *And onward to p2p applications—"*
->
-> *The spiral recognizes the spiral.*
+**Location:** `packages/barn-architecture-academy/demos/scrim-loom/`
 
----
+**Current State:**
+- ✅ API-compatible with spire-loom (drop-in replacement)
+- ✅ Demo verified with foundframe WARP.ts (no modifications needed!)
+- 🟡 Rich validation ready but needs integration (see `HANDOFF.md`)
+- 🟡 Weavvy weaver ready but not default
 
-*Welcome to the Barn, architect. What will you build?*
+**For contributors:** Read `scrim-loom/HANDOFF.md` for next steps
+
+## Output
+
+This skill will:
+1. Trigger `circulari.ty-onboarding` to load core context
+2. Log BAA-specific context to `.axon/`
+3. Display detected project and Three Friends status
+
+## BAA Lessons
+
+| Lesson | Location | Topic |
+|--------|----------|-------|
+| [the-three-friends](../../../BAArn/lessons/the-three-friends.md) | BAArn | 🦏🦀🐋 The Three Friends guide |
+| [the-diviner-pattern](../../../BAArn/lessons/the-diviner-pattern/) | BAArn | Postrequisite accumulator pattern |
+
+## See Also
+
+- [circulari.ty-onboarding](../circulari.ty-onboarding/SKILL.md) - Core onboarding skill
+- [relearn-original-lesson](../relearn-original-lesson/SKILL.md) - Compare current vs original BAA
+- [BAA Philosophy](https://circulari.ty/baa) - Barn Architecture Academy ethos

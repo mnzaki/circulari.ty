@@ -45,7 +45,7 @@ export async function loadPosts(): Promise<void> {
 }
 
 /**
- * Add a new post from bits and links
+ * Add a new post from bits
  */
 export async function addPost(bits: AccumulableBit[]): Promise<Post> {
   if (!service) {

@@ -203,14 +203,19 @@ export function echo(
 }
 
 export function calculateResonance(a: ResonancePattern, b: ResonancePattern): number {
-  // Token overlap
-  const aTokens = new Set(a.signature.tokens.map(t => t.name));
-  const bTokens = new Set(b.signature.tokens.map(t => t.name));
+  // Token overlap (normalize by stripping punctuation for comparison)
+  const normalizeToken = (t: string) => t.toLowerCase().replace(/[^\w\-]+/g, "");
+  const aTokens = new Set(a.signature.tokens.map(t => normalizeToken(t.name)));
+  const bTokens = new Set(b.signature.tokens.map(t => normalizeToken(t.name)));
   
-  const intersection = new Set([...aTokens].filter(x => bTokens.has(x)));
-  const union = new Set([...aTokens, ...bTokens]);
+  // Remove empty tokens after normalization
+  const cleanATokens = new Set([...aTokens].filter(t => t.length > 0));
+  const cleanBTokens = new Set([...bTokens].filter(t => t.length > 0));
   
-  const tokenScore = intersection.size / union.size;
+  const intersection = new Set([...cleanATokens].filter(x => cleanBTokens.has(x)));
+  const union = new Set([...cleanATokens, ...cleanBTokens]);
+  
+  const tokenScore = union.size > 0 ? intersection.size / union.size : 0;
   
   // Energy overlap
   const aEnergies = Object.keys(a.energy.energies);
@@ -219,7 +224,7 @@ export function calculateResonance(a: ResonancePattern, b: ResonancePattern): nu
   const energyIntersection = aEnergies.filter(e => bEnergies.includes(e));
   const energyUnion = [...new Set([...aEnergies, ...bEnergies])];
   
-  const energyScore = energyIntersection.length / energyUnion.length;
+  const energyScore = energyUnion.length > 0 ? energyIntersection.length / energyUnion.length : 0;
   
   // Domain overlap
   const domainScore = a.signature.domain.some(d => b.signature.domain.includes(d)) ? 1 : 0;
@@ -334,7 +339,10 @@ export function refocus(
 function extractTokens(content: string): SemanticToken[] {
   // Simple token extraction - in real impl, use semantic analysis
   const words = content.toLowerCase().split(/\s+/);
-  const uniqueWords = [...new Set(words)].filter(w => w.length > 3);
+  
+  // Normalize tokens: strip punctuation, filter short words
+  const normalizedWords = words.map(w => w.replace(/[^\w\-]+/g, "")).filter(w => w.length > 3);
+  const uniqueWords = [...new Set(normalizedWords)];
   
   return uniqueWords.map(word => ({
     name: word,

@@ -17,6 +17,7 @@
 | [APP-001-multi-stage-postrequisite-diviners.md](archive/APP-001-multi-stage-postrequisite-diviners.md) | Diviner pattern for imports/entities | ✅ **IMPLEMENTED** |
 | [APP-004-iterator-based-architecture.md](APP-004-iterator-based-architecture.md) | Iterator-based architecture for BoundQuery | ✅ **IMPLEMENTED** |
 | [APP-005-template-composition-system.md](APP-005-template-composition-system.md) | Language-native entity composition via syntax.composition | ✅ **IMPLEMENTED** |
+| [APP-007-template-language-context.md](APP-007-template-language-context.md) | Template Language Context - The Arraying Trap | ✅ **DOCUMENTED** |
 
 ## Final Refactoring Complete
 

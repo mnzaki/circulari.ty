@@ -2,18 +2,11 @@
  * Domain Types
  * 
  * Re-exported from @o19/foundframe-front for convenience.
- * DearDiary uses string IDs (UUIDs), foundframe uses numbers.
- * This file provides type compatibility layer.
+ * Addressing is now handled by @o19/xana.
  */
 
-// Re-export all domain types from foundframe
+// Re-export domain types from foundframe-front
 export type {
-  // Addressing
-  UAddress,
-  ContentType,
-  TextSpan,
-  SpatiotemporalPoint,
-  XanaduLink,
   // Content
   LinkPreview,
   AccumulableBit,
@@ -35,23 +28,21 @@ export type {
   SortBy,
 } from '@o19/foundframe-front';
 
+// Re-export xana types for addressing
+export type {
+  XanaAnchorInfo,
+  AnchorType,
+  UriResolutionResult,
+  RadUriParts,
+  RadUri,
+  XanaUri,
+  ParsedUri,
+  ParseOptions,
+  UriParseError,
+  UriHelper,
+} from '@o19/xana/uri';
+
 // Import utilities from foundframe
 export {
   createEmptyAccumulation,
-  parseUAddress,
-  buildUAddress,
 } from '@o19/foundframe-front';
-
-// Re-export with legacy aliases for backwards compatibility
-export type { LinkPreview as CachedPreview } from '@o19/foundframe-front';
-
-// Legacy: string-based Post ID compatibility
-// foundframe uses number IDs, DearDiary uses string IDs
-// Use type assertions where needed during migration
-export interface PostLegacy {
-  id: string;
-  bits: import('@o19/foundframe-front').AccumulableBit[];
-  links: import('@o19/foundframe-front').XanaduLink[];
-  createdAt: Date;
-  modifiedAt?: Date;
-}

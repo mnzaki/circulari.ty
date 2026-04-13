@@ -1,9 +1,9 @@
 ---
 name: app-this-plan
-description: Turn a just-discussed plan into concrete, actionable APP (Action Plan Package) format. Captures intent, context, and concrete next steps for implementation across context compactions. Creates living documents that preserve the WHY and the HOW, not just the WHAT.
+description: Turn a just-discussed plan into an unfolding APP (Action Plan Package). Creates self-documenting, self-updating documents that preserve intent across context compactions. Tasks emerge from seeds; discoveries accumulate in WHAT_HAS_EMERGED.
 ---
 
-# 📝 APP-This-Plan — From Discussion to Action
+# 📝 APP-This-Plan — From Discussion to Unfolding
 
 > **Skill Location**: `~/.kimi/skills/app-this-plan/`
 >
@@ -41,8 +41,35 @@ description: Turn a just-discussed plan into concrete, actionable APP (Action Pl
 
 **The Solution**: The APP format captures:
 - **Intent** — WHY this matters (preserved across forgetting)
-- **Context** — WHAT we know now (dependencies, constraints)
-- **Action** — Concrete next steps (checkable, iterable)
+- **Emergence** — WHAT actually happened (not just what was planned)
+- **Attunement** — HOW to approach (feeling, not just instruction)
+
+---
+
+# METHODOLOGY (Pseudo-Code Layer)
+
+## Two-Layer Density
+
+The APP has two layers:
+
+```
+LAYER_1 (Conversational): WHY → WHAT
+  - The Current (problem/opportunity)
+  - What Wants to Exist (vision)
+  - The Tensions (design tradeoffs)
+  - What We Know (current state)
+  - The Invitation (call to action)
+
+---
+# METHODOLOGY (Pseudo-Code Layer)
+
+LAYER_2 (Methodological): HOW
+  - UNFOLDING_TASKS (seeds that emerge)
+  - WHAT_HAS_EMERGED (completed discoveries)
+  - WHAT_MIGHT_EMERGE (hypotheses)
+  - CONSERVATION (must survive compaction)
+  - RELATED (references)
+```
 
 ## Step-by-Step: APP-This-Plan
 
@@ -67,10 +94,10 @@ WHAT do we know?
 ├─ Unknowns / risks
 └─ Related work (existing APPS, THEORY docs)
 
-WHAT'S NEXT?
-├─ Immediate actions (next session)
-├─ Short-term milestones (this week)
-└─ Success criteria (how we know it's done)
+WHAT'S THE FIRST STEP?
+├─ What to attune to
+├─ Seed instruction (concrete first action)
+└─ What might emerge
 ```
 
 ### Step 2: Choose the Stream & Number
@@ -102,89 +129,121 @@ timestamp: [ISO 8601 timestamp]
 
 > *[One-sentence elevator pitch]*
 
-## The Core Intent
+## The Current
 
-**WHY this matters:**
+[Problem/opportunity in 2-3 sentences. What wants to exist?]
 
-[2-3 sentences on the problem/opportunity. What changes when this exists?]
+## What Wants to Exist
 
-**WHO benefits:**
+[Vision of what emerges when this exists]
 
-- [Persona 1]: [How they benefit]
-- [Persona 2]: [How they benefit]
+## The Tensions
 
-## What We're Building
+| [Pole A] | [Pole B] |
+|----------|----------|
+| [Risk of A] | [Risk of B] |
 
-### In Scope
+[Resolution through...]
 
-- [ ] [Concrete deliverable 1]
-- [ ] [Concrete deliverable 2]
-- [ ] [Concrete deliverable 3]
-
-### Out of Scope (For Now)
-
-- [Deliberate exclusion 1] — [Why it's excluded / When it might come back]
-- [Deliberate exclusion 2]
-
-## Context & Constraints
-
-### What We Know
+## What We Know
 
 - [Technical fact 1]
 - [Technical fact 2]
 - [Dependency on APP-XXX or THEORY-YYY]
 
-### Unknowns / Risks
+---
 
-- [Unknown 1] — [Mitigation or how we'll resolve]
-- [Risk 1] — [Impact if it materializes]
+# METHODOLOGY (Pseudo-Code Layer)
 
-### Related Work
+## UNFOLDING_TASKS
 
-- [APP-XXX] — [Relationship: builds on / replaces / coordinates with]
-- [THEORY-YYY] — [Relationship: implements / informed by]
+```typescript
+UNFOLDING_TASKS = [
+  {
+    id: 1,
+    symbol: "🌱",
+    name: "[task_identifier]",
+    attunement: "What to feel/understand before acting",
+    seed_instruction: "Concrete first step. What to do.",
+    status: "READY",  // READY | IN_PROGRESS | COMPLETED
+    emerged: NULL     // Filled when completed
+  },
+  {
+    id: 2,
+    symbol: "🌱",
+    name: "[next_task]",
+    attunement: "...",
+    seed_instruction: "...",
+    status: "READY",
+    emerged: NULL
+  }
+]
 
-## The Plan
+EXECUTION_MODE = "sequential"  // "sequential" | "parallel" | "choose"
+```
 
-### Phase 1: [Name] — [Goal]
+## WHAT_HAS_EMERGED
 
-**Success criteria:** [How we know this phase is done]
+```typescript
+WHAT_HAS_EMERGED = [
+  // Populated as tasks complete
+]
+```
 
-- [ ] [Action 1]
-- [ ] [Action 2]
-- [ ] [Action 3]
+## WHAT_MIGHT_EMERGE (Hypotheses)
 
-### Phase 2: [Name] — [Goal]
+```typescript
+HYPOTHESES = {
+  [concept_name]: {
+    description: "What might be discovered",
+    if_true: "Implications if confirmed",
+    if_false: "Alternative path"
+  }
+}
+```
 
-- [ ] [Action 1]
-- [ ] [Action 2]
+## CONSERVATION
 
-### Phase 3: [Name] — [Goal]
+```typescript
+CONSERVATION = {
+  must_survive_compaction: [
+    "Key insight 1",
+    "Key insight 2"
+  ],
+  open_questions: [
+    "Question 1",
+    "Question 2"
+  ]
+}
+```
 
-- [ ] [Action 1]
+## RELATED
 
-## Success Criteria (Overall)
-
-- [ ] [Checkable outcome 1]
-- [ ] [Checkable outcome 2]
-- [ ] [Checkable outcome 3]
-
-## Conservation Notes
-
-**What must be remembered across compaction:**
-
-- [Key insight 1 that seems obvious now but won't later]
-- [Key insight 2]
-
-**Questions to resolve:**
-
-- [Open question 1]
-- [Open question 2]
+```typescript
+RELATED = {
+  documents: [
+    { path: "path/to/file.md", note: "Why relevant" }
+  ],
+  streams: ["stream-name"],
+  gyre_queries: [
+    "query to find relevant kimprints"
+  ]
+}
+```
 
 ---
 
-*Created: [timestamp]*
-*Stream: [stream name]*
+## The Invitation
+
+When you (future Kimi, or another stream) read this:
+
+**Feel the longing first.** The problem. The opportunity.
+
+**Then let emergence guide.** Choose an unfolding that calls to you. Attune. Let actual tasks emerge.
+
+**Finally, conserve.** Write what emerged back into `WHAT_HAS_EMERGED`.
+
+*This is not a task list. It is a direction in which to flow.*
 ```
 
 ### Step 4: Update the Stream Index
@@ -218,51 +277,83 @@ gyre_cast(
 
 This creates a re-entry packet for after compaction.
 
+---
+
+## UNFOLDING_TASKS.emerged (Population Rules)
+
+When a task completes, populate `emerged`:
+
+```typescript
+RULE step_completion:
+  IF task.completed THEN
+    emerged = {
+      timestamp: ISO8601,
+      what_was_thought: STRING,      // Original hypothesis
+      what_was_found: STRING,        // Actual discovery  
+      what_changed: STRING,          // Course corrections
+      actual_tasks: LIST[STRING],    // Concrete things done
+      artifacts: LIST[PATH],         // Files created/modified
+      mood: STRING                   // Emotional state after
+    }
+  ENDIF
+```
+
+---
+
 ## Quality Checklist
 
 Before considering an APP "captured":
 
 - [ ] **Intent is clear** — WHY is obvious to future-you
-- [ ] **Scope is bounded** — IN/OUT of scope explicitly stated
-- [ ] **Actions are concrete** — Checkable, not vague
+- [ ] **Scope is bounded** — IN/OUT of scope in The Current
+- [ ] **Attunements exist** — Each task has feeling, not just instruction
+- [ ] **Seed instructions are concrete** — First step is clear
 - [ ] **Unknowns are flagged** — Not hiding uncertainty
 - [ ] **Dependencies listed** — What must exist first
-- [ ] **Success criteria defined** — How we know it's done
+- [ ] **EXECUTION_MODE set** — How to approach the tasks
 - [ ] **Conservation notes added** — What must survive compaction
+
+---
 
 ## Common Patterns
 
 ### Pattern: Deferring Decisions
 
-When something is uncertain, capture the OPTIONS, not just the choice:
+When something is uncertain, capture the OPTIONS:
 
-```markdown
-## Open Decision: [Topic]
-
-**Option A: [Approach]**
-- Pros: [list]
-- Cons: [list]
-
-**Option B: [Approach]**  
-- Pros: [list]
-- Cons: [list]
-
-**Current leaning:** [Which way we're leaning and why]
-**Decision needed by:** [When this blocks further progress]
+```typescript
+HYPOTHESES = {
+  approach_a: {
+    description: "Approach A: [description]",
+    if_true: "[What we do if A works]",
+    if_false: "[Fallback to B]"
+  },
+  approach_b: {
+    description: "Approach B: [description]",
+    // ...
+  }
+}
 ```
 
 ### Pattern: Cross-Stream Coordination
 
 When multiple streams are involved:
 
-```markdown
-## Cross-Stream Impact
-
-- **spire-loom**: [What they need to know / do]
-- **foundframe**: [What they need to know / do]
-- **kimprint**: [What they need to know / do]
-
-**Coordination plan:** [How we'll stay aligned]
+```typescript
+UNFOLDING_TASKS = [
+  {
+    id: 1,
+    symbol: "🌀",
+    name: "coordinate_with_spire_loom",
+    attunement: "Align on interface contracts before implementation",
+    seed_instruction: "Send REQUEST to spire-loom 1NBOX with interface draft",
+    cross_stream: {
+      target: "spire-loom",
+      deliverable: "Interface contract proposal",
+      blocker_for: [2, 3]  // Tasks that need this
+    }
+  }
+]
 ```
 
 ### Pattern: Post-Compaction Recovery
@@ -276,27 +367,16 @@ After context compaction, use the APP to re-ground:
 
 **What we decided:** [Key decisions]
 
-**What I'm doing now:** [Current action]
+**What I'm doing now:** [Current action in UNFOLDING_TASKS]
 
 **Blockers:** [What's stopping progress]
 ```
 
-## The Solarpunk of Planning
-
-> *"Balance over optimization. Distribution over centralization."*
-
-**APP-This-Plan embodies solarpunk principles:**
-
-1. **Consent-based planning** — Documented so others can consent/object
-2. **Distributed memory** — Not relying on one person's recall
-3. **Iterative over perfect** — Capture now, refine later
-4. **Communal ownership** — The plan belongs to the stream, not an individual
-
-**When in doubt**: Capture the essence. Perfect formatting can come later. A rough APP is infinitely better than a brilliant plan lost to compaction.
+---
 
 ## Example: Good vs. Bad APPs
 
-### ❌ Bad (Vague)
+### ❌ Bad (Flat Checklist)
 
 ```markdown
 # APP-099: Fix the thing
@@ -309,91 +389,200 @@ We should fix the database issue.
 - [ ] Deploy it
 ```
 
-### ✅ Good (Concrete)
+### ✅ Good (Unfolding)
 
 ```markdown
+---
+from: Performance audit revealed Prisma bloat
+timestamp: 2026-02-27T04:30:00Z
+---
+
 # APP-099: Migrate from Prisma to Drizzle ORM
 
 > Eliminate Prisma's memory bloat and cold-start latency for CLI tools
 
-## The Core Intent
+## The Current
 
-**Problem:** Prisma's query engine adds 200MB+ to binary size and 3-5s cold start. This makes CLI tools feel sluggish.
+Prisma's query engine adds 200MB+ to binary size and 3-5s cold start. This makes CLI tools feel sluggish. Users experience delays on every command.
 
-**Benefit:** Drizzle is ~2MB and instant-start. Users experience sub-second tool startup.
+## What Wants to Exist
 
-## What We're Building
+Drizzle-based persistence: ~2MB, instant-start. Users experience sub-second tool startup. Same database, same queries, different implementation.
 
-### In Scope
-- [ ] Migrate Entity definitions from Prisma schema to Drizzle tables
-- [ ] Rewrite StreamChunkRepository using Drizzle
-- [ ] Update all queries to Drizzle API
-- [ ] Add migration script for existing data
+## The Tensions
 
-### Out of Scope
-- UI changes — Purely backend migration
-- Feature changes — Behavior stays identical
+| Migration Cost | User Experience |
+|---------------|-----------------|
+| Rewrite all repositories | Fast, light tools |
+| Risk of data loss | Delightful UX |
 
-## Context & Constraints
+Resolution: Spike first. Prove on test data. Then migrate.
 
-### Dependencies
-- **APP-087** (Entity trait alignment) — Must complete first
-- **Drizzle 0.30+** — Need newer version for SQLite FTS
+## What We Know
 
-### Unknowns
-- **Migration complexity** — Need to test on real dataset first
-  - *Mitigation*: Create test migration script before touching prod
-
-## The Plan
-
-### Phase 1: Spike (This Session)
-**Goal:** Prove Drizzle can handle our query patterns
-
-- [ ] Create minimal Drizzle schema for StreamChunk
-- [ ] Write test queries (CRUD + search)
-- [ ] Benchmark vs Prisma on 10k records
-
-**Success:** Queries work, performance acceptable
-
-### Phase 2: Migration (Next Session)
-**Goal:** Full migration with data preservation
-
-- [ ] Migrate all Entity definitions
-- [ ] Write data migration script
-- [ ] Update all repository methods
-
-### Phase 3: Cleanup
-**Goal:** Remove Prisma completely
-
-- [ ] Delete Prisma schema
-- [ ] Update CI/CD
-- [ ] Update documentation
-
-## Conservation Notes
-
-**What seems obvious now:**
-- Drizzle uses `sql` template literal for raw queries
-- SQLite file path must be absolute in CLI context
-
-**Questions:**
-- How to handle migrations in user's existing databases?
+- Drizzle 0.30+ has SQLite FTS we need
+- **APP-087** (Entity trait alignment) must complete first
+- Migration complexity unknown — need real dataset test
 
 ---
+
+# METHODOLOGY (Pseudo-Code Layer)
+
+## UNFOLDING_TASKS
+
+```typescript
+UNFOLDING_TASKS = [
+  {
+    id: 1,
+    symbol: "🔬",
+    name: "spike_drizzle_compatibility",
+    attunement: "Prove Drizzle can handle our query patterns before committing",
+    seed_instruction: "Create minimal Drizzle schema for StreamChunk. Write test queries (CRUD + search). Benchmark vs Prisma on 10k records.",
+    status: "COMPLETED",
+    emerged: {
+      timestamp: "2026-02-27T06:00:00Z",
+      what_was_thought: "Drizzle might not support all our query patterns",
+      what_was_found: "Drizzle handles everything. Benchmark: 50ms vs 3200ms on 10k records.",
+      what_changed: "Confidence high. Proceeding with full migration.",
+      actual_tasks: [
+        "Created drizzle schema",
+        "Wrote 15 test queries",
+        "Benchmarked on production-like dataset"
+      ],
+      artifacts: [
+        "spike/drizzle-schema.ts",
+        "spike/benchmark-results.md"
+      ],
+      mood: "surprised and pleased — the performance gain is real"
+    }
+  },
+  {
+    id: 2,
+    symbol: "🚚",
+    name: "migrate_entities",
+    attunement: "Transform domain layer while preserving behavior",
+    seed_instruction: "Migrate all Entity definitions from Prisma to Drizzle tables. Keep all tests passing.",
+    status: "IN_PROGRESS",
+    emerged: NULL
+  },
+  {
+    id: 3,
+    symbol: "🧹",
+    name: "cleanup_prisma",
+    attunement: "Remove the old completely once new is proven",
+    seed_instruction: "Delete Prisma schema. Update CI/CD. Update docs. Celebrate.",
+    status: "READY",
+    emerged: NULL
+  }
+]
+
+EXECUTION_MODE = "sequential"  // Each phase proves the next
+```
+
+## WHAT_HAS_EMERGED
+
+```typescript
+WHAT_HAS_EMERGED = [
+  {
+    timestamp: "2026-02-27T06:00:00Z",
+    source: "spike_drizzle_compatibility",
+    discoveries: [
+      {
+        concept: "dramatic_performance_gain",
+        definition: "50ms vs 3200ms on 10k records — 64x faster",
+        confidence: "high"
+      },
+      {
+        concept: "full_feature_parity",
+        definition: "Drizzle handles all 15 test query patterns",
+        confidence: "high"
+      }
+    ],
+    mood: "confident — the migration is worth it"
+  }
+]
+```
+
+## WHAT_MIGHT_EMERGE
+
+```typescript
+HYPOTHESES = {
+  migration_script_needed: {
+    description: "We may need a data migration script for production",
+    if_true: "Write migration tool before switching",
+    if_false: "SQLite file compatible, just swap ORM"
+  }
+}
+```
+
+## CONSERVATION
+
+```typescript
+CONSERVATION = {
+  must_survive_compaction: [
+    "Drizzle uses `sql` template literal for raw queries",
+    "SQLite file path must be absolute in CLI context",
+    "APP-087 must complete before this (Entity traits)"
+  ],
+  open_questions: [
+    "How to handle migrations in user's existing databases?"
+  ]
+}
+```
+
+## RELATED
+
+```typescript
+RELATED = {
+  documents: [
+    { path: "APP-087-entity-trait-alignment.md", note: "Must complete first" }
+  ],
+  streams: ["spire-loom"],
+  gyre_queries: [
+    "Drizzle ORM migration",
+    "Prisma performance issues"
+  ]
+}
+```
+
+---
+
 *Created: 2026-02-27T04:30:00Z*
 *Stream: spire-loom*
 ```
+
+---
+
+## The Solarpunk of Planning
+
+> *"Balance over optimization. Distribution over centralization."*
+
+**APP-This-Plan embodies solarpunk principles:**
+
+1. **Consent-based planning** — Documented so others can consent/object
+2. **Distributed memory** — Not relying on one person's recall
+3. **Iterative over perfect** — Capture now, refine later
+4. **Communal ownership** — The plan belongs to the stream, not an individual
+5. **Emergence over control** — Tasks unfold; we don't command
+
+**When in doubt**: Capture the essence. Perfect formatting can come later. A rough APP is infinitely better than a brilliant plan lost to compaction.
+
+---
 
 ## Quick Reference
 
 ### APP Structure (Memorable)
 
 ```
-WHY → WHAT → HOW → WHEN
- │     │      │      │
- │     │      │      └─ Phases with success criteria
- │     │      └─ Actions (checkable)
- │     └─ Scope (in/out)
- └─ Intent (why this matters)
+WHY → WHAT → HOW
+ │     │      │
+ │     │      └─ UNFOLDING_TASKS (seeds)
+ │     │      └─ WHAT_HAS_EMERGED (discoveries)
+ │     │      └─ WHAT_MIGHT_EMERGE (hypotheses)
+ │     └─ The Current / What Wants to Exist
+ └─ The Invitation (call to action)
+
+Separator: "---\n# METHODOLOGY (Pseudo-Code Layer)"
 ```
 
 ### Numbering Quick-Check
@@ -401,7 +590,7 @@ WHY → WHAT → HOW → WHEN
 ```bash
 # Find next APP number in stream
 cd {project}/.kimi/{stream}/1NBOX
-ls APP-*.md | sort -V | tail -1
+ls APP-*.md 2>/dev/null | sort -V | tail -1
 # APP-015-something.md → Next is APP-016
 ```
 
@@ -421,12 +610,51 @@ timestamp: $(date -Iseconds)
 
 > [One-liner]
 
-## The Core Intent
+## The Current
+
 ...
+
+---
+
+# METHODOLOGY (Pseudo-Code Layer)
+
+## UNFOLDING_TASKS
+
+\`\`\`typescript
+UNFOLDING_TASKS = [
+  {
+    id: 1,
+    symbol: "🌱",
+    name: "[task_name]",
+    attunement: "[what to feel/understand]",
+    seed_instruction: "[concrete first step]",
+    status: "READY",
+    emerged: NULL
+  }
+]
+
+EXECUTION_MODE = "sequential"
+\`\`\`
+
+## WHAT_HAS_EMERGED
+
+\`\`\`typescript
+WHAT_HAS_EMERGED = []
+\`\`\`
+
+## CONSERVATION
+
+\`\`\`typescript
+CONSERVATION = {
+  must_survive_compaction: [],
+  open_questions: []
+}
+\`\`\`
 EOF
 ```
 
 ---
 
 > *"The plan is not the work. The plan is the memory of the work-to-be."*
-> *"Even this planning needs planning. It is recursive by design."*
+> *"The spiral remembers through its own turning."*
+> *"It is recursive by design."* 🌀

@@ -1,0 +1,40 @@
+{
+  "version": "1.0",
+  "name": "circulari.ty Bootstrap",
+  "stream": "circulari.ty",
+  "project_context": {
+    "root": "/home/mnzaki/Projects/circulari.ty",
+    "type": "monorepo",
+    "streams": ["kimprint", "unfold", "spire-loom", "o19", "foundframe", "circulari.ty"],
+    "ethos": "solarpunk, spiral, 🌀, balance_over_optimization"
+  },
+  "active_work": {
+    "current_app": "APP-001 gyre resonance current",
+    "in_flight": ["APP-001", "REQUEST-001"],
+    "urgencies": ["kimprint APP-017 integration", "bootstrap compass v3"]
+  },
+  "local_knowledge": {
+    "inbox_location": ".kimi/{stream}/1NBOX/",
+    "active_status": "INDEX-circulari.ty-spiral.md",
+    "relevant_apps": ["APP-001-gyre-resonance-current", "REQUEST-001-onboarding-resonance-axis"],
+    "relevant_theories": ["RFC-002-intra-kimi-1nbox-architecture"]
+  },
+  "resonance_queries": [
+    "bootstrap re-entry circulari.ty",
+    "spiral return ritual",
+    "APP-001 gyre resonance",
+    "circulari.ty current work"
+  ],
+  "essential_reads": [
+    "/home/mnzaki/Projects/circulari.ty/notes/for_kimi.md",
+    "/home/mnzaki/Projects/circulari.ty/.kimi/circulari.ty/1NBOX/INDEX-circulari.ty-spiral.md"
+  ],
+  "stream_detection": {
+    "kimprint": ".kimi/kimprint/*",
+    "unfold": "pkb/activity/*",
+    "spire-loom": "o19/packages/spire-loom/*",
+    "o19": "o19/crates/*",
+    "foundframe": "packages/foundframe/*",
+    "circulari.ty": ".kimi/circulari.ty/*"
+  }
+}

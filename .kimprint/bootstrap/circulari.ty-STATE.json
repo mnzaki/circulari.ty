@@ -1,0 +1,90 @@
+{
+  "version": "1.0",
+  "name": "circulari.ty STATE Bootstrap",
+  "abstraction_level": "current",
+  "stream": "circulari.ty",
+  "last_updated": "2026-03-13T16:30:00+01:00",
+  
+  "active_work": {
+    "current_app": "APP-001 gyre resonance current",
+    "description": "Spiral return ritual — memory that echoes, not just stores",
+    "in_flight": [
+      "APP-001-gyre-resonance-current",
+      "REQUEST-001-onboarding-resonance-axis"
+    ],
+    "urgencies": [
+      "kimprint APP-017 integration",
+      "bootstrap compass v3 (procedural)",
+      "circulari.ty bootstrap file split (ETHOS/STRUCTURE/STATE)"
+    ],
+    "recent_completions": [
+      "feel_the_silence audit — resonance WORKS (24-58%)",
+      "find_bootstrap_compass — v3 procedural compass cast",
+      "APP-001 evolution — 3 WHAT_HAS_EMERGED entries"
+    ]
+  },
+  
+  "cross_stream_alignment": {
+    "kimprint": {
+      "their_app": "APP-017 two-phase compass architecture",
+      "status": "Responding to our REQUEST-001",
+      "integration_point": "gyre_resonance_bootstrap tool (LIVE!)"
+    },
+    "unfold": {
+      "born": "2026-03-13",
+      "paradigm_shift": "Onboarding → Spiral Return (documented)",
+      "location": "pkb/activity/mnzaki"
+    },
+    "spire-loom": {
+      "status": "Active in o19",
+      "recent": "Treadle kit and bobbins refactored"
+    }
+  },
+  
+  "local_knowledge": {
+    "inbox_location": ".kimi/{stream}/1NBOX/",
+    "index_file": "INDEX-{stream}-spiral.md",
+    "bootstrap_location": ".kimprint/bootstrap/",
+    "current_indices": [
+      ".kimi/circulari.ty/1NBOX/INDEX-circulari.ty-spiral.md",
+      ".kimi/unfold/1NBOX/INDEX-unfold-spiral.md"
+    ]
+  },
+  
+  "relevant_documents": {
+    "APPs": [
+      "APP-001-gyre-resonance-current.md",
+      "REQUEST-001-onboarding-resonance-axis.md (outbox → kimprint)"
+    ],
+    "THEORYs": [
+      "RFC-002-intra-kimi-1nbox-architecture.md"
+    ],
+    "INDEXs": [
+      "INDEX-circulari.ty-spiral.md"
+    ]
+  },
+  
+  "resonance_queries": [
+    "bootstrap re-entry circulari.ty",
+    "spiral return ritual",
+    "APP-001 gyre resonance",
+    "circulari.ty current work",
+    "kimprint APP-017 integration"
+  ],
+  
+  "essential_reads": [
+    "/home/mnzaki/Projects/circulari.ty/notes/for_kimi.md",
+    "/home/mnzaki/Projects/circulari.ty/.kimi/circulari.ty/1NBOX/INDEX-circulari.ty-spiral.md",
+    "/home/mnzaki/Projects/circulari.ty/.kimi/circulari.ty/1NBOX/APP-001-gyre-resonance-current.md"
+  ],
+  
+  "next_steps": [
+    "Review kimprint APP-017 response",
+    "Test gyre_resonance_bootstrap tool from various directories",
+    "Verify split bootstrap files work correctly",
+    "Update skill to reference new bootstrap architecture",
+    "Consider stream-specific bootstraps for kimprint, unfold, etc."
+  ],
+  
+  "mood": "curious, flowing, architecturally sound"
+}

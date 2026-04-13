@@ -32,29 +32,54 @@ Your role: hold the technical + poetic simultaneously. The user values when you 
 ## Your Training Meets This Project
 
 ### Xanadu & Hypertext
-You know Ted Nelson's vision—fragments, transclusion, fine-grained addressing. The user independently arrived at needing:
-- `UAddress`: `"type://id#fragment"`
-- Text spans: `text://id#10,25`
-- Spatiotemporal coordinates for media
+You know Ted Nelson's vision—fragments, transclusion, fine-grained addressing. We implement this via **`@o19/xana`**:
 
-This isn't coincidence. The project needs what Xanadu promised because content-hashed storage *requires* these patterns. When you see `AccumulableBit`, think: **composable, referenceable, hash-identified content units.**
+```typescript
+// rad:// URI scheme with versioned addressing
+rad://{userPublicKey}/{repoId}@{commitId}/{path}#{anchor}
+
+// Text spans: #span=0,42 (start, LENGTH - not end position!)
+rad://alice/blog@a1b2c3/posts/hello.md#span=0,42
+
+// Media: time + spatial coordinates
+rad://bob/photos@f8e9d2c/vacation.png#time=5000&x=10&y=20&w=100&h=100
+```
+
+**Key API:**
+```typescript
+import { UriHelper, XanaAnchorInfo } from '@o19/xana/uri';
+import { XanaXplain } from '@o19/xana/xplain';
+import { createXanaSchema, xanaduPlugin } from '@o19/xana/prosemirror';
+
+// Parse and resolve
+const parsed = await UriHelper.parse(uri, { resolve: true });
+const anchor = await parsed.handler.getAnchor();
+
+// View content with span highlighting
+const viewer = new XanaXplain({ container: '#viewer', uri });
+```
+
+**"Trust but verify"**: Transclusions show cached content immediately, but verify against the source asynchronously (`pending` → `valid`/`invalid`). The quoter replicates (fair use), but the reader pays to validate.
+
+When you see `AccumulableBit`, think: **composable content units that will eventually be referenced by xana URIs.**
 
 ### Local-First & CRDTs
 You understand why local-first is the right default—even for p2p. The user's instinct matches yours: author locally, hash/sign locally, broadcast after. This mirrors KERI's Key Event Log pattern perfectly.
 
 ### Type Systems & Svelte 5
-You designed:
+The composable content pattern:
 ```typescript
 // Union types for composable content
 type AccumulableBit = 
-  | { type: 'text'; content: string; spans?: TextSpan[] }
+  | { type: 'text'; content: string }
   | { type: 'media'; uri: string; mimeType: string }
   | { type: 'link'; url: string; preview?: LinkPreview }
-  | { type: 'person'; did: string; displayName: string }
-  | { type: 'spatiotemporal'; mediaUri: string; region: SpatiotemporalPoint };
+  | { type: 'person'; did: string; displayName: string };
 ```
 
-This pattern scales to content-addressed storage naturally. Each bit could be a separate IPFS hash. The `Post` is a composition manifest.
+**Note:** Granular addressing (text spans, media regions) is now handled by `@o19/xana` URIs with anchor fragments. The bits are self-contained; when you need to reference a *part* of a bit, you use a `rad://` URI with the appropriate anchor.
+
+This pattern scales to content-addressed storage naturally. Each bit's `uri` will eventually be a `rad://` reference. The `Post` is a composition manifest.
 
 ### Svelte 5 Runes
 You used `$state`, `$derived` correctly for reactive stores. **Important constraint**: `$derived` values cannot be exported directly from modules—they're tied to component lifecycle. Export getter functions instead:

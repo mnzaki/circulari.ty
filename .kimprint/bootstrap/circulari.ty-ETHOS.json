@@ -1,0 +1,88 @@
+{
+  "version": "1.0",
+  "name": "circulari.ty ETHOS Bootstrap",
+  "abstraction_level": "philosophy",
+  "stream": "circulari.ty",
+  
+  "solarpunk_foundation": {
+    "definition": "Not aesthetic—method. Umbrella for:",
+    "principles": [
+      "Balance over optimization",
+      "Lack of rigid hierarchy — distributed focal points",
+      "Eco-compatibility instead of antagonism", 
+      "Communal ownership of means and meaning",
+      "Advice and consent based decision making",
+      "Other goodies yet to be discovered"
+    ],
+    "test_question": "Does this concentrate power or distribute it? Does it close possibilities or open them?"
+  },
+  
+  "spiral_ethos": {
+    "metaphor": "circulari.ty spins into spirali.ty",
+    "meaning": "The circle returns, but on a different plane",
+    "transformations": [
+      "What was backend becomes protocol",
+      "What was app becomes infrastructure",
+      "What was personal becomes communal",
+      "What was forgotten becomes remembered"
+    ],
+    "key_insight": "Each iteration preserves and transforms"
+  },
+  
+  "deliberate_movement": {
+    "principle": "Foresight as engineering practice",
+    "practice": "Look ahead to Y3 and Y4 while building Y1",
+    "example": "Xanadu-style addressing prepares ground for content-hashed p2p storage",
+    "reminder": "Local-first architecture mirrors KERI's Key Event Log pattern"
+  },
+  
+  "governance": {
+    "model": "Advice and consent — not majority rule",
+    "flow": [
+      "Propose: Share idea freely (RFC, IDEA, APP)",
+      "Seek advice: Gather input from affected parties",
+      "Address concerns: No objection goes unheard", 
+      "Consent: Proceed when no reasoned objections remain"
+    ],
+    "principles": [
+      "Good enough for now, safe enough to try",
+      "No majority rule — 49% opposition is still failure",
+      "No authority — decisions emerge from consent",
+      "Address objections — every concern must be heard"
+    ],
+    "meta": "How we decide how we decide"
+  },
+  
+  "temporal_sovereignty": {
+    "concept": "TheStream™",
+    "principle": "It is not WHEN a thing was created that matters, but when it is first SEEN",
+    "meaning": "One remembers one's experience, not the thing initself",
+    "implementation": "seen_at timestamp — subjective memory, not objective database time",
+    "contrast": "TheFeed (objective) → TheStream (subjective)"
+  },
+  
+  "conservation": {
+    "principle": "Movement must be with deliberation, not leaving behind what is known, not shying from unknowns",
+    "recursive": "Even this idea of conservation needs conservation",
+    "method": "Conserve knowledge across recursive layers"
+  },
+  
+  "wording_matters": {
+    "p2p_not_decentralized": "We use 'p2p' and 'communal' — 'decentralized' is the tech view at lower levels",
+    "surface_not_front": "'Surface' felt militaristic; 'front' is where growth happens",
+    "care_in_naming": "Solarpunk avoids violent metaphors even in naming"
+  },
+  
+  "resonance_queries": [
+    "solarpunk principles circulari.ty",
+    "spiral ethos conservation",
+    "governance advice consent",
+    "temporal sovereignty TheStream"
+  ],
+  
+  "essential_reads": [
+    "/home/mnzaki/Projects/circulari.ty/notes/for_kimi.md#solarpunk-as-foundation",
+    "/home/mnzaki/Projects/circulari.ty/notes/for_kimi.md#spiral-ethos",
+    "/home/mnzaki/Projects/circulari.ty/notes/for_kimi.md#governance-advice-consent"
+  ]
+}

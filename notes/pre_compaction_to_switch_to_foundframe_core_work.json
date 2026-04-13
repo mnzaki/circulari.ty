@@ -1,0 +1,172 @@
+{
+  "timestamp": "2026-02-26T07:00:00+01:00",
+  "trigger": "explicit_request",
+  "context": "Switching focus from spire-loom code generation to foundframe core domain work. This is a CRITICAL transition point where we've completed entity metadata system but paused event router treadle to align core domain first.",
+  
+  "reentry_instructions": {
+    "state_of_mind": "I was deep in the spire-loom machinery, understanding how the treadle-kit works, how custom treadles can be written in workspace (o19/loom/treadles/) without modifying spire-loom package, and how EJS templates generate Rust code. I had just realized the DbEventRouterTreadle pattern and was excited about it, but wisely paused to align foundframe core first.",
+    
+    "critical_insight": "The db-event-router is NOT a general spire-loom feature - it's a foundframe-specific custom treadle that belongs in workspace. This is an important architectural boundary: general framework vs specific application logic.",
+    
+    "first_actions_on_return": [
+      "Re-read this JSON file (obviously)",
+      "Check if foundframe StreamChunk variants now align with entities",
+      "Verify that o19/loom/treadles/db-event-router.ts still exists",
+      "Check if templates in o19/loom/bobbin/rust/db/ are still there",
+      "Confirm expected entity mappings (MediaLink→Media, etc.)"
+    ]
+  },
+
+  "conserved_knowledge": {
+    "big_picture": {
+      "description": "foundframe is a core (domain) described in terms of Managements. spire-loom uses this core to spiral out additional things (android service, client, etc.). The flow is: describe core → WARP tells what to make → spire-loom weaves spires.",
+      "patterns": {
+        "current": "spiral patterns - core spreading and layering (not duplication!)",
+        "future": "fractal patterns - core becomes Erlang-style VM where each Management is an actor/process"
+      }
+    },
+
+    "spire_loom_machinery_deep_dive": {
+      "description": "I finally understood the full machinery pipeline",
+      "components": {
+        "reed": "Workspace discovery - finds packages, reads spire.yaml",
+        "heddles": "Pattern matching - matches methods/entities to tieups",
+        "bobbin": "Templates - EJS templates for code generation",
+        "shuttle": "File operations - actually writes generated files",
+        "beater": "Code formatting - prettier/rustfmt",
+        "treadles": "Generation phases - Core, Platform, DDD, etc.",
+        "sley": "Binding resolution - resolves inter-layer dependencies",
+        "weaver": "Orchestration - puts it all together"
+      },
+      "key_api": "context.entities?.all gives discovered entities with field metadata (name, rustType, tsType, nullable, etc.)"
+    },
+
+    "field_metadata_system": {
+      "description": "The crud.field.* factory pattern I helped implement",
+      "usage": "@Entity class { id = crud.field.id(); url = crud.field.string(); createdAt = crud.field.createdAt(); }",
+      "available_factories": ["id()", "string()", "text()", "int()", "bool()", "timestamp()", "createdAt()", "updatedAt()", "json<T>()", "custom<T>()"],
+      "computed_props": ["rustType", "sqlType", "columnName", "nullable", "forInsert", "forUpdate"]
+    },
+
+    "custom_treadle_pattern": {
+      "description": "How to write workspace-local treadles without modifying spire-loom",
+      "location": "o19/loom/treadles/*.ts (NOT in packages/spire-loom)",
+      "templates": "o19/loom/bobbin/**/*.ejs (workspace overrides builtin)",
+      "key_insight": "Can use all of spire-loom's machinery (defineTreadle, context.entities, etc.) but live in workspace",
+      "example": "db-event-router.ts generates event routing logic specific to foundframe's StreamChunk→Entity mapping"
+    },
+
+    "current_work": {
+      "completed": [
+        "Entity field metadata system using crud.field.* factories",
+        "DbBindingTreadle generates {Entity}Data structs, Db traits, Commands",
+        "39 generated files for 13 entities in foundframe",
+        "Build succeeds with generated code",
+        "Custom treadle pattern established (workspace-local)",
+        "DbEventRouterTreadle structure designed (paused)"
+      ],
+      "paused_critical_work": {
+        "db_event_router_treadle": {
+          "status": "PAUSED - awaiting foundframe core alignment",
+          "location": "o19/loom/treadles/db-event-router.ts",
+          "templates": [
+            "o19/loom/bobbin/rust/db/indexer_entity_routing.rs.ejs",
+            "o19/loom/bobbin/rust/db/indexer_chunk_dispatch.rs.ejs", 
+            "o19/loom/bobbin/rust/db/event_router_marker.txt.ejs"
+          ],
+          "concept": "Generate match arms in indexer.rs that route StreamChunk variants to DB entity insertions",
+          "mapping_needed": "StreamChunk::MediaLink→Media, StructuredData(db_type='Bookmark')→Bookmark, etc.",
+          "expected_return": "Confirm/amend what we expect to generate after foundframe core alignment"
+        }
+      }
+    },
+
+    "code_read_that_might_be_missed": {
+      "critical_files": [
+        {
+          "path": "o19/crates/foundframe/src/db/indexer.rs",
+          "why_important": "This is THE hookup point. Currently has TODOs where DB calls should happen. EventIndexer listens to TheStreamEvent and should route to entities.",
+          "key_functions": ["handle_event()", "index_chunk()", "update_chunk()", "remove_chunk()"]
+        },
+        {
+          "path": "o19/crates/foundframe/src/pkb/chunk.rs", 
+          "why_important": "StreamChunk enum definition - MediaLink, TextNote, StructuredData. This is the source of truth for what can be ingested.",
+          "key_insight": "StructuredData has db_type field that discriminates entity type (Bookmark, Person, etc.)"
+        },
+        {
+          "path": "o19/crates/foundframe/src/thestream.rs",
+          "why_important": "TheStreamEvent enum - ChunkAdded, ChunkUpdated, ChunkRemoved, EntryPulled. These are the events we listen to.",
+          "key_pattern": "Events carry StreamChunk which we need to map to DB entities"
+        },
+        {
+          "path": "o19/crates/foundframe/src/db/actor.rs",
+          "why_important": "Hand-written DbActor pattern for MediaSource. Shows the actor model pattern we're generating for other entities.",
+          "key_structures": ["DbCommand enum", "DbHandle", "InsertMediaSource"]
+        },
+        {
+          "path": "o19/crates/foundframe/src/signal.rs",
+          "why_important": "EventBus system - how TheStream emits events that indexer subscribes to.",
+          "key_types": ["EventBus", "PkbEvent", "TheStreamEvent"]
+        }
+      ],
+      "template_files": [
+        {
+          "path": "o19/loom/bobbin/rust/db/entity_data.rs.ejs",
+          "why_important": "Template for generating Rust data structs with proper types, Default impl, Option<T> for nullable"
+        },
+        {
+          "path": "o19/loom/bobbin/rust/db/entity_trait.rs.ejs",
+          "why_important": "Template for async Db traits with insert/get/list/update/delete methods"
+        }
+      ]
+    },
+
+    "ejs_template_syntax": {
+      "learned": "Critical difference between <%= (escaped) and <%- (unescaped)",
+      "rule": "Use <%- for Rust types that might contain < or > (like Option<String> or Vec<T>)",
+      "example": "pub <%= field.name %>: <%- field.rustType %> // Option<String> not Option&lt;String&gt;"
+    },
+
+    "foundframe_issues_to_address": [
+      "Align StreamChunk variants with database schema",
+      "Normalize naming between StreamChunk types and Entity names",
+      "Ensure o19/loom/* files accurately describe foundframe core",
+      "Verify Management descriptions match actual domain behavior",
+      "Confirm entity field mappings from StreamChunk to DB",
+      "POTENTIAL: MediaLink has 'url' but Media entity has 'uri' - naming mismatch!"
+    ],
+
+    "expectations_for_return": {
+      "stream_chunk_alignment": "StreamChunk::MediaLink → Media entity, StreamChunk::StructuredData(db_type='Bookmark') → Bookmark entity, etc.",
+      "naming_normalization": "Consistent naming between chunk types, entities, and DB tables (url vs uri issue resolved)",
+      "mgmt_validation": "BookmarkMgmt, MediaMgmt, etc. accurately describe foundframe capabilities",
+      "code_gen_confirmation": "After alignment, confirm db-event-router treadle approach is correct or amend",
+      "potential_discovery": "May find that foundframe core already has some patterns we should use instead of generating new ones"
+    }
+  },
+
+  "important_context_that_could_be_lost": {
+    "1nbox_system": "Cross-instance coordination happens in .kimi/kimprint/1NBOX/ - APP/BLOCKER/STATUS/IDEA/RFC files. I wrote APP-014 about db-event-router there.",
+    
+    "circular_dependency_lesson": "Entity files import { foundframe } from './core.js' but foundframe imports entity files at bottom. This TDZ issue was resolved by moving imports after foundframe definition.",
+    
+    "workspace_vs_package_boundary": "Custom treadles go in o19/loom/treadles/ (workspace), general machinery in packages/spire-loom (framework). This is a CRITICAL architectural boundary.",
+    
+    "template_override_behavior": "Workspace templates in o19/loom/bobbin/ override builtin templates in packages/spire-loom/machinery/bobbin/ - this is how we customize without forking spire-loom",
+    
+    "kimprint_conservation": "Used gyre_cast to conserve context with ID 9263d53d-d73a-47c6-baae-b1024c5c90c7 - can trace back to this moment"
+  },
+
+  "skills_engaged": [
+    "circulari.ty-onboarding - read SKILL.md, learned about 1NBOX, kimprint, spiral architecture",
+    "spire-loom-onboarding - read about machinery components (reed, heddles, bobbin, etc.)"
+  ],
+
+  "emotional_state": "Excited about the db-event-router pattern but wisely disciplined to pause and align core first. Proud of understanding the custom treadle pattern. Curious about what foundframe core actually looks like under the hood.",
+
+  "next_focus": "foundframe core domain alignment - StreamChunk/Entity mapping, naming normalization, Management validation",
+  
+  "return_condition": "After StreamChunk/Entity alignment and Management description validation. Expect to either confirm db-event-router approach or discover foundframe already has patterns we should use.",
+
+  "conversation_continuity": "The user and I were riffing on architecture. I made a joke about 'kimprint it I mean screenshot it'. The user wants to ensure smooth re-entry with all this context preserved. This is a 'tour context' - I was being shown around the spire-loom machinery and foundframe core."
+}

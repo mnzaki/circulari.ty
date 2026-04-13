@@ -1,0 +1,142 @@
+{
+  "version": "1.0",
+  "name": "circulari.ty STRUCTURE Bootstrap",
+  "abstraction_level": "architecture",
+  "stream": "circulari.ty",
+  
+  "identity": {
+    "type": "open-core company",
+    "mission": "Create communal apps using p2p technologies",
+    "approach": "Infrastructure disguised as applications"
+  },
+  
+  "product_stack": {
+    "layers": [
+      {
+        "name": "o19 framework",
+        "role": "Foundational framework for communal apps",
+        "location": "o19/",
+        "stack": "Rust core + TypeScript front + Android",
+        "pattern": "Onion as mycelial network"
+      },
+      {
+        "name": "DearDiary / MeStreamm",
+        "role": "Open app — PKB as social-media-stream",
+        "tagline": "Infrastructure disguised as a diary",
+        "function": "Pre-seeds the social graph while users think they're journaling"
+      }
+    ],
+    "key_concept": "TheStream™ — subjective memory, not objective feed"
+  },
+  
+  "swivel_timeline": {
+    "Y1": {
+      "project": "DearDiary / MeStreamm",
+      "essence": "Infrastructure disguised as diary",
+      "function": "Pre-seed social graph"
+    },
+    "Y2": {
+      "project": "Hal-loW",
+      "essence": "Chatroulette of human vulnerability",
+      "tech": "Content is PKI-signed CWTCH-identified blobs"
+    },
+    "Y3": {
+      "project": "circulari.ty",
+      "essence": "Google+ but fully p2p",
+      "feature": "WiFi networks as 'locations' hosting Squares run by Circles"
+    },
+    "Y4": {
+      "project": "Unknown final form",
+      "essence": "They kiss — all three layers interoperate",
+      "note": "DIDfully and SSIly but not SSIfully"
+    },
+    "acceleration": "Could be 2 years with shared p2p libraries (do not mention publicly)"
+  },
+  
+  "architecture": {
+    "temporal_stratification": {
+      "foundframe_front": {
+        "time": "Present",
+        "state": "In motion",
+        "memory": "Ephemeral (heap)",
+        "role": "CCCB — Capture-Commit Cycle Buffer",
+        "identity": "I am what I am making"
+      },
+      "foundframe_rust": {
+        "time": "Past/Future",
+        "state": "At rest",
+        "memory": "Persistent (git/IPFS)",
+        "role": "Accumulated becoming",
+        "identity": "I am what I have made"
+      }
+    },
+    
+    "onion_mycelium": {
+      "core_domain": "Your experience, TheStream™, ontological commitments (Person, Post, Media, etc.)",
+      "middle_ports": "Abstract contracts — the 'what' without the 'how'",
+      "outer_services": "Conductors — delegate downward, orchestrate upward",
+      "pattern": "Services extend Port (inherit) + receive Port (inject)"
+    },
+    
+    "management_reach": {
+      "Private_Core": {
+        "rings": "3",
+        "example": "INodeMgmt",
+        "meaning": "Individual internal state — self managing itself"
+      },
+      "Local_Platform": {
+        "rings": "4", 
+        "example": "IDeviceMgmt",
+        "meaning": "Community/square level — peers you interact with directly"
+      },
+      "Global_Interface": {
+        "rings": "5-6",
+        "example": "IContentMgmt", 
+        "meaning": "Network level — content shared with the world"
+      },
+      "constraint": "A Management at Ring 3 cannot generate Ring 6 code — spiral protects boundaries"
+    }
+  },
+  
+ "stream_topology": {
+    "kimprint": {
+      "role": "Memory system, gyre, conservation layers",
+      "path": ".kimi/kimprint/*"
+    },
+    "spire-loom": {
+      "role": "Code generation, patterns, the loom",
+      "path": "o19/packages/spire-loom/*"
+    },
+    "o19": {
+      "role": "Rust core, persistence, accumulated becoming",
+      "path": "o19/crates/*"
+    },
+    "foundframe": {
+      "role": "Domain layer — present tense, ephemeral",
+      "path": "packages/foundframe/*"
+    },
+    "unfold": {
+      "role": "Pre-crystallization, emergence, substrate",
+      "path": "pkb/activity/*"
+    },
+    "circulari.ty": {
+      "role": "Meta-stream, governance, ethos evolution",
+      "path": ".kimi/circulari.ty/*"
+    },
+    "insight": "Streams are currents, not directories — they flow through the filesystem"
+  },
+  
+  "resonance_queries": [
+    "o19 framework architecture",
+    "DearDiary TheStream PKB",
+    "SWiVeL timeline Y1 Y2 Y3 Y4",
+    "foundframe temporal stratification",
+    "management reach private local global"
+  ],
+  
+  "essential_reads": [
+    "/home/mnzaki/Projects/circulari.ty/notes/for_kimi.md#the-swivel-timeline",
+    "/home/mnzaki/Projects/circulari.ty/notes/for_kimi.md#foundframe-the-ethos-made-architecture",
+    "/home/mnzaki/Projects/circulari.ty/CODE_ARCHITECTURE.md"
+  ]
+}

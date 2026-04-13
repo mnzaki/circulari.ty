@@ -18,32 +18,53 @@ data structures and content-addressing patterns.
 > everything is just stored locally and your stream is just your own content."
 > — [Circulari.ty README](../../README.md#y1-deardiary)
 
-## DearDiary → Future Integration
+## Addressing: The Xanadu Connection
 
-| DearDiary (Now) | Hal-loW / Circulari.ty (Future) |
-|-----------------|--------------------------------|
-| `Post.id` (UUID) | Content hash / CID |
-| Local device storage | IPFS / DAT communal storage |
-| `XanaduLink` with `UAddress` | CWTCH-identified transclusion |
-| `person.did` (stub) | KERI AID (Autonomous IDentity) |
-| `spatiotemporal` coordinates | Time-space addressable media |
-| Text spans (`text://id#start,end`) | Fine-grained annotation & linking |
-| `commitAccumulation()` | Sign + broadcast to p2p mesh |
+We draw from [Project Xanadu](https://xanadu.com/)—Ted Nelson's vision of a hypertext 
+system where everything is addressable at fine granularity, nothing is truly 
+"embedded" (only referenced), and links are bidirectional.
 
-### The Xanadu Connection
+This is implemented via **`@o19/xana`**:
 
-Our addressing system (`UAddress`, fragment identifiers, transclusion types) draws 
-from [Project Xanadu](https://xanadu.com/)—Ted Nelson's vision of a hypertext 
-system where:
+```typescript
+// rad:// URI format
+rad://{userPublicKey}/{repoId}@{commitId}/{path}#{anchor}
 
-- Everything is addressable at fine granularity
-- Nothing is ever truly "embedded," only referenced
-- Links are bidirectional and first-class
-- Documents are composed of transclusions
+// Text span: #span=0,42 (start, LENGTH)
+rad://alice/blog@a1b2c3d/posts/hello.md#span=0,42
 
-This isn't academic fancy: content-addressed storage *requires* these patterns. 
-When a Post is identified by its hash, you can't "embed" a video—you reference 
-it by hash, possibly with spatiotemporal coordinates (`#t=10.5,x=0.5,y=0.3`).
+// Media anchor: time + spatial coordinates
+rad://bob/photos@f8e9d2c/vacation.png#time=5000&x=10&y=20&w=100&h=100
+```
+
+**Key differences from naive addressing:**
+- **Non-breaking URIs**: Commit hash ensures content doesn't move
+- **Text spans use LENGTH**: `#span=0,42` = 42 characters, not ending at position 42
+- **Verification workflow**: Content is cached but verified against source (`pending` → `valid`/`invalid`)
+- **"Trust but verify"**: Show cached immediately, validate asynchronously
+
+### Using @o19/xana
+
+```typescript
+import { UriHelper, XanaAnchorInfo } from '@o19/xana/uri';
+
+// Parse and resolve a URI
+const parsed = await UriHelper.parse(
+  'rad://alice/blog@a1b2c3/posts/hello.md#span=0,42',
+  { resolve: true }
+);
+
+const anchor = await parsed.handler.getAnchor();
+// { anchorType: 'text', start: 0, length: 42 }
+
+// The XanaXplain viewer handles rendering with span highlighting
+import { XanaXplain } from '@o19/xana/xplain';
+
+const viewer = new XanaXplain({
+  container: '#viewer',
+  uri: 'rad://alice/blog@a1b2c3/posts/hello.md#span=10,20'
+});
+```
 
 ## Data Flow: Accumulation → Commitment
 
@@ -73,30 +94,25 @@ content addressing works: you don't store a "post with an image," you store a
 post that *references* an image by hash.
 
 ```typescript
-// Future serialization (canonical JSON)
+// Current (Y1): Local SQLite
+type AccumulableBit =
+  | { type: 'text'; content: string }
+  | { type: 'media'; uri: string; mimeType: string }
+  | { type: 'link'; url: string; preview?: LinkPreview }
+  | { type: 'person'; did: string; displayName: string };
+
+// Future (Y2+): Content-addressed with xana URIs
 {
   "bits": [
     { "type": "text", "content": "At the cafe..." },
-    { "type": "media", "uri": "ipfs://QmXyz..." },
-    { "type": "person", "did": "did:keri:abc123..." }
-  ],
-  "links": [
-    { "target": "post://QmAbc...#text:10,25", "type": "reference" }
+    { "type": "media", "uri": "rad://self/pkb@a1b2c3/media/photo1.jpg" }
   ]
 }
 // → hash → sign → broadcast
 ```
 
-### `XanaduLink`
-
-Links aren't just URLs—they're typed relationships with source/target addresses:
-
-- `reference`: Points to something (like a citation)
-- `transclusion`: Embeds content from elsewhere (live inclusion)
-- `annotation`: Commentary layered over content
-- `response`: Threaded conversation
-
-In Y2+, these become CWTCH-identified, gossiped across the p2p mesh.
+**Note:** Text spans and media regions are no longer inline in the bit type. 
+When granular addressing is needed, use `@o19/xana` URIs with appropriate anchors.
 
 ## Local-First as Foundation
 
@@ -117,12 +133,12 @@ you control it, others can verify it.
 As DearDiary develops, patterns that prove useful should migrate to the shared 
 library:
 
-- `UAddress` parsing/resolution
+- URI parsing/resolution (via `@o19/xana`)
 - Content canonicalization (pre-hash)
-- Spatiotemporal coordinate handling
-- Xanadu link management
+- Xana anchor handling
+- ProseMirror transclusion editing
 
-The goal: when Y2 and Y3 arrive, they import a mature, tested library—not 
+The goal: when Y2 and Y3 arrive, they import mature, tested libraries—not 
 reinvented wheels.
 
 ## See Also
@@ -131,3 +147,4 @@ reinvented wheels.
 - [ARCHITECTURE.md](../../ARCHITECTURE.md) — KERI, CWTCH, IPFS/DAT plans
 - [CODE_ARCHITECTURE.md](../../CODE_ARCHITECTURE.md) — Shared library vision
 - [notes/home_screen.md](./home_screen.md) — CCCB philosophy
+- `@o19/xana` — Xanadu implementation for the 21st century

@@ -19,6 +19,12 @@ import {
   type Audience,
   type ResonancePattern,
 } from "../resonance/index.js";
+import {
+  searchResonance,
+  searchLegacyPackets,
+  type ResonanceResult,
+} from "../resonance/query-resonance.js";
+import { handleBootstrap } from "../bootstrap/handler.js";
 
 // ============================================================================
 // Handler Context
@@ -159,6 +165,25 @@ export function getToolDefinitions(): ToolDefinition[] {
         },
       },
     },
+    {
+      name: "gyre_resonance_bootstrap",
+      description: "Execute hierarchical mechanical bootstrap — discovers, merges, resonates, analyzes, and synthesizes re-entry context",
+      inputSchema: {
+        type: "object",
+        properties: {
+          cwd: { 
+            type: "string",
+            description: "Current working directory to start discovery from"
+          },
+          auto_trace_threshold: { 
+            type: "number", 
+            default: 0.5,
+            description: "Minimum resonance score to auto-trace full content"
+          },
+        },
+        required: ["cwd"],
+      },
+    },
   ];
 }
 
@@ -191,6 +216,8 @@ export async function handleTool(
       return handleGyreResonate(args, ctx);
     case "spiral_return":
       return handleSpiralReturn(args, ctx);
+    case "gyre_resonance_bootstrap":
+      return handleGyreResonanceBootstrap(args, ctx);
     default:
       return {
         content: [{ type: "text", text: `Unknown tool: ${name}` }],
@@ -405,38 +432,73 @@ async function handleGyreResonate(
   args: Record<string, unknown>,
   ctx: HandlerContext
 ): Promise<ToolResult> {
-  /* For now, use the old search but with resonance-themed output */
-  const packets = await ctx.storage.search(args.query as string);
+  const query = args.query as string;
   const limit = (args.limit as number) || 10;
-  const limited = packets.slice(0, limit);
+  const threshold = (args.resonance_threshold as number) || 0.5;
+  const circles = args.circles as string[] | undefined;
 
-  if (limited.length === 0) {
+  // Step 1: Search new ResonancePattern storage (primary)
+  const results = await searchResonance({
+    query,
+    circles,
+    limit,
+    threshold,
+    recencyBoost: true,
+  });
+
+  // Step 2: Fall back to legacy ImprintPacket storage if no results
+  let legacyResults: Array<{ packet: any; score: number }> = [];
+  if (results.length === 0) {
+    legacyResults = await searchLegacyPackets(ctx.storage, query, limit);
+  }
+
+  // Step 3: Format and return results
+  if (results.length === 0 && legacyResults.length === 0) {
     return {
-      content: [{ type: "text", text: `🔇 No resonance found for: ${args.query}` }],
+      content: [{ type: "text", text: `🔇 No resonance found for: ${query}` }],
     };
   }
 
-  /* Calculate simple resonance score based on query match */
-  const resonant = limited
-    .map((p: ImprintPacket) => {
-      const searchable = JSON.stringify(p).toLowerCase();
-      const query = (args.query as string).toLowerCase();
-      const matches = query.split(" ").filter((q) => searchable.includes(q)).length;
-      const score = matches / query.split(" ").length;
-      return { packet: p, score };
+  // Format new-style results
+  const newSummary = results
+    .map((r: ResonanceResult, i: number) => {
+      const date = r.pattern.createdAt.toISOString().split("T")[0];
+      const circles = r.pattern.signature.circles.length > 0
+        ? ` [${r.pattern.signature.circles.join(", ")}]`
+        : "";
+      const tokens = r.matchedTokens.length > 0
+        ? ` {${r.matchedTokens.slice(0, 3).join(", ")}}`
+        : "";
+      return `${i + 1}. [${Math.round(r.score * 100)}%] ${r.pattern.id.substring(0, 8)}... (${date})${circles}${tokens}`;
     })
-    .sort((a, b) => b.score - a.score);
-
-  const summary = resonant
-    .map(
-      (r, i) =>
-        `${i + 1}. [${Math.round(r.score * 100)}%] ${r.packet.id.substring(0, 8)}... (${r.packet.generatedAt.toISOString()}): ${r.packet.trigger}`
-    )
     .join("\n");
+
+  // Format legacy results (if any)
+  const legacySummary = legacyResults.length > 0
+    ? "\n\n[Legacy patterns]:\n" +
+      legacyResults
+        .map((r, i) => {
+          const date = r.packet.generatedAt
+            ? new Date(r.packet.generatedAt).toISOString().split("T")[0]
+            : "unknown";
+          return `${results.length + i + 1}. [${Math.round(r.score * 100)}%] ${r.packet.id?.substring(0, 8) ?? "unknown"}... (${date})`;
+        })
+        .join("\n")
+    : "";
+
+  const totalCount = results.length + legacyResults.length;
+  const sourceNote = results.length > 0 && legacyResults.length > 0
+    ? ` (new: ${results.length}, legacy: ${legacyResults.length})`
+    : results.length > 0
+      ? ""
+      : " (legacy mode)";
 
   return {
     content: [
-      { type: "text", text: `🌀 Resonance found — ${resonant.length} harmonic pattern(s):\n\n${summary}` },
+      {
+        type: "text",
+        text: `🌀 Resonance found — ${totalCount} harmonic pattern(s)${sourceNote}:\n\n${newSummary}${legacySummary}`,
+      },
     ],
   };
 }
@@ -454,4 +516,46 @@ async function handleSpiralReturn(
       },
     ],
   };
+}
+
+async function handleGyreResonanceBootstrap(
+  args: Record<string, unknown>,
+  ctx: HandlerContext
+): Promise<ToolResult> {
+  const cwd = args.cwd as string || process.cwd();
+  const threshold = args.auto_trace_threshold as number || 0.5;
+  
+  try {
+    const result = await handleBootstrap({ cwd, auto_trace_threshold: threshold }, ctx);
+    
+    return {
+      content: [
+        {
+          type: "text",
+          text: `🧭 Bootstrap resonance complete — ${result.stack.depth} layer(s) discovered\n\n` +
+            `📊 Summary: ${result.synthesis.summary}\n` +
+            `🎭 Mood: ${result.synthesis.mood} (${result.synthesis.confidence} confidence)\n` +
+            `🔍 Gyre matches: ${Object.values(result.gyre.results).reduce((s, r) => s + r.match_count, 0)}\n` +
+            `📜 Traces fetched: ${result.meta.traces_fetched}\n` +
+            `⏱️ Processing time: ${result.meta.processing_time_ms}ms\n\n` +
+            `📋 Next steps:\n${result.synthesis.next_steps.map(s => `  • ${s}`).join("\n")}\n\n` +
+            `💾 Re-entry kimprint: ${result.conservation.reentry_kimprint_id}`,
+        },
+        {
+          type: "text",
+          text: `\n--- Full JSON Output ---\n${JSON.stringify(result, null, 2)}`,
+        },
+      ],
+    };
+  } catch (err) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `❌ Bootstrap resonance failed: ${err instanceof Error ? err.message : String(err)}`,
+        },
+      ],
+      isError: true,
+    };
+  }
 }
